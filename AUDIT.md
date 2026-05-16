@@ -823,11 +823,8 @@ possible the same day. This entry closes US-014 with measured evidence.
   `qwen3_5` hybrid linear-attention architecture, ~2.3K shared
   context tokens for the 5-agent pipeline)
 - **Backend:** HuggingFace transformers 5.8.1 (vLLM 0.21.0 does not
-  yet recognize `qwen3_5` model_type — production vLLM-plugin path
-  deferred to upstream support; the closed-form 76% architectural
-  claim remains anchored in the paper and is retained in
-  `Apohara_Context_Forge/BENCHMARKS.md` as the theoretical
-  reference)
+  yet recognize `qwen3_5` model_type — vLLM-plugin path deferred to
+  upstream support; see "What it proves" #3 below)
 - **Cost:** ~$2.20 of NVIDIA Brev credits ($3.96/h × ~33 min wall-
   clock incl. model download + 2 runs + verification)
 
