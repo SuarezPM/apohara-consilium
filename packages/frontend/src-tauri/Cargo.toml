@@ -1,0 +1,23 @@
+[package]
+name = "apohara-inti-desktop"
+version = "0.1.0"
+description = "Apohara Inti desktop shell — cross-AI code verifier with INV-15 memory isolation"
+authors = ["Apohara Inti contributors"]
+license = "Apache-2.0"
+edition = "2021"
+
+[lib]
+name = "apohara_inti_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

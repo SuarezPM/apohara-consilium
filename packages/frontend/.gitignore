@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.vite/
+
+# Tauri build artifacts
+src-tauri/target/
+src-tauri/gen/
+
+# env
+.env
+.env.local

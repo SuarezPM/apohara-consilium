@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# Node / Vite
+node_modules/
+packages/frontend/dist/
+packages/frontend/.vite/
+
+# Rust / Tauri
+packages/frontend/src-tauri/target/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Local env
+.env
+.env.local
+*.local
+
+# Logs (committed evidence stays under logs/, not gitignored. ad-hoc local logs only)
+*.log
+
+# Runtime audit-write side directory (not the committed logs/ evidence tree)
+.apohara/

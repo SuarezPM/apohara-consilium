@@ -175,3 +175,117 @@ Append-only JSONL at `~/.apohara-inti/ledger.jsonl`. Each entry's
 uses `prev_hash = "0"*64`. Verified end-to-end by
 `test_verify_signed_hash_chain` (3 sequential calls, each new entry's
 `prev_hash` matches the predecessor's `signed_hash`).
+
+---
+
+## 4. 🟢 Frontend Tauri+React UI (2026-05-16, Day-6 US-007)
+
+React 19 + Vite 5 + TypeScript strict + Tailwind 3 frontend with
+hand-rolled shadcn-style primitives, mock-mode API client, and a
+Tauri v2 desktop shell ready for US-010 deployment. Lives entirely
+under `packages/frontend/`.
+
+### (a) Stack & build
+
+`packages/frontend/package.json:6-13` defines `dev | build |
+preview | lint | typecheck | tauri` scripts. `npm install` populates
+`node_modules/` (gitignored via `packages/frontend/.gitignore:1`).
+`npm run build` produces:
+
+- `dist/index.html` — 0.59 kB (0.37 kB gzip)
+- `dist/assets/index-<hash>.css` — ~15.97 kB (4.04 kB gzip), Tailwind output
+- `dist/assets/index-<hash>.js` — ~238.04 kB (73.77 kB gzip), React+UI bundle
+
+ESM modules: 1602 transformed. Built in ~1.94s on dev box.
+`npx tsc --noEmit` exits 0. `npx eslint . --max-warnings=0` exits 0.
+
+### (b) Component inventory (file:line)
+
+- `src/App.tsx:1-138` — main view, state management, fetches mock or real
+  `/v1/verify` response, threads `isVerifying` into MemoryPlaneIndicator.
+- `src/components/ApiKeyInput.tsx:1-58` — masked Gemini key input with
+  show/hide toggle and "BYOK — never stored" caption.
+- `src/components/CodeInput.tsx:1-32` — 12-row textarea with PR/diff/task
+  placeholder.
+- `src/components/AttackerCard.tsx:1-128` — vendor badge + status pill
+  (skeleton → green check → red dot → error), 80-char reasoning snippet,
+  optional latency display.
+- `src/components/AttackerGrid.tsx:1-22` — 3-col responsive grid wrapping
+  9 AttackerCards keyed by vendor.model.
+- `src/components/MemoryPlaneIndicator.tsx:1-94` — green-pulse badge,
+  expandable JCRDecision JSON, INV-15 chip. Pulse driven by `active` prop.
+- `src/components/VerdictPanel.tsx:1-103` — 3-state verdict (verified /
+  risky / blocked) with reasoning summary and signed audit-trail link.
+- `src/components/ErrorBanner.tsx:1-32` — inline dismissable error banner
+  for network/backend failures.
+- `src/components/ui/{button,card,input,textarea,badge,label}.tsx` —
+  hand-rolled shadcn-style primitives (5-30 LOC each) so the build does
+  not depend on a successful `npx shadcn@latest add` registry round-trip.
+  Per task fallback clause: shadcn registry was NOT invoked; primitives
+  are inlined with the same prop shape (variant/size/className via cn()
+  helper at `src/lib/utils.ts`).
+
+### (c) API client + mock mode
+
+`src/lib/api.ts:1-103` reads `import.meta.env.VITE_API_URL` (default
+`http://localhost:8000`) and `VITE_MOCK_API` (default `false`). Mock
+returns canned 9-attacker response after 2 s delay; verdict varies
+deterministically by `code.length % 9` so dev can flip seeds to render
+all three (verified / risky / blocked) verdict branches without
+backend running. `.env.example:1-9` documents the toggles.
+
+### (d) Tauri v2 desktop shell
+
+Scaffold adapted from `github.com/SuarezPM/Apohara` `packages/desktop/`
+(MIT-licensed; rebranded to Apache-2.0 Apohara Inti):
+
+- `src-tauri/Cargo.toml` — crate `apohara-inti-desktop` v0.1.0,
+  Apache-2.0, tauri 2.x.
+- `src-tauri/tauri.conf.json` — `productName: "Apohara Inti"`,
+  identifier `ai.apohara.inti`, devUrl `http://localhost:5173`,
+  frontendDist `../dist`, CSP allows localhost:8000 + production
+  apohara-inti.dev `connect-src`.
+- `src-tauri/src/lib.rs` — Tauri builder with one stub command
+  `get_app_version()` returning `CARGO_PKG_VERSION`. Wired to
+  `tauri::generate_handler!`. `main.rs` is the conventional
+  `windows_subsystem` shim.
+- `src-tauri/icons/` — 7 icon variants copied from upstream
+  Apohara orchestrator (32, 64, 128, 128@2x png, icon.png/ico/icns).
+- US-007 does NOT build the Rust binary (no `cargo tauri build` run);
+  deployment story US-010 owns the actual build. The config is in
+  place and matches Tauri v2 schema.
+
+### (e) Screenshot evidence
+
+`docs/ui-screenshots/main-view-empty.png` — 1280x720 viewport, empty
+state, 262 kB. Shows: header with pitch sentence + URL chip; API key
+input + code textarea side-by-side; verify button (disabled); Memory
+Plane indicator with INV-15 badge; first row of the attacker grid
+(Claude Opus 4.7, GPT-5.5, DeepSeek V4 Pro).
+
+`docs/ui-screenshots/main-view-full.png` — 1280x1600 tall capture,
+empty state, 468 kB. Shows the complete 3x3 grid (9 vendor cards)
+plus footer for full visual regression baseline.
+
+Captures generated headless via `google-chrome --headless=new
+--no-sandbox --window-size=1280,720 --screenshot=... http://localhost:4173/`
+against `npm run preview`-served `dist/`.
+
+### (f) Verification commands run
+
+```bash
+cd packages/frontend
+npm install                       # exits 0, 246 packages
+npx tsc --noEmit                  # exits 0
+npx eslint . --max-warnings=0     # exits 0
+npm run build                     # exits 0, dist/ populated
+npm run preview &                 # serves on :4173
+curl -sf http://localhost:4173/   # exits 0, returns index.html
+```
+
+### (g) Out of scope (deferred to US-010)
+
+- `cargo tauri build` to produce `.deb`/`.AppImage`/`.dmg`/`.msi`.
+- Live backend integration test (currently exercised via VITE_MOCK_API).
+- Vitest component tests (3-5 optional per task brief; deferred).
+- Production deployment to apohara-inti.dev (US-010).
