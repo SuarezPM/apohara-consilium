@@ -888,6 +888,13 @@ default retention. Pablo can `brev start apohara-h100-bench2` to
 resume the same setup if a re-run is needed (no re-download — the
 model + venv are on the instance's persistent volume).
 
+### Follow-up
+
+The MI300X side of US-014 (the paper's 3.55× INT4 codec claim) is
+closed in entry **US-MI-014** below — a real Hot Aisle MI300X
+refresh of the four canonical Wave B scripts, committed to
+`Apohara_Context_Forge` at `fb8dc42`.
+
 
 ---
 
