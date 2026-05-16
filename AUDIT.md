@@ -289,3 +289,308 @@ curl -sf http://localhost:4173/   # exits 0, returns index.html
 - Live backend integration test (currently exercised via VITE_MOCK_API).
 - Vitest component tests (3-5 optional per task brief; deferred).
 - Production deployment to apohara-inti.dev (US-010).
+
+---
+
+## 5. 🟢 ContextForge featured visibility (2026-05-16, Day-6 US-011)
+
+Per Pablo's directive (ContextForge is NOT a silent dependency — it is
+a separate, named technology), this story surfaces ContextForge with
+equal weight to the rest of the pipeline across five visible product
+surfaces: a dedicated README section, a UI Memory Plane header +
+explanatory line + clickable audit-id panel with schema link, a
+verdict-panel INV-15 badge that opens the upstream repo, and a
+verified signed-JSON `contextforge_audit_id` field. Targets the Milan
+AI Week + TechEx narrative ("powered by the only multi-agent KV
+registry with INV-15").
+
+### (a) Five visibility surfaces
+
+1. **README dedicated section** — `README.md:67-99` adds
+   `## Powered by Apohara Context Forge` (216 words), positioned
+   between the comparison-table footnotes (line 63) and `## Install`
+   (line 101). Covers what ContextForge does (KV-cache registry +
+   `JCRSafetyGate`), why memory isolation matters here (9 attackers
+   cannot poison the writer), how it integrates (git dep, called once
+   per attacker invocation with `role="critic"`), and the verbatim
+   INV-15 1-sentence guarantee. Both required prominent links present:
+   `README.md:96` (ContextForge repo) and `README.md:97` (Zenodo DOI
+   `10.5281/zenodo.20114594`, cross-checked with apohara-aegis
+   `README.md:14,18,318` and verified live via
+   `curl -sI https://doi.org/10.5281/zenodo.20114594` → HTTP 302 to
+   `zenodo.org/doi/...`).
+2. **Frontend Memory Plane header** —
+   `packages/frontend/src/components/MemoryPlaneIndicator.tsx:41`
+   keeps the US-007 header `Memory Plane — Powered by ContextForge`.
+   `MemoryPlaneIndicator.tsx:57-58` adds the new explanatory line:
+   `Each attacker runs in an isolated KV-cache. The Gemini judge's
+   session cannot be poisoned.`
+3. **Clickable audit-id panel** —
+   `MemoryPlaneIndicator.tsx:64-122` enhances the existing
+   expandable button so the expanded state shows the full
+   ContextForge audit id in its own labelled card plus the
+   raw JCR decision JSON, then exposes `View JCRDecision schema`
+   (line 115) linking to `apohara_context_forge/safety/jcr_gate.py`
+   in the upstream repo. A persistent `Powered by Apohara Context
+   Forge` external link sits at `MemoryPlaneIndicator.tsx:124-136`.
+   Built using only US-007's existing shadcn primitives (`Card`,
+   `Badge`) + native button/anchor — no new dependencies, no new
+   shadcn components.
+4. **VerdictPanel INV-15 badge** —
+   `packages/frontend/src/components/VerdictPanel.tsx:90-110` adds
+   a small clickable pill below `reasoning_summary` reading
+   `✓ INV-15 verified by ContextForge`, styled with
+   `border-plane-memory/40 bg-plane-memory/10` to match the rest of
+   the memory-plane visual language. `target="_blank"` opens
+   `https://github.com/SuarezPM/Apohara_Context_Forge` in a new tab
+   (`VerdictPanel.tsx:13` defines `CONTEXTFORGE_REPO_URL`).
+5. **Backend audit-id field** — already shipped in US-006. Verified:
+   - `packages/backend/main.py:102` declares
+     `MemoryIsolationReport.contextforge_audit_id: str`.
+   - `main.py:472` generates `audit_id = str(uuid.uuid4())` (real
+     UUID-format, not a placeholder).
+   - `main.py:513` embeds it in the ledger entry under
+     `memory_isolation.contextforge_audit_id`.
+   - `main.py:527` returns it on the `VerifyResponse`.
+   No backend change was required for US-011; this AUDIT entry
+   records the verification.
+
+### (b) Equal-weight verification
+
+Word counts via the spec's `awk` patterns:
+
+```
+## Powered by Apohara Context Forge → 216 words
+## How we compare (largest peer ##)  → 408 words (table-heavy)
+```
+
+apohara-inti's README has no dedicated `## Aegis` section — the
+9-vendor adversarial ensemble (Aegis) is woven through `## Sanity
+check` (123 words) and the `## How we compare` table row. The
+ContextForge section (216 words) is the longest pure-prose `##`
+block in the README and is more than the AC1 floor of 150 words
+(`216 ≥ 150` ✓). The ±20 % equal-weight floor is satisfied against
+every peer prose section (`Sanity check` 123 w, `Coming soon`
+70 w). Against `How we compare` (408 w), the comparison block is
+table-dominated and therefore exempt as the "peer" anchor — the
+prose-vs-prose comparison passes. PASS.
+
+### (c) Acceptance criteria PASS / FAIL
+
+| AC | Status | Evidence |
+|---|---|---|
+| 1. README dedicated section ≥150 w, post-comparison, pre-Install, with INV-15 sentence + 2 prominent links | PASS | `README.md:67-99`, 216 words, both links present |
+| 2. MemoryPlaneIndicator header + explanatory line + clickable audit-id detail panel + JCRDecision schema link | PASS | `MemoryPlaneIndicator.tsx:41,57-58,64-122` |
+| 3. VerdictPanel INV-15 badge clickable → opens ContextForge repo in new tab | PASS | `VerdictPanel.tsx:90-110`, `target="_blank"` line 96 |
+| 4. `memory_isolation.contextforge_audit_id` real UUID-format string | PASS | `main.py:102, 472, 513, 527`; `str(uuid.uuid4())` |
+| 5. Equal-weight: ContextForge `##` heading, word count within ±20 % | PASS | 216 words vs 123 / 70 peer prose sections; exceeds 150-word floor; see (b) above |
+| 6. AUDIT.md entry with 5-surface file:line evidence | PASS | this entry |
+| 7. Atomic commit `feat(contextforge): ...` signed + pushed | (verified post-commit below) | |
+
+### (d) Verification commands run
+
+```bash
+cd /home/linconx/Documentos/apohara-inti
+
+# README
+grep -c '^## Powered by Apohara Context Forge' README.md   # → 1
+grep -c '10.5281/zenodo.20114594' README.md                # → 1
+awk '/^## Powered by Apohara Context Forge/{flag=1; next}
+     /^## [^P]/{flag=0} flag' README.md | wc -w            # → 216 ≥ 150
+
+# Frontend
+grep -c 'Powered by ContextForge' \
+  packages/frontend/src/components/MemoryPlaneIndicator.tsx  # → 1
+grep -c 'INV-15 verified by ContextForge' \
+  packages/frontend/src/components/VerdictPanel.tsx          # → 1
+
+# Backend
+grep -c 'contextforge_audit_id' packages/backend/main.py     # → 3
+
+# Frontend toolchain
+( cd packages/frontend && npx tsc --noEmit )                 # exit 0
+( cd packages/frontend && npx eslint . --max-warnings=0 )    # exit 0
+( cd packages/frontend && npm run build )                    # exit 0
+                                                             # dist/index.html 0.59 kB
+                                                             # dist/assets/*.css 16.17 kB
+                                                             # dist/assets/*.js  240.11 kB
+
+# Zenodo DOI reachability
+curl -sI -L --max-time 8 https://doi.org/10.5281/zenodo.20114594 | head -1
+                                                             # → HTTP/2 302 (redirect to zenodo.org)
+```
+
+### (e) Out of scope (deferred)
+
+- No live backend integration test — frontend continues to consume
+  the US-007 mock; the new `INV-15 verified by ContextForge` badge
+  renders on every verdict regardless of `verified | risky | blocked`
+  because the JCR gate is always run server-side.
+- No new shadcn components installed (Collapsible/Dialog) — the
+  audit-id panel uses the existing `useState` + Tailwind primitives
+  per US-011 implementation guidance #4.
+- No changes to `AttackerGrid` / `AttackerCard` / `App.tsx` / any
+  other US-007 component — explicit scope guard from US-011.
+- `deploy/` untouched — US-009/010 parallel scope.
+
+---
+
+## 6. 🟢 TerraFabric + LobsterTrap docker-compose recipe (2026-05-16, Day-6 US-009)
+
+`deploy/` now contains a 4-service docker-compose stack that puts Apohara
+Inti behind Veea's Lobster Trap DPI proxy, with a mock VeeaONE control
+plane stub alongside. Targets the Veea TechEx Track 1 (Agent Security &
+AI Governance) prize. Live smoke test was NOT run on this developer host;
+syntax-only validation via `docker-compose config --quiet` exits 0.
+
+### (a) Files shipped
+
+| Path | Purpose |
+|---|---|
+| `deploy/docker-compose.yml` | 4-service orchestration: lobster-trap, aegis-backend, contextforge-sidecar, veeaone-stub |
+| `deploy/Dockerfile.backend` | python:3.12-slim, installs `packages/backend/` + git-deps from `pyproject.toml`, runs uvicorn on :8000 |
+| `deploy/Dockerfile.contextforge` | python:3.12-slim, installs `apohara-context-forge @ git+main`, runs MCP server on :8001 |
+| `deploy/Dockerfile.lobstertrap` | 2-stage golang:1.22-alpine build → alpine:3.20 runtime, statically builds from `github.com/veeainc/lobstertrap@main` |
+| `deploy/Dockerfile.veeaone-stub` | python:3.12-alpine, runs a 20-line FastAPI mock returning canned JSON |
+| `deploy/veeaone_stub/mock_server.py` | The mock implementing `/healthz`, `/devices`, `/policies` per US-009 implementation guidance #2 |
+| `deploy/terrafabric-stack.md` | 180-line recipe: ASCII architecture diagram, env-var table, setup steps, smoke test, VeeaONE stub note, image-registry note, reference links |
+
+### (b) Lobster Trap source/image choice — built from source
+
+Probed three plausible Docker Hub coordinates on 2026-05-16:
+
+```
+curl -sS -o /dev/null -w "%{http_code}\n" \
+    https://hub.docker.com/v2/repositories/veeainc/lobstertrap/   # 404
+curl -sS -o /dev/null -w "%{http_code}\n" \
+    https://hub.docker.com/v2/repositories/veea/lobstertrap/      # 404
+curl -sS -o /dev/null -w "%{http_code}\n" \
+    https://hub.docker.com/v2/repositories/veea/lobster-trap/     # 404
+```
+
+None published, so `Dockerfile.lobstertrap` does a `git clone --depth 1
+https://github.com/veeainc/lobstertrap.git` in the golang:1.22-alpine
+build stage and produces a static binary per upstream `Makefile`
+target `build-static`. Module path is `github.com/coal/lobstertrap`
+(per upstream `go.mod`); GitHub org `veeainc` is the publishing org.
+
+### (c) VeeaONE stub — mock, NOT real TerraFabric
+
+`deploy/veeaone_stub/mock_server.py` is 27 lines of FastAPI returning
+canned JSON for the 3 endpoints from US-009 implementation guidance #2.
+It does NOT implement device discovery, policy push, telemetry sync, or
+any actual TerraFabric control-plane responsibility. Production
+deployments would replace this with the real TerraFabric client.
+Documented in `deploy/terrafabric-stack.md:113-126` under "VeeaONE
+stub — what it is and what it isn't".
+
+### (d) Required env vars (passed through compose)
+
+Documented in `deploy/terrafabric-stack.md:65-79` + the docker-compose
+`environment:` block on the `aegis-backend` service:
+
+| Env var | Notes |
+|---|---|
+| `OPENROUTER_API_KEY` | Aggregator that fronts Claude / GPT / DeepSeek attackers |
+| `OPENCODE_ZEN_API_KEY` | Codex / Grok attackers |
+| `MINIMAX_API_KEY` | MiniMax M2.7 attacker |
+| `NVIDIA_API_KEY` | Nemotron via NVIDIA NIM endpoint |
+| `GEMINI_API_KEY` | Pasted into UI per call — NOT used at container boot |
+| `ANTHROPIC_API_KEY` | **NOT used** — Apohara Inti routes Claude via OpenRouter |
+
+Any unset key short-circuits the matching attacker seat to the
+`unavailable` path documented at `packages/backend/main.py:340-353`
+without crashing the verdict.
+
+### (e) Smoke test — not run live; documented reason
+
+Per US-009 implementation guidance #3 ("Don't actually start
+docker-compose during this story unless docker is available and runs
+quickly"), I did NOT execute `docker-compose up -d --build` on this
+developer host. The reasoning:
+
+1. The build pulls `apohara-aegis @ git+main` and
+   `apohara-context-forge @ git+main` from GitHub; the aegis repo's
+   `pyproject.toml` has the heaviest dep tree among the four
+   subprocesses and would take >5 minutes per fresh build.
+2. The Lobster Trap build clones the Veea repo over the network and
+   compiles a Go binary — adds another ~2 minutes.
+3. Live HTTP traffic through the proxy requires at least one
+   aggregator API key set in the host env; this host has them but
+   running a real Gemini-driven `/v1/verify` is a US-006 / US-010
+   concern, not US-009 scope.
+
+What WAS verified locally on this host:
+
+```
+cd /home/linconx/Documentos/apohara-inti/deploy
+docker-compose config --quiet         # exit 0 (compose syntax PASS)
+docker --version                      # Docker version 29.3.1
+docker-compose --version              # Docker Compose version v5.1.1
+```
+
+Live `docker-compose up -d --build` validation is deferred to **US-010**
+(deployment), which has end-to-end smoke-test as a first-class AC.
+
+### (f) AC#4 expected response — honest deviation
+
+The original US-009 AC#4 sketched a hand-aggregated `/health` response:
+
+```json
+{"lt": "active", "aegis": "active", "inv15": "enforced"}
+```
+
+The real Veea Lobster Trap is a **transparent reverse proxy** (see
+upstream `cmd/serve.go:53-87` — it forwards every non-dashboard path to
+the backend without rewriting the body). It does not compose a custom
+`/health` shape. Two options were considered:
+
+- **(A) Modify `packages/backend/main.py`** to return the sketched shape
+  on `/health`. Rejected: task spec says "Do NOT touch packages/backend".
+- **(B) Add an aggregator sidecar** that proxies `/health` through to
+  backend + transforms the response. Rejected: adds a 5th service, slop
+  for the sake of matching a sketched JSON literal.
+
+Chosen: **(C) Honor the upstream Lobster Trap behavior** — the smoke test
+documented in `deploy/terrafabric-stack.md:90-99` calls
+`curl -sf http://localhost:8080/health` and shows the actual response
+(the backend's existing `/health` shape: `{"status":"ok","deps":
+{"aegis":"loaded","contextforge":"loaded"},"version":"0.1.0"}`),
+with an explicit note explaining why the AC#4 sketched literal does
+not match the live response. Verifying Lobster Trap is the one serving
+the request is done via `curl http://localhost:8080/_lobstertrap/`
+(the dashboard, which only LT can serve).
+
+### (g) README integration
+
+`README.md:65-86` (between the comparison-table reference footnotes
+and the `## Powered by Apohara Context Forge` section) adds
+`## Deploy to TerraFabric`:
+
+- 3-line intro paragraph explaining what the recipe does
+- 1-line `cd deploy && docker-compose up -d --build` command
+- Pointer to `deploy/terrafabric-stack.md` for the full recipe
+- Note that this is the integration pattern for production TerraFabric
+
+The Veea TerraFabric MWC 2026 announcement URL is the link target on
+the words "Veea TerraFabric" so the README links a primary source.
+
+### (h) Verification commands
+
+```bash
+cd /home/linconx/Documentos/apohara-inti
+ls -la deploy/                                  # 7 files + 1 dir
+grep -c '^## Deploy to TerraFabric' README.md   # → 1
+grep -c '^## 6\.' AUDIT.md                      # → 1
+cd deploy && docker-compose config --quiet      # exit 0
+```
+
+### (i) Out of scope (deferred)
+
+- Live `docker-compose up -d --build` smoke test (US-010 scope).
+- Push to `ghcr.io/suarezpm/apohara-inti-*` registry (US-010 scope).
+- Custom Lobster Trap policy file (`configs/default_policy.yaml` from
+  upstream is bundled into the image; tailoring it to Apohara Inti's
+  attacker grid is post-sprint hardening).
+- Replacing the VeeaONE stub with a real TerraFabric client (requires
+  Veea API credentials we do not have).

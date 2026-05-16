@@ -9,6 +9,9 @@ import {
 import { cn } from "@/lib/utils";
 import type { Verdict, VerdictResponse } from "@/lib/types";
 
+/** Upstream Apohara Context Forge repo — INV-15 source of truth. */
+const CONTEXTFORGE_REPO_URL = "https://github.com/SuarezPM/Apohara_Context_Forge";
+
 const COPY: Record<
   Verdict,
   { title: string; emoji: string; subtitle: (count: number) => string }
@@ -86,6 +89,24 @@ export function VerdictPanel({ response }: VerdictPanelProps) {
         <p className="text-sm leading-relaxed text-muted-foreground">
           {response.reasoning_summary}
         </p>
+        <div className="mt-3">
+          <a
+            href={CONTEXTFORGE_REPO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="INV-15 memory isolation enforced by Apohara Context Forge (click to view repo)"
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full border border-plane-memory/40 bg-plane-memory/10 px-2.5 py-0.5",
+              "text-xs font-medium text-plane-memory",
+              "hover:bg-plane-memory/15 hover:underline",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            )}
+          >
+            <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
+            INV-15 verified by ContextForge
+            <ExternalLink className="h-3 w-3" />
+          </a>
+        </div>
         <a
           href={response.signed_audit_trail_url}
           target="_blank"

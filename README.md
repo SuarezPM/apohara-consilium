@@ -64,6 +64,40 @@ Apohara Inti's cross-vendor attacker ensemble targets.
 
 ---
 
+## Powered by Apohara Context Forge
+
+Apohara Inti's memory plane runs on
+[**Apohara Context Forge**](https://github.com/SuarezPM/Apohara_Context_Forge),
+the only open-source multi-agent KV-cache registry for vLLM that ships
+with a formal safety invariant — `INV-15` — enforced at every judge
+call. ContextForge is a distinct upstream project (Apache-2.0,
+hardware-validated on AMD Instinct MI300X, V7.0.0-rc.2); Inti imports
+it as a git dependency, not as a vendored copy.
+
+**What it does.** ContextForge is a KV-cache coordination layer for
+vLLM. It gives each agent in a multi-agent pipeline an isolated
+KV-cache state, then proves the isolation held with a signed audit
+trail. The `JCRSafetyGate` (Judge–Critic–Responder gate) is the
+runtime entry point: every attacker invocation in Inti's `/v1/verify`
+pipeline calls it once with `role="critic"`, and the gate's decision —
+plus a UUID-format audit id — is attached to the verdict JSON before
+it is signed into the SHA-256 ledger.
+
+**Why memory isolation matters here.** Inti spins up nine adversarial
+attacker agents against every Gemini-written review. Without
+isolation, a poisoned attacker prompt could mutate the writer's
+KV-cache state and propagate to subsequent calls — a class of
+indirect prompt-injection attack. **INV-15 mathematically guarantees
+that judge agents cannot reuse KV-cache state derived from candidate
+agents, preventing a class of indirect prompt injection attacks.**
+
+**Read more.**
+
+- [View the Apohara Context Forge repo](https://github.com/SuarezPM/Apohara_Context_Forge)
+- [Read the INV-15 paper (Zenodo DOI 10.5281/zenodo.20114594)](https://doi.org/10.5281/zenodo.20114594)
+
+---
+
 ## Install
 
 Coming in US-006 / US-007. Not yet installable.
