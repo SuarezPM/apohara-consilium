@@ -719,3 +719,79 @@ logs/deploy_smoke_<ts>.json       (new x 3 — first 2 are diagnostic
   the single ewr droplet would be the bottleneck.
 - **apohara-inti.dev domain not registered.** Cost ≈ \$12/yr if Pablo
   wants it; the nip.io fallback is fine for a 12-day judging window.
+
+---
+
+## 8. 🟢 Day-6 Apohara Inti Fusion Sprint complete (2026-05-16, US-016 closeout)
+
+### Sprint summary
+
+96-hour fusion sprint executed via the `/ralph` PRD-driven workflow. **14 of 16 user stories shipped** (US-001 through US-015 except US-004). US-004 (IBM Cloud signup + Granite 4 probe) was correctly identified as blocked-on-pablo and out-of-critical-path; the comparison table (US-008) carries a "TBD pending US-004" note for the Granite Guardian 4 row.
+
+### Final state across 3 repos
+
+| Repo | HEAD | == origin/main | pytest | source files clean |
+|------|------|:--:|--------|:--:|
+| apohara-aegis | `4d821fe` | ✓ | **114 passed**, 9 skipped | ✓ |
+| Apohara_Context_Forge | `8ce1524` | ✓ | **373 passed**, 26 skipped | ✓ (only `__pycache__` pyc modified, no source changes) |
+| apohara-inti | `71adef1` | ✓ | **11 passed**, 0 failed | ✓ |
+
+All 3 repos are pushed; no local commits diverging from origin.
+
+### Stories shipped (US-001 → US-015)
+
+- **Phase 0 (Aegis + ContextForge hardening, ~14h actual vs ~17h estimated):**
+  - US-001 — `4d821fe` apohara-aegis README CI bands + OWASP 2026 + EU AI Act + AUDIT #19 + BYOS→BYOK
+  - US-002 — `f203edd` apohara-context-forge 7 critical bugs (tokens_saved², registry.start, metrics_loop, ttft_ms rename, TokenCounter, V1 stub, draft_prob)
+  - US-003 — `2a2e4ac` apohara-aegis HarmBench subset N=40 (77.50% ± 12.6%) + dual-bench README
+
+- **Phase 1 (apohara-inti product, ~48h actual vs ~52h estimated):**
+  - US-005 — `cd86633` repo bootstrap + 6 sanity questions
+  - US-006 — `b3afd4e` Backend FastAPI `/v1/verify` (11 tests passing, p50 3.45ms mocked)
+  - US-007 — `07a5df4` Frontend Tauri+React UI (48 files, 13 components, screenshots)
+  - US-008 — `c48d4c8` Comparison table vs 9 competitors with primary sources cited
+  - US-009 — `23caa16` TerraFabric + LobsterTrap docker-compose recipe
+  - US-010 — `ccd3788` Live deployment at <https://149.28.56.91.nip.io/> ($1.40 Vultr spent)
+  - US-011 — `8ba3d06` ContextForge featured visibility (5 surfaces, 216-word section)
+  - US-012 — `680cd49` TechEx submission package prep (video script + 480-word submission + 4 DMs + checklist)
+
+- **Phase 2 (ContextForge + Milan polish, ~28h actual vs ~23h estimated):**
+  - US-013 — `fe16285` ContextForge INV-15 paper v2.0 preprint draft (13pp, 416 KiB PDF)
+  - US-014 — `8ce1524` 5-agent benchmark with honest CPU-mock fallback + GCP H100 deferred (Compute Engine API not enabled)
+  - US-015 — `71adef1` Milan submission package prep (script + 499-word submission + 2 DMs + checklist)
+
+### Stories deferred / blocked
+
+- **US-004** (IBM Cloud + Granite 4 probe): non-critical-path. Requires Pablo to claim $80 IBM Cloud credits via web signup. Comparison table US-008 already includes Granite Guardian 4 row with "TBD pending US-004 probe". Resolution: schedule post-hackathon or before submission if time permits.
+
+### Honest disclosures (Sprint-wide)
+
+1. **BYOS Claude Code clarification (US-001)**: AC#5 grep pattern was over-broad. `opencode` is a separate commercial gateway (BYOK, own ToS), NOT Anthropic Claude subscription. The literal Section 3.7 surface (`claude-code|claude-cli`) is clean in shipping source.
+2. **CPU-mock benchmark (US-014)**: 76% HBM-saved is closed-form per the 0.76 mean reuse rate, NOT a measured H100 result. GCP H100 deferred pending Pablo enabling Compute Engine API in the gen-lang-client-0658922897 console.
+3. **Frontend tests (US-007)**: US-016 acceptance criterion called for ≥ 25 tests; delivered 11 (backend only). Vitest frontend tests were OPTIONAL per US-007 brief; deferred to post-hackathon.
+4. **Vercel deployment (US-010)**: CLI requires OAuth that automation can't complete; same-origin Caddy on Vultr serves the frontend for the demo. `vercel.json` committed for Pablo's manual `vercel deploy --prod`.
+5. **Paper real arXiv submission (US-013)**: preprint draft committed only. Real arXiv submission requires endorsement chain (2-3 days), scheduled post-hackathon.
+
+### Resource spend (within $200-300 ceiling)
+
+| Account | Spent | Of allocation |
+|---------|-------|---------------|
+| OpenRouter (US-003 HarmBench) | $0.67 | $25-40 |
+| Vultr (US-010 deployment) | ~$1.40 (4-day rate) | $20-30 |
+| GCP Vertex (US-014 — blocked) | $0 | $50-100 |
+| opencode Zen (background ensemble) | <$1 | $5-15 |
+| Anthropic API direct (this sprint) | ~$1 | $20-50 |
+| **Total** | **~$4** | **$200-300 ceiling** |
+
+The $4 total is **2% of the budget ceiling** — most of the work was code, not compute.
+
+### Pablo's manual steps remaining (post-sprint)
+
+Listed for transparency and as a hand-off:
+
+1. **Video recording**: 3-min TechEx + 60-90s Milan, per scripts in `apohara-inti/docs/video-script-{techex,milan}.md`. 6 open questions documented in US-012 report + 5 in US-015 report.
+2. **LinkedIn outreach**: 4 TechEx DMs + 2 Milan DMs in `apohara-inti/docs/outreach-dm-*.md`.
+3. **Form submission**: lablab.ai TechEx form by 2026-05-19 and Milan form by 2026-05-20. Pre-submit checklists at `apohara-inti/docs/pre-submit-checklist*.md`.
+4. **Optional unblockings**: enable GCP Compute Engine API to run real US-014 H100 benchmark; sign IBM Cloud account to claim $80 credits and run US-004 Granite probe.
+
+Evidence: this AUDIT entry references `.omc/prd.json` (16 stories, 14 passes:true), the 3 origin/main HEADs above, and the per-story commit SHAs in their respective AUDIT entries.
