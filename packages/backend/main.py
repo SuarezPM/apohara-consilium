@@ -45,7 +45,6 @@ try:
     from apohara_aegis import __version__ as _aegis_version
     from apohara_aegis.multi_judge import (
         EnsembleJudge,
-        EnsembleVerdict,
         JudgeVerdict,
         make_default_adapters,
     )
