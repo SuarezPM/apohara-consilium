@@ -138,6 +138,9 @@ app = FastAPI(
 # (comma-separated) without code changes — useful when the Vercel
 # preview URL rotates per PR.
 _DEFAULT_CORS_ORIGINS = [
+    "https://apohara.dev",
+    "https://www.apohara.dev",
+    "https://apohara.vercel.app",
     "https://apohara-inti.vercel.app",
     "https://apohara-inti.netlify.app",
     "http://localhost:5173",

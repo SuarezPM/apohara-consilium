@@ -171,15 +171,14 @@ write_files:
         encode gzip
         # Forward everything to uvicorn on the loopback.
         reverse_proxy 127.0.0.1:8000
-        # Sensible defaults for an API endpoint.
+        # Sensible defaults for an API endpoint. CORS is owned by FastAPI's
+        # CORSMiddleware (packages/backend/main.py) — it already echoes the
+        # request Origin if allowed, which is what the browser needs. Adding
+        # a hardcoded ACAO here clobbers that and breaks www.apohara.dev.
         header {
-          # Tighten clickjacking / MIME-sniffing surface.
           X-Frame-Options "DENY"
           X-Content-Type-Options "nosniff"
           Referrer-Policy "strict-origin-when-cross-origin"
-          Access-Control-Allow-Origin "https://apohara.dev"
-          Access-Control-Allow-Methods "GET, POST, OPTIONS"
-          Access-Control-Allow-Headers "Content-Type, Authorization"
         }
         log {
           output file /var/log/caddy/access.log {
