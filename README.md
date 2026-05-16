@@ -30,6 +30,20 @@ Backend health probe: `curl -sf https://149.28.56.91.nip.io/health`.
 
 ---
 
+## Milan AI Week — multi-agent inference angle
+
+The same stack also answers the **AI Agent Olympics** theme (Milan AI
+Week 2026, prize $28K+, deadline 2026-05-20): ContextForge is the
+multi-agent KV-cache registry foundation that lets 5+ agents share a
+RAG prefix without leaking KV state between writer and critic. The
+Milan benchmark (`logs/milan_5agent_benchmark_1778943206.json` in the
+[sister repo](https://github.com/SuarezPM/Apohara_Context_Forge))
+reports **76% HBM saved per the closed-form model (CPU-mock fallback,
+H100 deferred)** — full honesty disclosure in the JSON `honesty_note`.
+13-page paper preprint at [`papers/inv15_v2.pdf`](https://github.com/SuarezPM/Apohara_Context_Forge/blob/main/papers/inv15_v2.pdf).
+
+---
+
 ## Sanity check
 
 - **What is it?** — Cross-AI code reviewer where Gemini writes/audits and 9 frontier vendors adversarially attack the output before merge.
