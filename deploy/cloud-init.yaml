@@ -1,0 +1,205 @@
+#cloud-config
+# Apohara Inti — TechEx 2026 backend demo droplet bootstrap.
+#
+# Runs on first boot of the Ubuntu 24.04 instance provisioned by
+# deploy/vultr_provision.py. Idempotent — safe to re-run.
+#
+# Cost: ~$0.20/day at 1 vCPU / 2 GB (vc2-1c-2gb). Tear down via
+# `python3 deploy/vultr_provision.py --destroy` when the demo window
+# closes.
+#
+# Stack (no docker — direct venv + systemd + Caddy):
+#   - apohara-inti repo cloned to /opt/apohara-inti
+#   - Python 3.12 venv at /opt/apohara-inti/.venv with the backend
+#     package installed (which pulls apohara-aegis + apohara-context-forge
+#     transitively via git URLs in pyproject.toml).
+#   - systemd unit `apohara-inti.service` runs uvicorn on 127.0.0.1:8000.
+#   - Caddy reverse-proxies https://<IP>.nip.io/ -> uvicorn with
+#     auto-TLS via Let's Encrypt (no DNS configuration needed).
+#
+# Vendor API keys are written to /opt/apohara-inti/.env (root:root 0600)
+# from placeholders substituted by vultr_provision.py at provision
+# time. The literal key values never live on the box's filesystem
+# outside that file.
+
+disable_root: true
+ssh_pwauth: false
+
+users:
+  - name: inti
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    groups: [sudo]
+    lock_passwd: true
+    ssh_authorized_keys:
+      - INTI_SSH_PUBKEY_PLACEHOLDER
+
+package_update: true
+package_upgrade: false
+
+packages:
+  - ca-certificates
+  - curl
+  - git
+  - gnupg
+  - lsb-release
+  - ufw
+  - python3.12
+  - python3.12-venv
+  - python3-pip
+  - debian-keyring
+  - debian-archive-keyring
+  - apt-transport-https
+
+write_files:
+  - path: /opt/inti/.bootstrap.sh
+    permissions: "0755"
+    content: |
+      #!/bin/bash
+      # Bootstrap the Apohara Inti backend stack. Idempotent.
+      set -euo pipefail
+
+      LOG=/var/log/apohara-inti-bootstrap.log
+      exec >>"$LOG" 2>&1
+      echo "=== inti-bootstrap start: $(date -Iseconds) ==="
+
+      # ----- 1. Install Caddy 2.x (official Cloudsmith repo) ----------------
+      if ! command -v caddy >/dev/null 2>&1; then
+        echo "[1/6] Installing Caddy 2..."
+        curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' \
+          | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+        curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' \
+          | tee /etc/apt/sources.list.d/caddy-stable.list
+        apt-get update -y
+        apt-get install -y caddy
+      else
+        echo "[1/6] Caddy already installed; skipping."
+      fi
+
+      # ----- 2. Clone apohara-inti repo --------------------------------------
+      if [ ! -d /opt/apohara-inti/.git ]; then
+        echo "[2/6] Cloning apohara-inti..."
+        rm -rf /opt/apohara-inti
+        git clone --depth=1 https://github.com/SuarezPM/apohara-inti \
+          /opt/apohara-inti
+      else
+        echo "[2/6] Repo already cloned; pulling latest main..."
+        git -C /opt/apohara-inti fetch origin main || true
+        git -C /opt/apohara-inti reset --hard origin/main || true
+      fi
+
+      # ----- 3. Create venv + install backend (pulls aegis + ctxforge) -------
+      echo "[3/6] Creating venv + installing backend..."
+      if [ ! -d /opt/apohara-inti/.venv ]; then
+        python3.12 -m venv /opt/apohara-inti/.venv
+      fi
+      /opt/apohara-inti/.venv/bin/pip install --upgrade pip
+      /opt/apohara-inti/.venv/bin/pip install -e \
+        /opt/apohara-inti/packages/backend[dev]
+
+      # ----- 4. Write vendor-keys .env (root:root 0600) ----------------------
+      # Placeholders are substituted by vultr_provision.py from the
+      # operator's environment.d file BEFORE the YAML is base64-encoded
+      # and shipped to Vultr. The literal values only exist in the
+      # base64 user_data blob + this 0600 file on the box.
+      cat >/opt/apohara-inti/.env <<EOF
+      OPENROUTER_API_KEY=OPENROUTER_API_KEY_PLACEHOLDER
+      OPENCODE_ZEN_API_KEY=OPENCODE_ZEN_API_KEY_PLACEHOLDER
+      MINIMAX_API_KEY=MINIMAX_API_KEY_PLACEHOLDER
+      GROQ_API_KEY=GROQ_API_KEY_PLACEHOLDER
+      NVIDIA_API_KEY=NVIDIA_API_KEY_PLACEHOLDER
+      ANTHROPIC_API_KEY=ANTHROPIC_API_KEY_PLACEHOLDER
+      APOHARA_INTI_CORS_ORIGINS=APOHARA_INTI_CORS_ORIGINS_PLACEHOLDER
+      EOF
+      chown root:root /opt/apohara-inti/.env
+      chmod 0600 /opt/apohara-inti/.env
+
+      # ----- 5. Discover public IP + write Caddyfile -------------------------
+      PUBLIC_IP="$(curl -fsS -m 10 https://api.ipify.org || \
+                   curl -fsS -m 10 https://ifconfig.me || \
+                   hostname -I | awk '{print $1}')"
+      echo "[4/6] Public IP detected: $PUBLIC_IP"
+
+      cat >/etc/caddy/Caddyfile <<EOF
+      ${PUBLIC_IP}.nip.io {
+        # Compression for JSON responses.
+        encode gzip
+        # Forward everything to uvicorn on the loopback.
+        reverse_proxy 127.0.0.1:8000
+        # Sensible defaults for an API endpoint.
+        header {
+          # Tighten clickjacking / MIME-sniffing surface.
+          X-Frame-Options "DENY"
+          X-Content-Type-Options "nosniff"
+          Referrer-Policy "strict-origin-when-cross-origin"
+        }
+        log {
+          output file /var/log/caddy/access.log {
+            roll_size 50mb
+            roll_keep 5
+          }
+          format json
+        }
+      }
+      EOF
+      systemctl reload caddy || systemctl restart caddy
+
+      # ----- 6. systemd unit for uvicorn -------------------------------------
+      cat >/etc/systemd/system/apohara-inti.service <<'EOF'
+      [Unit]
+      Description=Apohara Inti backend (uvicorn)
+      After=network.target
+
+      [Service]
+      Type=simple
+      WorkingDirectory=/opt/apohara-inti/packages/backend
+      EnvironmentFile=/opt/apohara-inti/.env
+      ExecStart=/opt/apohara-inti/.venv/bin/uvicorn main:app \
+        --host 127.0.0.1 --port 8000 \
+        --proxy-headers --forwarded-allow-ips=127.0.0.1
+      Restart=on-failure
+      RestartSec=5
+      User=root
+      Group=root
+      # Hardening
+      NoNewPrivileges=true
+      ProtectSystem=full
+      ProtectHome=read-only
+      PrivateTmp=true
+      # Resource caps (1 vCPU / 2 GB box)
+      MemoryMax=1500M
+      CPUQuota=180%
+
+      [Install]
+      WantedBy=multi-user.target
+      EOF
+      systemctl daemon-reload
+      systemctl enable --now apohara-inti.service
+
+      # ----- 7. Firewall: only 22, 80, 443 inbound --------------------------
+      echo "[5/6] Configuring UFW..."
+      ufw --force reset
+      ufw default deny incoming
+      ufw default allow outgoing
+      ufw allow 22/tcp comment "ssh"
+      ufw allow 80/tcp comment "http (caddy + acme http-01)"
+      ufw allow 443/tcp comment "https (caddy)"
+      ufw --force enable
+
+      # ----- 8. Final wait + smoke probe ------------------------------------
+      echo "[6/6] Waiting 15s for uvicorn cold-start..."
+      sleep 15
+      curl -sf http://127.0.0.1:8000/health || \
+        echo "WARN: local /health probe failed; check journalctl -u apohara-inti"
+
+      echo "=== inti-bootstrap done: $(date -Iseconds) ==="
+      echo "Public URL should be live at: https://${PUBLIC_IP}.nip.io/health"
+
+runcmd:
+  - [ bash, /opt/inti/.bootstrap.sh ]
+
+final_message: |
+  Apohara Inti cloud-init bootstrap finished at $TIMESTAMP after $UPTIME seconds.
+  Tail /var/log/apohara-inti-bootstrap.log to verify.
+  The public URL is https://<IP>.nip.io/health — Caddy TLS issuance takes ~30s on first hit.
+  SSH as: ssh inti@<IP> (root login is disabled).

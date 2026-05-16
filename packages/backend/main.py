@@ -29,6 +29,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
@@ -119,6 +120,40 @@ app = FastAPI(
     title="Apohara Inti Backend",
     description="Cross-AI code verification: Gemini writes, 9 attackers audit, INV-15 isolates memory.",
     version=API_VERSION,
+)
+
+# CORS — the frontend lives on Vercel / Netlify (cross-origin) and on
+# localhost during dev. Whitelist exactly those origins so the browser
+# does not block /v1/verify POSTs from the deployed UI. Additional
+# origins can be added via the APOHARA_INTI_CORS_ORIGINS env var
+# (comma-separated) without code changes — useful when the Vercel
+# preview URL rotates per PR.
+_DEFAULT_CORS_ORIGINS = [
+    "https://apohara-inti.vercel.app",
+    "https://apohara-inti.netlify.app",
+    "http://localhost:5173",
+    "http://localhost:4173",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:4173",
+]
+_extra_origins = os.environ.get("APOHARA_INTI_CORS_ORIGINS", "").strip()
+_cors_origins = list(_DEFAULT_CORS_ORIGINS)
+if _extra_origins:
+    _cors_origins.extend(
+        o.strip() for o in _extra_origins.split(",") if o.strip()
+    )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_cors_origins,
+    # Allow Vercel preview deploys (apohara-inti-<hash>.vercel.app) without
+    # listing every hash. Regex covers .vercel.app + .netlify.app
+    # subdomains starting with "apohara-inti".
+    allow_origin_regex=r"^https://apohara-inti(-[a-z0-9-]+)?\.(vercel|netlify)\.app$",
+    allow_credentials=False,  # BYOK is body-only; no cookies in flight
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
+    max_age=600,
 )
 
 
