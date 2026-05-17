@@ -28,9 +28,10 @@ export function AttackerCard({ vendor, result }: AttackerCardProps) {
   return (
     <Card
       className={cn(
-        "h-full transition-colors",
+        "h-full transition-colors rounded-none",
+        status === "running" && "ring-2 ring-primary/30 animate-pulse-lime",
         status === "ok" && foundIssue && "border-destructive/40",
-        status === "ok" && !foundIssue && "border-plane-memory/40",
+        status === "ok" && !foundIssue && "border-primary/40",
         status === "error" && "border-destructive/60",
       )}
     >
@@ -127,7 +128,7 @@ function StatusIndicator({
   return (
     <span
       {...props}
-      className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-plane-memory/20 text-plane-memory"
+      className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/20 text-primary"
     >
       <CheckCircle2 className="h-3.5 w-3.5" />
     </span>

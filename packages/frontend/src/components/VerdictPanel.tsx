@@ -37,9 +37,9 @@ const COPY: Record<
 
 const STYLES: Record<Verdict, { border: string; tint: string; icon: string }> = {
   verified: {
-    border: "border-plane-memory/50",
-    tint: "bg-plane-memory/10",
-    icon: "text-plane-memory",
+    border: "border-primary/50",
+    tint: "bg-primary/10",
+    icon: "text-primary",
   },
   risky: {
     border: "border-plane-defense/50",
@@ -96,9 +96,9 @@ export function VerdictPanel({ response }: VerdictPanelProps) {
             rel="noopener noreferrer"
             title="INV-15 memory isolation enforced by Apohara Context Forge (click to view repo)"
             className={cn(
-              "inline-flex items-center gap-1.5 rounded-full border border-plane-memory/40 bg-plane-memory/10 px-2.5 py-0.5",
-              "text-xs font-medium text-plane-memory",
-              "hover:bg-plane-memory/15 hover:underline",
+              "inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-2.5 py-0.5",
+              "text-xs font-medium text-primary",
+              "hover:bg-primary/15 hover:underline",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             )}
           >

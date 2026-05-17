@@ -22,6 +22,7 @@ export function CodeInput({ value, onChange, disabled }: CodeInputProps) {
         value={value}
         disabled={disabled}
         onChange={(event) => onChange(event.target.value)}
+        className="font-mono text-sm"
       />
       <p className="text-xs text-muted-foreground">
         Submissions are passed to Gemini for analysis and to 9 attacker models

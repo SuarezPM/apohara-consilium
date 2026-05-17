@@ -1,0 +1,9 @@
+export { Navbar } from "./Navbar";
+export { Hero } from "./Hero";
+export { TrustBar } from "./TrustBar";
+export { TryItPanel } from "./TryItPanel";
+export { HowItWorks } from "./HowItWorks";
+export { Comparison } from "./Comparison";
+export { WhyThisMatters } from "./WhyThisMatters";
+export { CTAFinal } from "./CTAFinal";
+export { Footer } from "./Footer";

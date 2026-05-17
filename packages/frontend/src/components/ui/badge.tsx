@@ -13,7 +13,7 @@ const variants: Record<Variant, string> = {
   outline: "text-foreground border-border",
   destructive: "bg-destructive/15 text-destructive border-destructive/30",
   success:
-    "bg-plane-memory/15 text-plane-memory border-plane-memory/30",
+    "bg-primary/15 text-primary border-primary/30",
 };
 
 export function Badge({

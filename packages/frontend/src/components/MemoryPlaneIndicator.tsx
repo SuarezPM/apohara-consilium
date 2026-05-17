@@ -24,13 +24,13 @@ export function MemoryPlaneIndicator({
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <Card className="border-plane-memory/30 bg-plane-memory/5">
+    <Card className="border-primary/30 bg-primary/5">
       <CardHeader className="flex-row items-center justify-between space-y-0 gap-3">
         <div className="flex items-center gap-3 min-w-0">
           <span
             className={cn(
-              "inline-flex h-10 w-10 items-center justify-center rounded-full bg-plane-memory/15 text-plane-memory",
-              active && "animate-pulse-green",
+              "inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/15 text-primary",
+              active && "animate-pulse-lime",
             )}
             aria-hidden="true"
           >
@@ -82,7 +82,7 @@ export function MemoryPlaneIndicator({
                 className={cn(
                   "ml-auto shrink-0 rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide",
                   decision.decision === "allow" &&
-                    "bg-plane-memory/15 text-plane-memory",
+                    "bg-primary/15 text-primary",
                   decision.decision === "review" &&
                     "bg-plane-defense/15 text-plane-defense",
                   decision.decision === "deny" &&
