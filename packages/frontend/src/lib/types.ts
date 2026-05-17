@@ -10,6 +10,9 @@ export type Vendor = {
   gateway: string;
   /** Two-letter accent code used for the styled badge when no logo is available. */
   badge: string;
+  /** Backend seat label (e.g. "claude-opus-47-seat"); used by the response adapter
+   *  to map backend AttackerReport entries back to their Vendor card. */
+  seat: string;
 };
 
 export type AttackerStatus = "pending" | "running" | "ok" | "error";
