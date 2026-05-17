@@ -1,6 +1,9 @@
 import type {
   AttackerResult,
+  AttackerStatus,
   JCRDecision,
+  Vendor,
+  Verdict,
   VerdictResponse,
   VerifyRequest,
 } from "./types";
@@ -8,6 +11,94 @@ import { ATTACKER_VENDORS } from "./vendors";
 
 const API_URL: string = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 const MOCK: boolean = import.meta.env.VITE_MOCK_API === "true";
+
+/** Shape actually emitted by backend POST /v1/verify + /v1/demo_verify
+ *  (Pydantic ``VerifyResponse`` in packages/backend/main.py). Kept narrow so
+ *  the adapter is the single source of truth for the schema bridge. */
+export type BackendVerifyResponse = {
+  verdict: string;
+  attackers: {
+    vendor: string;
+    model: string;
+    found_issue: boolean;
+    reasoning: string;
+  }[];
+  memory_isolation: {
+    inv15_enforced: boolean;
+    contextforge_audit_id: string;
+  };
+  signed_hash: string;
+  latency_ms: number;
+  cost_estimate_usd: number;
+  cost_capped?: boolean;
+};
+
+function normalizeVerdict(raw: string): Verdict {
+  return raw === "verified" || raw === "risky" || raw === "blocked"
+    ? raw
+    : "risky";
+}
+
+function decisionFromVerdict(v: Verdict): JCRDecision["decision"] {
+  if (v === "verified") return "allow";
+  if (v === "blocked") return "deny";
+  return "review";
+}
+
+function findVendorBySeat(seat: string, model: string): Vendor {
+  const match = ATTACKER_VENDORS.find((v) => v.seat === seat);
+  if (match) return match;
+  const name = seat.replace(/-seat$/, "").replace(/[-_]+/g, " ").trim() || seat;
+  return {
+    name,
+    model: model || seat,
+    gateway: "direct",
+    badge: name.slice(0, 2).toUpperCase() || "??",
+    seat,
+  };
+}
+
+function statusFromReasoning(reasoning: string): AttackerStatus {
+  return reasoning.startsWith("unavailable (") ? "error" : "ok";
+}
+
+/** Map the backend's actual ``VerifyResponse`` shape into the frontend's
+ *  ``VerdictResponse``. The previous ``response.json() as VerdictResponse``
+ *  cast lied at runtime — VerdictPanel/AttackerGrid then crashed reading
+ *  ``found_issue_count``, ``jcr_decision``, etc. Keep this adapter
+ *  authoritative; never reintroduce the unsafe cast. */
+export function mapBackendVerifyResponse(
+  raw: BackendVerifyResponse,
+): VerdictResponse {
+  const verdict = normalizeVerdict(raw.verdict);
+  const attackers: AttackerResult[] = (raw.attackers ?? []).map((a) => ({
+    vendor: findVendorBySeat(a.vendor, a.model),
+    status: statusFromReasoning(a.reasoning),
+    found_issue: !!a.found_issue,
+    reasoning: a.reasoning,
+  }));
+  const found_issue_count = attackers.filter((a) => a.found_issue).length;
+  const inv15 = raw.memory_isolation?.inv15_enforced === true;
+  const audit_id = raw.memory_isolation?.contextforge_audit_id ?? "";
+  const jcr_decision: JCRDecision = {
+    decision: decisionFromVerdict(verdict),
+    audit_id,
+    timestamp: new Date().toISOString(),
+    invariant: "INV-15",
+    reason: inv15
+      ? "INV-15 memory isolation enforced: JCRSafetyGate selected dense prefill across all attacker calls."
+      : "INV-15 dense-prefill gate did not engage for at least one attacker — review the signed audit trail.",
+  };
+  return {
+    verdict,
+    found_issue_count,
+    attacker_count: attackers.length,
+    attackers,
+    reasoning_summary: buildReasoningSummary(verdict, found_issue_count),
+    jcr_decision,
+    signed_audit_trail_url: `${API_URL}/v1/audit/${raw.signed_hash}`,
+  };
+}
 
 /** Classifies the verdict by INV-15-compatible thresholds (matches US-007 AC §3). */
 export function classifyVerdict(
@@ -107,7 +198,9 @@ export async function verifyCode(req: VerifyRequest): Promise<VerdictResponse> {
     );
   }
 
-  return (await response.json()) as VerdictResponse;
+  return mapBackendVerifyResponse(
+    (await response.json()) as BackendVerifyResponse,
+  );
 }
 
 /** POST /v1/demo_verify — uses the backend's server-side Gemini key, capped
@@ -145,7 +238,9 @@ export async function verifyDemoCode(code: string): Promise<VerdictResponse> {
     );
   }
 
-  return (await response.json()) as VerdictResponse;
+  return mapBackendVerifyResponse(
+    (await response.json()) as BackendVerifyResponse,
+  );
 }
 
 export const apiConfig = {
