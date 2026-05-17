@@ -20,11 +20,11 @@ export function Navbar() {
       <div className="container max-w-6xl h-full flex items-center justify-between gap-4">
         <a href="#top" className="flex items-center gap-3 group">
           <img
-            src="/favicon.svg"
+            src="/mascot-color.png"
             alt=""
-            width={28}
-            height={28}
-            className="pixel-render"
+            width={32}
+            height={32}
+            className="pixel-render h-8 w-8 object-cover object-center"
             aria-hidden="true"
           />
           <span className="font-pixel-sans text-sm tracking-wide text-foreground group-hover:text-primary transition-colors">
@@ -58,7 +58,7 @@ export function Navbar() {
             <Github className="h-3.5 w-3.5" />
             <span>SuarezPM/apohara-inti</span>
           </a>
-          <Button size="sm" variant="default" className="font-pixel-sans text-[11px] tracking-wider">
+          <Button asChild size="sm" variant="default" className="font-pixel-sans text-[11px] tracking-wider">
             <a href="#try">
               <Sparkles className="h-3.5 w-3.5" />
               Verify

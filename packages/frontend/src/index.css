@@ -7,7 +7,8 @@
    ============================================================ */
 @font-face {
   font-family: 'Press Start 2P';
-  src: url('/fonts/PressStart2P-Regular.ttf') format('truetype');
+  src: url('/fonts/PressStart2P-Regular.woff2') format('woff2'),
+       url('/fonts/PressStart2P-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -172,4 +173,14 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Respect prefers-contrast: more — push borders + text contrast higher for WCAG AAA path */
+@media (prefers-contrast: more) {
+  :root, .dark {
+    --border: 200 9% 70%;
+    --muted-foreground: 200 9% 75%;
+  }
+  a { text-decoration: underline; }
+  button, .btn { outline: 1px solid currentColor; }
 }

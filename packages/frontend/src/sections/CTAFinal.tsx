@@ -18,14 +18,14 @@ export function CTAFinal() {
           Gemini key for unlimited runs.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Button size="lg" variant="default" className="font-pixel-sans text-[11px] tracking-wider">
-            <a href="#try" className="inline-flex items-center gap-2">
+          <Button asChild size="lg" variant="default" className="font-pixel-sans text-[11px] tracking-wider">
+            <a href="#try">
               Try the demo
               <ArrowRight className="h-4 w-4" />
             </a>
           </Button>
-          <Button size="lg" variant="outline" className="font-pixel-sans text-[11px] tracking-wider">
-            <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
+          <Button asChild size="lg" variant="outline" className="font-pixel-sans text-[11px] tracking-wider">
+            <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
               <Github className="h-4 w-4" />
               Star on GitHub
             </a>

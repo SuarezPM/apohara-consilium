@@ -47,14 +47,14 @@ export function Hero() {
             </p>
 
             <div className="flex flex-wrap items-center gap-3">
-              <Button size="lg" variant="default" className="font-pixel-sans text-[11px] tracking-wider">
-                <a href="#try" className="inline-flex items-center gap-2">
+              <Button asChild size="lg" variant="default" className="font-pixel-sans text-[11px] tracking-wider">
+                <a href="#try">
                   Verify my code
                   <ArrowRight className="h-4 w-4" />
                 </a>
               </Button>
-              <Button size="lg" variant="outline" className="font-pixel-sans text-[11px] tracking-wider">
-                <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
+              <Button asChild size="lg" variant="outline" className="font-pixel-sans text-[11px] tracking-wider">
+                <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
                   <Github className="h-4 w-4" />
                   View on GitHub
                 </a>
@@ -83,21 +83,20 @@ export function Hero() {
               className="aspect-square rounded-md border border-primary/30 bg-apohara-dark relative overflow-hidden flex items-center justify-center"
               aria-hidden="true"
             >
-              <div className="absolute inset-0 opacity-30">
-                <div className="absolute inset-0" style={{
-                  backgroundImage: "linear-gradient(hsl(131 81% 46% / 0.12) 1px, transparent 1px), linear-gradient(90deg, hsl(131 81% 46% / 0.12) 1px, transparent 1px)",
-                  backgroundSize: "16px 16px"
-                }} />
-              </div>
+              <img
+                src="/hero-grid.png"
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover opacity-40 pixel-render"
+              />
               <div className="relative z-10 text-center">
                 <img
-                  src="/favicon.svg"
-                  alt=""
-                  width={120}
-                  height={120}
-                  className="pixel-render mx-auto"
+                  src="/mascot-color.png"
+                  alt="Apohara chief mascot"
+                  width={320}
+                  height={320}
+                  className="pixel-render mx-auto w-[70%] max-w-[280px]"
                 />
-                <p className="mt-4 font-pixel-sans text-xs text-primary tracking-wider">APOHARA</p>
+                <p className="mt-2 font-pixel-sans text-xs text-primary tracking-wider">APOHARA</p>
                 <p className="mt-1 font-mono text-[10px] text-muted-foreground uppercase">: Inti</p>
               </div>
             </div>

@@ -1,4 +1,4 @@
-import { forwardRef, type ButtonHTMLAttributes } from "react";
+import { cloneElement, forwardRef, isValidElement, type ButtonHTMLAttributes, type ReactElement } from "react";
 import { cn } from "@/lib/utils";
 
 type Variant = "default" | "secondary" | "outline" | "ghost" | "destructive";
@@ -7,6 +7,9 @@ type Size = "default" | "sm" | "lg" | "icon";
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
   size?: Size;
+  /** When true, merges button styles into the single child element (typically <a>).
+   *  Avoids HTML-invalid <button><a>...</a></button> nesting for CTAs that navigate. */
+  asChild?: boolean;
 }
 
 const variantClasses: Record<Variant, string> = {
@@ -29,20 +32,27 @@ const sizeClasses: Record<Size, string> = {
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "default", size = "default", ...props }, ref) => {
+  ({ className, variant = "default", size = "default", asChild, children, ...props }, ref) => {
+    const classes = cn(
+      "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium",
+      "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+      "disabled:pointer-events-none disabled:opacity-50",
+      variantClasses[variant],
+      sizeClasses[size],
+      className,
+    );
+
+    if (asChild && isValidElement(children)) {
+      const child = children as ReactElement<{ className?: string }>;
+      return cloneElement(child, {
+        className: cn(classes, child.props.className),
+      });
+    }
+
     return (
-      <button
-        ref={ref}
-        className={cn(
-          "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium",
-          "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-          "disabled:pointer-events-none disabled:opacity-50",
-          variantClasses[variant],
-          sizeClasses[size],
-          className,
-        )}
-        {...props}
-      />
+      <button ref={ref} className={classes} {...props}>
+        {children}
+      </button>
     );
   },
 );

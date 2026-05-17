@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#2A2D3A" />
+    <meta name="theme-color" content="#2A2D3A" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#EDEFF0" media="(prefers-color-scheme: light)" />
 
     <title>Apohara Inti — Cross-AI Code Verifier</title>
     <meta
@@ -12,22 +13,96 @@
     />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" type="image/png" href="/favicon-mascot.png" />
+    <link rel="apple-touch-icon" href="/favicon-mascot.png" />
+    <link rel="canonical" href="https://www.apohara.dev/" />
 
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Apohara" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:title" content="Apohara Inti — Cross-AI Code Verifier" />
     <meta property="og:description" content="9 frontier vendors adversarially audit code your AI just wrote. INV-15 memory isolation. SHA-256 signed verdicts." />
-    <meta property="og:url" content="https://www.apohara.dev" />
-    <meta property="og:image" content="https://www.apohara.dev/og-image.png" />
+    <meta property="og:url" content="https://www.apohara.dev/" />
+    <meta property="og:image" content="https://www.apohara.dev/og-image-large.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="Apohara Inti — pixel-art Native American chief mascot beside the project wordmark on a dark navy background." />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Apohara Inti — Cross-AI Code Verifier" />
     <meta name="twitter:description" content="9 frontier vendors adversarially audit code your AI just wrote. INV-15 memory isolation. SHA-256 signed verdicts." />
+    <meta name="twitter:image" content="https://www.apohara.dev/og-image-large.png" />
+    <meta name="twitter:image:alt" content="Apohara Inti — pixel-art Native American chief mascot beside the project wordmark on a dark navy background." />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Apohara Inti",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Web",
+      "description": "Cross-AI code verification: Gemini writes a review, 9 frontier vendors adversarially audit, INV-15 memory isolation enforced by Apohara ContextForge, every verdict signed in a SHA-256 chain.",
+      "url": "https://www.apohara.dev/",
+      "softwareVersion": "1.0",
+      "license": "https://www.apache.org/licenses/LICENSE-2.0",
+      "isAccessibleForFree": true,
+      "creator": {
+        "@type": "Person",
+        "name": "Pablo M. Suarez",
+        "url": "https://github.com/SuarezPM"
+      },
+      "codeRepository": [
+        "https://github.com/SuarezPM/apohara-inti",
+        "https://github.com/SuarezPM/Apohara_Context_Forge",
+        "https://github.com/SuarezPM/apohara-aegis"
+      ],
+      "citation": {
+        "@type": "ScholarlyArticle",
+        "name": "INV-15: A formal safety invariant for multi-agent KV-cache isolation",
+        "identifier": "10.5281/zenodo.20114594",
+        "url": "https://doi.org/10.5281/zenodo.20114594"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
 
     <link rel="preload" href="/fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/PressStart2P-Regular.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="preload" href="/fonts/PressStart2P-Regular.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Crawler / no-JS fallback. React replaces this on mount. -->
+      <header style="padding:1rem 1.5rem;border-bottom:1px solid #333;">
+        <strong style="font-family:monospace;">APOHARA INTI</strong>
+      </header>
+      <main style="max-width:42rem;margin:3rem auto;padding:0 1.5rem;color:#EDEFF0;font-family:system-ui;">
+        <h1 style="font-size:1.75rem;line-height:1.2;">A different AI audits the code your AI just wrote.</h1>
+        <p style="margin-top:1rem;line-height:1.6;color:#8B90A8;">
+          9 frontier vendors run adversarial checks in parallel. Each in an isolated KV-cache (INV-15).
+          Every verdict signed in a SHA-256 chain. Apache-2.0 OSS. BYOK Gemini key or free demo (5 calls per IP per day).
+        </p>
+        <ul style="margin-top:1.5rem;padding-left:1.5rem;line-height:1.8;color:#8B90A8;">
+          <li>9 vendors: Claude, GPT-5.5, DeepSeek V4 Pro, Kimi K2.6, GLM 5.1, Qwen 3.6 Plus, Nemotron 3 Super, MiniMax M2.7, Big Pickle</li>
+          <li>JBB-Behaviors block rate: 93.75% (Wilson 95% CI [86.2%, 97.3%], n=80 holdout)</li>
+          <li>Multi-hardware grounding: Nvidia H100 + AMD MI300X (3 measurement waves)</li>
+          <li>Formal invariant: INV-15 JCRSafetyGate (paper DOI 10.5281/zenodo.20114594)</li>
+        </ul>
+        <p style="margin-top:2rem;">
+          <a href="https://github.com/SuarezPM/apohara-inti" style="color:#16D63A;">GitHub</a> &middot;
+          <a href="https://doi.org/10.5281/zenodo.20114594" style="color:#16D63A;">Paper (DOI)</a> &middot;
+          <a href="https://api.apohara.dev/health" style="color:#16D63A;">API status</a>
+        </p>
+        <p style="margin-top:1.5rem;color:#666;font-size:0.875rem;">
+          Loading interactive demo&hellip; If this message persists, enable JavaScript or check
+          <a href="https://api.apohara.dev/health" style="color:#16D63A;">api.apohara.dev/health</a>.
+        </p>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
