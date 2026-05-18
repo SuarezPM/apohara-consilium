@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { VerdictTrendChart } from "./VerdictTrendChart";
+import { DashboardLayout } from "./DashboardLayout";
 
 interface LedgerEntry {
   verdict: "verified" | "risky" | "blocked";
@@ -49,24 +50,26 @@ export function Dashboard() {
 
   if (!adminKey) {
     return (
-      <div className="container mx-auto py-12 max-w-md">
-        <h1 className="text-2xl font-pixel-sans mb-4">PROBANT Dashboard — Admin Access</h1>
-        <input
-          type="password"
-          placeholder="APOHARA_ADMIN_KEY"
-          className="w-full p-2 border border-border bg-card text-foreground rounded"
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              const val = (e.target as HTMLInputElement).value;
-              localStorage.setItem("apohara_admin_key", val);
-              setAdminKey(val);
-            }
-          }}
-        />
-        <p className="text-sm text-muted-foreground mt-2">
-          Press Enter to set. Stored in localStorage. To revoke: clear browser storage.
-        </p>
-      </div>
+      <DashboardLayout title="Dashboard">
+        <div className="container mx-auto py-12 max-w-md">
+          <h1 className="text-2xl font-pixel-sans mb-4">PROBANT Dashboard — Admin Access</h1>
+          <input
+            type="password"
+            placeholder="APOHARA_ADMIN_KEY"
+            className="w-full p-2 border border-border bg-card text-foreground rounded"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                const val = (e.target as HTMLInputElement).value;
+                localStorage.setItem("apohara_admin_key", val);
+                setAdminKey(val);
+              }
+            }}
+          />
+          <p className="text-sm text-muted-foreground mt-2">
+            Press Enter to set. Stored in localStorage. To revoke: clear browser storage.
+          </p>
+        </div>
+      </DashboardLayout>
     );
   }
 
@@ -80,6 +83,7 @@ export function Dashboard() {
   const total = entries.length || 1;
 
   return (
+    <DashboardLayout title="Dashboard">
     <div className="container mx-auto py-12">
       <h1 className="text-3xl font-pixel-sans mb-6">PROBANT Dashboard</h1>
 
@@ -184,5 +188,6 @@ export function Dashboard() {
         </div>
       )}
     </div>
+    </DashboardLayout>
   );
 }
