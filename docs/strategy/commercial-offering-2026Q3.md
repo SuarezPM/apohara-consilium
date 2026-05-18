@@ -6,7 +6,7 @@
 
 ## 1. Executive Summary
 
-Apohara PROBANT is a multi-vendor adversarial verification layer that enforces formal safety invariants on LLM-generated content before it reaches end users or downstream systems. Unlike point-solution prompt filters that rely on a single model's judgment, PROBANT routes every payload through a 12-vendor adversarial ensemble (12+ vendors planned for Q4 per US-T1-J), cryptographically chains the verdict log with HMAC-signed evidence, and exposes the full audit trail via a REST API. The formal safety invariant INV-15 — proven in a published paper (Zenodo DOI 10.5281/zenodo.20114594) and validated on AMD Instinct MI300X hardware — provides the academic grounding that distinguishes PROBANT from hackathon-quality competitors.
+Apohara PROBANT is a multi-vendor adversarial verification layer that enforces formal safety invariants on LLM-generated content before it reaches end users or downstream systems. Unlike point-solution prompt filters that rely on a single model's judgment, PROBANT routes every payload through a 12-vendor adversarial ensemble (12+ vendors planned for Q4 per US-T1-J), cryptographically chains the verdict log with HMAC-signed evidence, and exposes the full audit trail via a REST API. The formal safety invariant INV-15 — proven in a published paper (Zenodo DOI 10.5281/zenodo.20277875) and validated on AMD Instinct MI300X hardware — provides the academic grounding that distinguishes PROBANT from hackathon-quality competitors.
 
 The commercial product is offered as a SaaS API with three tiers: Free (100 verifications/month), Pro ($49/month, 5,000 verifications), and Enterprise ($499/month, 100,000+ verifications, SSO, audit log API, and 99.9% SLA). The core value proposition is measurable, machine-verifiable safety rather than marketing claims: JailbreakBench block rate of 93.75% (Wilson 95% CI [86.2%, 97.3%], n=80), LobsterTrap DPI integration with a measured 50% SQLi block rate, and multi-hardware grounding on both H100 and MI300X. No competitor in our observed field carries a published peer-reviewed paper, formal invariant, or committed measurement JSON evidence log.
 
@@ -127,7 +127,7 @@ Every claim below traces to a committed artifact — no fabricated numbers.
 |---|---|---|
 | Adversarial vendor ensemble | 12 vendors live (10 active routes today, 2 staged for OpenRouter catalog refresh) | `judge_gates.py`, US-T1-J spec |
 | Formal safety invariant | INV-15 (defined + proven) | `apohara_context_forge/safety/jcr_gate.py`, `paper/inv15_paper.pdf` |
-| Academic citation | Zenodo DOI 10.5281/zenodo.20114594 | Published, indexed |
+| Academic citation | Zenodo DOI 10.5281/zenodo.20277875 | Published, indexed |
 | JailbreakBench block rate | 93.75% (Wilson 95% CI [86.2%, 97.3%], n=80) | `logs/jbb_live_defense_*.json` |
 | HMAC verdict chain | tamper-evident, per-tenant key isolation | `verdict_vault.py`, `tests/test_verdict_vault.py` |
 | LobsterTrap DPI integration | 50% SQLi block rate measured | `lobstertrap_client.py`, `logs/lobstertrap_block_rate_*.json` |

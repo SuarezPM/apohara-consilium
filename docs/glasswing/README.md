@@ -24,7 +24,7 @@
    [`architecture-summary.md`](https://github.com/SuarezPM/apohara-probant/blob/main/docs/glasswing/architecture-summary.md),
    [`evidence-pack.md`](https://github.com/SuarezPM/apohara-probant/blob/main/docs/glasswing/evidence-pack.md),
    [`competitive-positioning.md`](https://github.com/SuarezPM/apohara-probant/blob/main/docs/glasswing/competitive-positioning.md).
-4. Cite the Zenodo DOI [10.5281/zenodo.20114594](https://doi.org/10.5281/zenodo.20114594)
+4. Cite the Zenodo DOI [10.5281/zenodo.20277875](https://doi.org/10.5281/zenodo.20277875)
    in the project-publications field.
 5. Cite the [`MYTHOS_READY.md`](../../MYTHOS_READY.md) boundary
    contract verbatim in the "honesty about access status" field.

@@ -16,7 +16,7 @@ See `docs/research/` design doc and task backlog items #39–#46.
 
 Paper v3.0 adds a machine-checked Z3 SMT proof that the negation of INV-15 is
 UNSAT (verified in 10.08 ms on AMD MI300X). Complements the empirical v2.0.1 sweep
-(0/1210 violations, DOI 10.5281/zenodo.20114594). The formal proof closes the gap
+(0/1210 violations, DOI 10.5281/zenodo.20277875). The formal proof closes the gap
 between empirical confidence and mathematical certainty.
 
 ## 3. Cursor plugin — installable VSIX

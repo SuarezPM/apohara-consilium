@@ -42,7 +42,7 @@ Reproducibility:
 
 Formal safety:
 - INV-15 JCRSafetyGate: formal invariant for multi-agent KV-cache
-  isolation (DOI 10.5281/zenodo.20114594). Paper v3.0 adds Z3 SMT
+  isolation (DOI 10.5281/zenodo.20277875). Paper v3.0 adds Z3 SMT
   proof: negation of INV-15 is UNSAT in 10.08 ms. Empirical sweep:
   0/1210 violations. Judges never contaminate the writer's memory.
 
@@ -100,7 +100,7 @@ Open Source · EU AI Act · Benchmark Reproducibility · Adversarial Validation
 - Phase 3 delta (what shipped in the last 6 hours): `docs/submissions/PHASE3-DELTA.md`.
 - Paper v3.0 Z3 proof is the strongest differentiator for the European academic audience — lead with it in any oral pitch.
 - SOC2 / ISO 27001 mapping docs at `docs/compliance/` are the enterprise procurement hook.
-- Paper PDF: `paper/inv15_paper.pdf` in Context_Forge repo. DOI 10.5281/zenodo.20114594.
+- Paper PDF: `paper/inv15_paper.pdf` in Context_Forge repo. DOI 10.5281/zenodo.20277875.
 
 ## Notes specific to Milan audience
 

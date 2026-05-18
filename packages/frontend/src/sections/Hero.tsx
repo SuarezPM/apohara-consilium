@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { MythosBadge } from "@/components/MythosBadge";
 
 const REPO_URL = "https://github.com/SuarezPM/apohara-probant";
-const PAPER_DOI = "https://doi.org/10.5281/zenodo.20114594";
+const PAPER_DOI = "https://doi.org/10.5281/zenodo.20277875";
 
 export function Hero() {
   return (
@@ -26,7 +26,7 @@ export function Hero() {
               </Badge>
               <Badge variant="outline" className="font-mono text-[10px]">
                 <a href={PAPER_DOI} target="_blank" rel="noopener noreferrer" className="hover:text-primary">
-                  DOI 10.5281/zenodo.20114594
+                  DOI 10.5281/zenodo.20277875
                 </a>
               </Badge>
               <MythosBadge compact />

@@ -84,7 +84,7 @@ launder mocked numbers as production figures.
 ## 6. Paper and DOI
 
 - Paper: `paper/inv15_paper.pdf` v3.0, 12 references, MI300X-grounded
-- Zenodo DOI: <https://doi.org/10.5281/zenodo.20114594>
+- Zenodo DOI: <https://doi.org/10.5281/zenodo.20277875>
 - Formal result: ¬INV-15 is **UNSAT in 10.08 ms** (Z3, single MI300X core)
 - Hardware label honesty: `"rocm-hip:6.2.41133:AMD Instinct MI300X VF"` (not `"cuda"`)
 

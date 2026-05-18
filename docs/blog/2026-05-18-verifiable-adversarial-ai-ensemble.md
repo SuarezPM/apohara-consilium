@@ -147,7 +147,7 @@ enforced by INV-15 — a formal safety invariant from Apohara ContextForge
 (`apohara_context_forge.safety.jcr_gate.JCRSafetyGate`). INV-15 guarantees
 that no attacker's KV-cache entry is readable by the writer's context
 registry, and vice versa. The invariant is proven in the companion paper
-([Zenodo DOI 10.5281/zenodo.20114594](https://doi.org/10.5281/zenodo.20114594);
+([Zenodo DOI 10.5281/zenodo.20277875](https://doi.org/10.5281/zenodo.20277875);
 **v3.0 adds a machine-checked Z3 SMT proof that the negation of INV-15
 is UNSAT in 10.08-10.42 ms** on MI300X — complementing the v2.0.1
 empirical sweep showing 0/1210 violations).
@@ -387,4 +387,4 @@ The live demo is at **[https://www.apohara.dev](https://www.apohara.dev)** (Tech
 
 The source code is at [github.com/SuarezPM/apohara-probant](https://github.com/SuarezPM/apohara-probant) (Apache-2.0, formerly `apohara-inti` — GitHub redirect preserved). Sibling repos in the monorepo trinity: [apohara-aegis](https://github.com/SuarezPM/apohara-aegis) (12-vendor adversarial adapters, Apache-2.0), [Apohara_Context_Forge](https://github.com/SuarezPM/Apohara_Context_Forge) (INV-15 + Z3 SMT proof paper, Apache-2.0), and [Apohara-Guard](https://github.com/SuarezPM/Apohara-Guard) (isolation primitives + scanner, AGPL-3.0).
 
-The ContextForge paper v3.0 and formal INV-15 proof are at DOI [10.5281/zenodo.20114594](https://doi.org/10.5281/zenodo.20114594).
+The ContextForge paper v3.0 and formal INV-15 proof are at DOI [10.5281/zenodo.20277875](https://doi.org/10.5281/zenodo.20277875).

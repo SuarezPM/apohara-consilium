@@ -13,7 +13,7 @@
 > Profile (March 2026 draft) extending NIST AI RMF — verified by this cross-reference table.
 > We are the first OSS project to combine this alignment with multi-vendor LLM adversarial
 > consensus AND formal KV-cache isolation (Z3-proven INV-15, Zenodo DOI
-> [10.5281/zenodo.20114594](https://zenodo.org/record/20114594))."*
+> [10.5281/zenodo.20277875](https://zenodo.org/record/20114594))."*
 
 ## Sources
 

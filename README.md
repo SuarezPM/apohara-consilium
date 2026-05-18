@@ -11,7 +11,7 @@
 
 <!-- Row 1 — academic credibility -->
 <p align="center">
-  <a href="https://doi.org/10.5281/zenodo.20114594"><img src="https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20114594-1A73E8?style=flat-square&logo=doi&logoColor=white" alt="DOI: 10.5281/zenodo.20114594"></a>
+  <a href="https://doi.org/10.5281/zenodo.20277875"><img src="https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20277875-1A73E8?style=flat-square&logo=doi&logoColor=white" alt="DOI: 10.5281/zenodo.20277875"></a>
   <a href="https://github.com/SuarezPM/Apohara_Context_Forge/blob/main/paper/inv15_paper.pdf"><img src="https://img.shields.io/badge/paper-v3.0%20%C2%B7%20Z3%20SMT%20proof-EC1C24?style=flat-square&logo=adobe-acrobat-reader&logoColor=white" alt="Paper v3.0 PDF"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-2ECC71.svg?style=flat-square" alt="License Apache 2.0"></a>
   <a href="MYTHOS_READY.md"><img src="https://img.shields.io/badge/%F0%9F%94%B1-MYTHOS--READY-25B13F.svg?style=flat-square" alt="MYTHOS-READY architecture"></a>
@@ -303,7 +303,7 @@ agents, preventing a class of indirect prompt injection attacks.**
 **Read more.**
 
 - [View the Apohara Context Forge repo](https://github.com/SuarezPM/Apohara_Context_Forge)
-- [Read the INV-15 paper (Zenodo DOI 10.5281/zenodo.20114594)](https://doi.org/10.5281/zenodo.20114594)
+- [Read the INV-15 paper (Zenodo DOI 10.5281/zenodo.20277875)](https://doi.org/10.5281/zenodo.20277875)
 
 ---
 
@@ -344,7 +344,7 @@ cd packages/backend && pip install -e . && uvicorn main:app --reload
 ### Pre-Fusion-Sprint base (Phase 2 + Phase 3)
 
 - **12-vendor adversarial ensemble LIVE** at api.apohara.dev — 7 producing votes + 5 fail-open per [`docs/submissions/JUDGE-FAQ.md`](docs/submissions/JUDGE-FAQ.md) Q1. Evidence: [`logs/12vendor_live_smoke_20260518T194417Z.json`](logs/12vendor_live_smoke_20260518T194417Z.json).
-- **Z3 SMT formal proof of INV-15** — Apohara_Context_Forge [paper v3.0](https://github.com/SuarezPM/Apohara_Context_Forge/blob/main/paper/inv15_paper.pdf) UNSAT on negation in 10.08 ms (single MI300X core), complementing v2.0.1 empirical sweep (0/1210 violations). Zenodo DOI [10.5281/zenodo.20114594](https://doi.org/10.5281/zenodo.20114594).
+- **Z3 SMT formal proof of INV-15** — Apohara_Context_Forge [paper v3.0](https://github.com/SuarezPM/Apohara_Context_Forge/blob/main/paper/inv15_paper.pdf) UNSAT on negation in 10.08 ms (single MI300X core), complementing v2.0.1 empirical sweep (0/1210 violations). Zenodo DOI [10.5281/zenodo.20277875](https://doi.org/10.5281/zenodo.20277875).
 - **Veea LobsterTrap DPI pre-check** (active subprocess) — measured 50% SQLi block (n=20, Wilson CI [29.9%, 70.1%] directional), 9.8% benign FPR (n=51).
 - **HMAC-SHA256 verdict chain** with tamper-detection via `verify_chain()`.
 - **Prompt envelope** (Hines et al. arXiv 2403.14720 Spotlighting) + AST audit linter CI gate.

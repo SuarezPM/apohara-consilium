@@ -18,7 +18,7 @@ unbacked by prior-art evidence, the ensemble is single-vendor
 Apohara's contrast:
 
 - **Z3-proven INV-15** (negation UNSAT in 10.08 ms, paper v3.0,
-  Zenodo DOI [10.5281/zenodo.20114594](https://doi.org/10.5281/zenodo.20114594))
+  Zenodo DOI [10.5281/zenodo.20277875](https://doi.org/10.5281/zenodo.20277875))
   vs an unbacked alignment claim.
 - **14-vendor adversarial ensemble** vs single Gemini vendor.
 - **500/500 fusion-test pass** + 5 STIX export tests + 22 inti

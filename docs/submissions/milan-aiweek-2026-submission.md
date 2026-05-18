@@ -39,7 +39,7 @@ Reproducibility:
 
 Formal safety:
 - INV-15 JCRSafetyGate: formal invariant for multi-agent KV-cache
-  isolation (DOI 10.5281/zenodo.20114594). Paper v3.0 adds Z3 SMT
+  isolation (DOI 10.5281/zenodo.20277875). Paper v3.0 adds Z3 SMT
   proof: negation of INV-15 is UNSAT in 10.08 ms. Empirical sweep:
   0/1210 violations. Judges never contaminate the writer's memory.
 

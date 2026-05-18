@@ -275,14 +275,85 @@ class IncidentRecentDTO(BaseModel):
     signed_hash: str
 
 
+# Verdict → severity heuristic for the DPI Live Feed widget. The /v1/verify
+# pipeline labels each verdict as verified|risky|blocked|allow; we map those
+# to the SOAR taxonomy severity scale (1-10) so the dashboard can color-code.
+_VERDICT_TO_SEVERITY: dict[str, int] = {
+    "blocked": 10,
+    "risky": 7,
+    "verified": 3,
+    "allow": 3,
+}
+
+# Verdict → incident_code heuristic. When the DPI layer flagged the prompt,
+# attribute to AGT-PI-001 (Prompt Override Attempt); when an attacker found
+# an issue, attribute to AGT-MIS-002 (Misinformation Injection); otherwise
+# the entry represents a benign verified review and gets AGT-PI-000
+# (sentinel "no-incident"). This is a heuristic for the demo widget — the
+# canonical code mapping is computed offline via compliance.generate().
+def _ledger_entry_to_incident(entry: dict[str, Any]) -> IncidentRecentDTO | None:
+    """Convert a verdict_vault ledger entry into an IncidentRecentDTO.
+
+    Returns None for entries with missing required fields so the feed only
+    shows well-formed incidents.
+    """
+    ts = entry.get("ts")
+    verdict = entry.get("verdict") or "verified"
+    signed_hash = entry.get("signed_hash") or ""
+    if ts is None or not signed_hash:
+        return None
+
+    severity = _VERDICT_TO_SEVERITY.get(verdict, 5)
+
+    dpi_blocked = bool(entry.get("dpi_check", {}).get("reason") and "block" in str(entry.get("dpi_check", {}).get("reason", "")).lower())
+    attacker_flagged = any(
+        a.get("found_issue") for a in (entry.get("attackers") or [])
+    )
+    if dpi_blocked:
+        incident_code = "AGT-PI-001"
+    elif attacker_flagged:
+        incident_code = "AGT-MIS-002"
+    elif verdict == "verified":
+        incident_code = "AGT-GOV-003"  # benign-audited audit trail entry
+    else:
+        incident_code = "AGT-MIS-001"
+
+    return IncidentRecentDTO(
+        ts=float(ts),
+        incident_code=incident_code,
+        severity=severity,
+        verdict=verdict,
+        signed_hash=signed_hash[:32],  # truncate for compact feed display
+    )
+
+
 @router.get("/incidents/recent", response_model=list[IncidentRecentDTO])
 async def recent_incidents(limit: int = 50) -> list[IncidentRecentDTO]:
     """Return recent incidents from the HMAC ledger.
 
-    Stub implementation: returns empty list until the verdict_vault
-    integration is wired (US-84 / future sprint).
+    Tails the same ledger file that ``main.py``'s ``/v1/audit/recent`` reads,
+    so the DPI Live Feed widget and the admin audit view share one source of
+    truth. Each entry is converted via :func:`_ledger_entry_to_incident` —
+    verdict → severity (1-10) and verdict + dpi_check + attacker flags →
+    incident_code heuristic.
     """
-    return []
+    if not _LEDGER_PATH.exists():
+        return []
+
+    incidents: list[IncidentRecentDTO] = []
+    with _LEDGER_PATH.open("r", encoding="utf-8") as fh:
+        all_lines = [line.strip() for line in fh if line.strip()]
+
+    for line in all_lines[-limit:][::-1]:  # newest first
+        try:
+            entry = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        dto = _ledger_entry_to_incident(entry)
+        if dto is not None:
+            incidents.append(dto)
+
+    return incidents
 
 
 # ---------------------------------------------------------------------------

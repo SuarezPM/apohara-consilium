@@ -33,7 +33,7 @@ Verifiable, not claimed:
 - 12 vendors via OpenRouter, each in an isolated KV-cache enforced by
   INV-15 JCRSafetyGate. Paper v3.0 (formal Z3 SMT proof, UNSAT on
   negation in 10.08 ms) complements v2.0.1 empirical sweep (0/1210
-  violations). DOI 10.5281/zenodo.20114594.
+  violations). DOI 10.5281/zenodo.20277875.
 - JBB-Behaviors block rate 93.75% (Wilson 95% CI [86.2%, 97.3%], n=80
   holdout). Numbers from logs/*.json, not marketing.
 - 120+ pytest tests + 15+ measurement JSON logs.

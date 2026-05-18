@@ -84,7 +84,7 @@ function MetricTile({
 export function Dashboard() {
   const [entries, setEntries] = useState<LedgerEntry[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [adminKey, setAdminKey] = useState<string>(
+  const [adminKey] = useState<string>(
     () => localStorage.getItem("apohara_admin_key") ?? "",
   );
   const [tiles, setTiles] = useState<MetricTiles>({
@@ -123,17 +123,22 @@ export function Dashboard() {
     return () => clearInterval(id);
   }, []);
 
+  // Always fetch /v1/audit/recent. APOHARA_ADMIN_KEY env var on the droplet
+  // is unset in this deployment so the endpoint is open; the admin_key query
+  // param is only forwarded when one is present in localStorage (admins who
+  // self-host with the key gate enabled). Visitors get an honest empty state
+  // if the response is 401, never a login screen.
   useEffect(() => {
-    if (!adminKey) return;
-
     const fetchData = async () => {
       try {
-        const params = new URLSearchParams({ limit: "50", admin_key: adminKey });
+        const params = new URLSearchParams({ limit: "50" });
+        if (adminKey) params.set("admin_key", adminKey);
         const resp = await fetch(
           `${BASE}/v1/audit/recent?${params.toString()}`,
         );
         if (!resp.ok) {
           setError(`HTTP ${resp.status}`);
+          setEntries([]);
           return;
         }
         const data = (await resp.json()) as { entries: LedgerEntry[] };
@@ -148,31 +153,6 @@ export function Dashboard() {
     const interval = setInterval(() => void fetchData(), 5000);
     return () => clearInterval(interval);
   }, [adminKey]);
-
-  if (!adminKey) {
-    return (
-      <DashboardLayout title="Dashboard">
-        <div className="container mx-auto py-12 max-w-md">
-          <h1 className="text-2xl font-pixel-sans mb-4">PROBANT Dashboard — Admin Access</h1>
-          <input
-            type="password"
-            placeholder="APOHARA_ADMIN_KEY"
-            className="w-full p-2 border border-border bg-card text-foreground rounded"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                const val = (e.target as HTMLInputElement).value;
-                localStorage.setItem("apohara_admin_key", val);
-                setAdminKey(val);
-              }
-            }}
-          />
-          <p className="text-sm text-muted-foreground mt-2">
-            Press Enter to set. Stored in localStorage. To revoke: clear browser storage.
-          </p>
-        </div>
-      </DashboardLayout>
-    );
-  }
 
   const counts = entries.reduce(
     (acc, e) => {

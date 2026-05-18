@@ -54,4 +54,4 @@ We have submitted (or plan to submit) an application via the
 citing Apohara PROBANT's defensive-cybersecurity OSS profile.
 
 **Cite**: GitHub https://github.com/SuarezPM/apohara-probant, license
-Apache-2.0, ensemble + INV-15 paper Zenodo DOI 10.5281/zenodo.20114594.
+Apache-2.0, ensemble + INV-15 paper Zenodo DOI 10.5281/zenodo.20277875.

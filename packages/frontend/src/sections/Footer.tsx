@@ -11,7 +11,7 @@ const COLS = [
     title: "Developers",
     links: [
       { href: "https://github.com/SuarezPM/apohara-probant#readme", label: "Documentation" },
-      { href: "https://doi.org/10.5281/zenodo.20114594", label: "Paper (DOI)" },
+      { href: "https://doi.org/10.5281/zenodo.20277875", label: "Paper (DOI)" },
       { href: "https://api.apohara.dev/health", label: "API status" },
     ],
   },

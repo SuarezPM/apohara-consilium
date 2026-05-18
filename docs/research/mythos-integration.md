@@ -178,7 +178,7 @@ qualifies as:
 - Defensive cybersecurity tooling (AI code review defense-in-depth).
 - Built around Claude Opus 4.7 as one of the 10 frontier judges.
 - Academic-quality safety invariant documentation (INV-15, Zenodo DOI
-  `10.5281/zenodo.20114594`).
+  `10.5281/zenodo.20277875`).
 
 If Anthropic extends a Glasswing invitation later, the same `MythosAttackerAdapter`
 slot activates — no architecture change required.

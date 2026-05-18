@@ -117,7 +117,7 @@ Both submissions use the same video. Record once (Section 4 below), upload to Yo
    - **Upload type**: select "Publication" → "Preprint".
 5. Under **"Related/alternate identifiers"**, add:
    - Relation: `isNewVersionOf`
-   - Identifier: `10.5281/zenodo.20114594`
+   - Identifier: `10.5281/zenodo.20277875`
    - This links v3.0 to the published v2.0.1.
 6. Drag and drop the PDF file:
    `/home/linconx/Documentos/Apohara_Context_Forge/paper/inv15_paper.pdf`
@@ -129,12 +129,12 @@ Both submissions use the same video. Record once (Section 4 below), upload to Yo
    | **Version** | `3.0` |
    | **Publication date** | `2026-05-18` |
    | **Authors** | `Suarez, Pablo M. · Universidad Nacional de Tucumán` |
-   | **Description** | `v3.0 adds formal Z3 SMT verification of INV-15 (proof: UNSAT on negation in 10.08 ms) to complement the empirical 0/1210 sweep from v2.0.1. Z3 model fidelity verified line-by-line against the production JCRSafetyGate. v2.0.1 (DOI 10.5281/zenodo.20114594) is the predecessor.` |
+   | **Description** | `v3.0 adds formal Z3 SMT verification of INV-15 (proof: UNSAT on negation in 10.08 ms) to complement the empirical 0/1210 sweep from v2.0.1. Z3 model fidelity verified line-by-line against the production JCRSafetyGate. v2.0.1 (DOI 10.5281/zenodo.20277875) is the predecessor.` |
    | **License** | `CC-BY-4.0` |
    | **Keywords** | `AI safety, formal verification, Z3 SMT, multi-agent systems, KV cache, INV-15` |
 
 8. Click **"Publish"**.
-9. Copy the new DOI assigned to v3.0. It will be a new `10.5281/zenodo.NNNNNNNNN` identifier (different from v2.0.1's `10.5281/zenodo.20114594`). Save it — the ralph lead will update the submission forms and paper if time allows.
+9. Copy the new DOI assigned to v3.0. It will be a new `10.5281/zenodo.NNNNNNNNN` identifier (different from v2.0.1's `10.5281/zenodo.20277875`). Save it — the ralph lead will update the submission forms and paper if time allows.
 
 ### Important
 Do not delete or modify the v2.0.1 deposit. The `isNewVersionOf` relation preserves both versions. Zenodo will auto-link them in the version history.
@@ -193,7 +193,7 @@ If the LobsterTrap ~25 ms timer runs slow on recording day, note in voice-over t
   engineering issue."
 - "Our application is via the publicly documented Claude for Open Source program
   (anthropic.com/glasswing — the public application channel, not a private Glasswing invite).
-  We cite Apohara's Apache-2.0 license, the ensemble+INV-15 paper (Zenodo DOI 10.5281/zenodo.20114594),
+  We cite Apohara's Apache-2.0 license, the ensemble+INV-15 paper (Zenodo DOI 10.5281/zenodo.20277875),
   and the defensive-cybersecurity OSS profile."
 - "The `/v1/soar/mythos/status` endpoint exposes the live state. You can hit it right now and
   verify `enabled: false`, `reserved: true`. There is no hidden claim."

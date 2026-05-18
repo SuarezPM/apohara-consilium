@@ -44,7 +44,7 @@ export const TIER_1: Tier1Competitor[] = [
     },
     formalInvariant: {
       value: "INV-15 (JCRSafetyGate)",
-      source: "DOI 10.5281/zenodo.20114594 + Apohara_Context_Forge/apohara_context_forge/safety/jcr_gate.py",
+      source: "DOI 10.5281/zenodo.20277875 + Apohara_Context_Forge/apohara_context_forge/safety/jcr_gate.py",
     },
     license: { value: "Apache-2.0", source: "github.com/SuarezPM/apohara-probant/blob/main/LICENSE" },
     cost: {

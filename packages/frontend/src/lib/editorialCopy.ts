@@ -39,7 +39,7 @@ export const WHY_THIS_MATTERS = {
   inv15: {
     heading: "Why INV-15 (formal memory isolation).",
     body:
-      "Multi-agent LLM pipelines share KV-cache by default. That means one attacker's prompt can poison another's session. INV-15 is the formal invariant we wrote and proved in our paper (DOI 10.5281/zenodo.20114594) — the JCRSafetyGate enforces dense-prefill mode under specific risk conditions, guaranteeing isolation between judge agents. Every verdict ledger entry includes a contextforge_audit_id that traces the gate decision. No competitor publishes anything like this.",
+      "Multi-agent LLM pipelines share KV-cache by default. That means one attacker's prompt can poison another's session. INV-15 is the formal invariant we wrote and proved in our paper (DOI 10.5281/zenodo.20277875) — the JCRSafetyGate enforces dense-prefill mode under specific risk conditions, guaranteeing isolation between judge agents. Every verdict ledger entry includes a contextforge_audit_id that traces the gate decision. No competitor publishes anything like this.",
   },
 
   multiHardware: {

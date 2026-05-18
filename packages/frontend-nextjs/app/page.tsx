@@ -4,7 +4,7 @@
 // + app/globals.css so we inherit the same look without re-theming.
 
 const REPO_URL = "https://github.com/SuarezPM/apohara-probant";
-const PAPER_DOI = "https://doi.org/10.5281/zenodo.20114594";
+const PAPER_DOI = "https://doi.org/10.5281/zenodo.20277875";
 const SPA_URL = "https://www.apohara.dev";
 
 export default function Home() {
@@ -31,7 +31,7 @@ export default function Home() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center rounded border border-border/60 px-2 py-0.5 text-muted-foreground hover:text-primary"
               >
-                DOI 10.5281/zenodo.20114594
+                DOI 10.5281/zenodo.20277875
               </a>
               <span className="inline-flex items-center rounded border border-border/60 px-2 py-0.5 text-muted-foreground">
                 SSR preview

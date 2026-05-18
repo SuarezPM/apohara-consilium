@@ -7,7 +7,7 @@
 **Project URL**: <https://www.apohara.dev>
 **Source**: <https://github.com/SuarezPM/apohara-probant>
 **License**: Apache-2.0
-**Paper / DOI**: <https://doi.org/10.5281/zenodo.20114594>
+**Paper / DOI**: <https://doi.org/10.5281/zenodo.20277875>
 
 ---
 
@@ -36,7 +36,7 @@ demand. The safety invariant under the ensemble is **INV-15**
 (judge-isolation in KV-cache reuse). It is proven formally with Z3:
 the negation of INV-15 is **UNSAT in 10.08 ms** on a single MI300X
 core (paper v3.0, Zenodo DOI
-[10.5281/zenodo.20114594](https://doi.org/10.5281/zenodo.20114594)).
+[10.5281/zenodo.20277875](https://doi.org/10.5281/zenodo.20277875)).
 
 ## Why now
 

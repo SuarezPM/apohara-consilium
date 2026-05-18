@@ -105,7 +105,7 @@ Click `baseline_aegis-ensemble-10frontier_day5_FALLBACK_20260515T212737Z.json`.
 interval: 86.2% to 97.3%. The CI bounds are in the file. We report the
 honest width, not just the point estimate."
 
-Navigate to the paper DOI link or type: `doi.org/10.5281/zenodo.20114594`
+Navigate to the paper DOI link or type: `doi.org/10.5281/zenodo.20277875`
 
 **[Zenodo deposit page visible]**
 

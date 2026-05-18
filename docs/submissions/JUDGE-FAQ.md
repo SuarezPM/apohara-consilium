@@ -73,7 +73,7 @@ possible runtime conditions (out-of-memory, preemption, race conditions in the
 KV-cache eviction path, etc.). The empirical complement — 0 violations across
 1,210 sampled calls, logged in `Apohara_Context_Forge/logs/` — validates
 implementation behavior at the same constants the Z3 model encodes. The paper
-is explicit about this scope boundary (DOI 10.5281/zenodo.20114594). The two
+is explicit about this scope boundary (DOI 10.5281/zenodo.20277875). The two
 layers triangulate from formal model to running code; neither alone is
 sufficient.
 
@@ -191,7 +191,7 @@ CPU fallbacks with explicit labeling.
 CPU mock. Log: `Apohara_Context_Forge/logs/` directory.
 
 Both sets of logs are committed to the respective repos. The Zenodo DOI
-10.5281/zenodo.20114594 covers the v2.0.1 paper with the MI300X sweep (0/1210
+10.5281/zenodo.20277875 covers the v2.0.1 paper with the MI300X sweep (0/1210
 INV-15 violations). The v3.0 paper (commit `4a3f73c`) adds the Z3 formal proof
 layer.
 
@@ -371,7 +371,7 @@ is in `README.md:25`. Dependency pins are in
 | Honesty log (Aegis) | `apohara-aegis/AUDIT.md` |
 | Honesty log (Context Forge) | `Apohara_Context_Forge/AUDIT.md` |
 | INV-15 paper (PDF) | `Apohara_Context_Forge/paper/inv15_paper.pdf` |
-| Zenodo DOI | https://doi.org/10.5281/zenodo.20114594 |
+| Zenodo DOI | https://doi.org/10.5281/zenodo.20277875 |
 | Phase 3 delta doc | `apohara-inti/docs/submissions/PHASE3-DELTA.md` |
 | TechEx 2026 submission | `apohara-inti/docs/submissions/techex-2026-submission.md` |
 | Milan AI Week submission | `apohara-inti/docs/submissions/milan-aiweek-2026-submission.md` |

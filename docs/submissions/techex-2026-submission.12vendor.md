@@ -34,7 +34,7 @@ Verifiable, not claimed:
 - 12 vendors via OpenRouter, each in an isolated KV-cache enforced by
   INV-15 JCRSafetyGate. Paper v3.0 (formal Z3 SMT proof, UNSAT on
   negation in 10.08 ms) complements v2.0.1 empirical sweep (0/1210
-  violations). DOI 10.5281/zenodo.20114594.
+  violations). DOI 10.5281/zenodo.20277875.
 - JBB-Behaviors block rate 93.75% (Wilson 95% CI [86.2%, 97.3%], n=80
   holdout). Numbers from logs/*.json, not marketing.
 - 120+ pytest tests + 15+ measurement JSON logs.
@@ -99,7 +99,7 @@ Open Source
 ## Notes for the submission form
 - Use the Apache-2.0 license badge in the screenshot grid (we have a real LICENSE file).
 - Direct judges to `logs/baseline_aegis-ensemble-10frontier_day5_FALLBACK_20260515T212737Z.json` for the JBB block-rate evidence (commit hash `c9dc9ac` corrected the citation).
-- Paper PDF lives at `paper/inv15_paper.pdf` in the Context_Forge repo (v3.0 adds Z3 SMT proof; v2.0.1 DOI already on Zenodo). DOI 10.5281/zenodo.20114594.
+- Paper PDF lives at `paper/inv15_paper.pdf` in the Context_Forge repo (v3.0 adds Z3 SMT proof; v2.0.1 DOI already on Zenodo). DOI 10.5281/zenodo.20277875.
 - AUDIT.md in Context_Forge documents the 10 V6.0 overclaims closed in V7.0.0-rc.2 — judges who open it see we hold ourselves to the same standard we hold competitors to.
 - Phase 3 delta (what shipped in the last 6 hours): `docs/submissions/PHASE3-DELTA.md`.
 

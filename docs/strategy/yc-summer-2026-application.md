@@ -31,7 +31,7 @@ GitHub repos:
 - Aegis (9-vendor adversarial ensemble): https://github.com/SuarezPM/apohara-aegis
 - ContextForge (KV-cache memory plane + INV-15): https://github.com/SuarezPM/Apohara_Context_Forge
 
-Paper (ContextForge + INV-15 formal proof): DOI 10.5281/zenodo.20114594
+Paper (ContextForge + INV-15 formal proof): DOI 10.5281/zenodo.20277875
 
 ---
 
@@ -44,7 +44,7 @@ invariants, multi-agent KV-cache architectures.
 
 Relevant technical background for this product:
 - Built the INV-15 formal invariant from scratch and proved it in the paper
-  (DOI 10.5281/zenodo.20114594, v2.0.1, 12 references, MI300X-grounded).
+  (DOI 10.5281/zenodo.20277875, v2.0.1, 12 references, MI300X-grounded).
 - Ported Apohara Guard's TypeScript EvidenceVault (HMAC-signed SHA-256 chain)
   to Python in a single sprint day, with full test coverage.
 - Ran GPU benchmarks on AMD Instinct MI300X (192 GB HBM3, ROCm 7.2.0) and
@@ -167,7 +167,7 @@ the API surface to a single endpoint; cost-per-token dropped enough that a
 nine-vendor adversarial pass is within the budget of a per-PR review workflow.
 
 **Formal verification of AI memory became tractable.** The INV-15 invariant
-and its proof (DOI 10.5281/zenodo.20114594) are grounded in real KV-cache
+and its proof (DOI 10.5281/zenodo.20277875) are grounded in real KV-cache
 mechanics — not a theoretical abstraction. Hardware validation on AMD MI300X
 (ROCm 7.2.0) shows the isolation holds under the memory access patterns of
 production vLLM serving. That grounding was not possible before ROCm 7.x
@@ -182,7 +182,7 @@ deployment with:
 
 - 350+ pytest tests across three repos
 - 15+ committed measurement JSON files (all public in the GitHub repos)
-- A peer-reviewable paper with a Zenodo DOI (10.5281/zenodo.20114594)
+- A peer-reviewable paper with a Zenodo DOI (10.5281/zenodo.20277875)
 - A live demo at https://149.28.56.91.nip.io/ (no signup)
 - Two hackathon submissions: TechEx 2026 (judging window May 14–26) and
   Milan AI Week 2026 (deadline May 20, prize pool $28K+)
@@ -211,7 +211,7 @@ The technical moat has three layers that are hard to replicate quickly:
 **INV-15 formal proof.** Writing a formal safety invariant for KV-cache
 isolation between writer and critic agents, proving it, and validating
 it on real hardware is not a weekend project. The paper is at
-DOI 10.5281/zenodo.20114594. The implementation is in
+DOI 10.5281/zenodo.20277875. The implementation is in
 `apohara_context_forge/safety/jcr_gate.py`. The proof is machine-checkable.
 No competitor in the current hackathon field — and, to our knowledge, no
 commercially deployed product — has an equivalent.
@@ -292,7 +292,7 @@ The direct competitive set from TechEx 2026 (our field):
 | Pantheon | Gemini 2.5 Flash (single vendor) + LobsterTrap HTTP | 0 | 0 | No |
 | Vela | Gemini 2.5 Flash (single vendor) + LobsterTrap (claimed) | 0 | 0 | No |
 | Trusyn | TypeScript + Gemini family (single vendor) | 0 | 0 | No |
-| **Apohara PROBANT** | **9-vendor ensemble + INV-15 + signed ledger** | **350+** | **15+ JSON logs** | **Yes, DOI 10.5281/zenodo.20114594** |
+| **Apohara PROBANT** | **9-vendor ensemble + INV-15 + signed ledger** | **350+** | **15+ JSON logs** | **Yes, DOI 10.5281/zenodo.20277875** |
 
 The broader market includes:
 - **NeMo Guardrails** (NVIDIA, Apache-2.0): prompt injection and jailbreak
