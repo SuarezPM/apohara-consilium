@@ -12,7 +12,7 @@
 ```json
 {
   "name": "verify_code",
-  "description": "Verify AI-generated code with the 9-vendor adversarial ensemble.",
+  "description": "Verify AI-generated code with the 12-vendor adversarial ensemble.",
   "inputSchema": {
     "type": "object",
     "properties": {

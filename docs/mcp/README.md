@@ -12,7 +12,7 @@ The server is defined in `packages/backend/mcp_server.py` using the [`mcp`](http
 
 | Tool | Signature | Description |
 |---|---|---|
-| `verify_code` | `code: str, gemini_api_key?: str` | Verify AI-generated code with the 9-vendor adversarial ensemble. Returns a `verdict` (`verified` / `risky` / `blocked`), per-attacker reasoning, and a `signed_hash` for audit lookup. If `gemini_api_key` is omitted, the shared demo quota applies (5 requests/IP/day). |
+| `verify_code` | `code: str, gemini_api_key?: str` | Verify AI-generated code with the 12-vendor adversarial ensemble. Returns a `verdict` (`verified` / `risky` / `blocked`), per-attacker reasoning, and a `signed_hash` for audit lookup. If `gemini_api_key` is omitted, the shared demo quota applies (5 requests/IP/day). |
 | `get_audit` | `verdict_id: str` | Fetch a previously signed verdict from the SHA-256 + HMAC ledger by its `signed_hash`. |
 | `list_recent_verdicts` | `limit?: int (default 20)` | List the most recent N audit ledger entries. Requires `APOHARA_ADMIN_KEY` environment variable on the backend. |
 

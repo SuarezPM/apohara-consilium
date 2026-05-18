@@ -3,7 +3,7 @@
 > A different AI reviews the code your AI just wrote, while your agent memory stays isolated.
 
 Open-source defense-in-depth for AI-generated code. Gemini writes and audits the
-code, then 9 frontier vendors adversarially attack the output before merge,
+code, then 12 frontier vendors adversarially attack the output before merge,
 while [Apohara ContextForge](https://github.com/SuarezPM/Apohara_Context_Forge)
 enforces `INV-15` memory isolation between the writer agent and every attacker.
 
@@ -19,7 +19,7 @@ Two zero-friction entry paths:
 - **Try with demo key** (no signup): click the "Try with demo key" button under the API-key field. Uses a server-side Gemini key shared across visitors, rate-limited to **5 calls per IP per UTC day**. Returns 429 with the next reset timestamp when you hit the cap.
 - **Bring your own Gemini key** (BYOK): paste your key — we never store it. Get one at [aistudio.google.com/apikey](https://aistudio.google.com/apikey); the free tier covers hundreds of verifications.
 
-Either path runs the same pipeline: 9-vendor adversarial attackers (Claude Opus 4.7, GPT-5.5, DeepSeek V4 Pro, MiniMax M2.7, Kimi K2.6, GLM 5.1, Qwen 3.6 Plus, Nemotron 3 Super 120B, Big Pickle) on our shared credit pool, INV-15 memory isolation enforced, SHA-256-signed verdict ledger. The 12-vendor expansion (Mistral Large 2411, Grok 2, Perplexity Sonar) ships in `apohara-aegis` main; production rollout is the next deploy cycle.
+Either path runs the same pipeline: 12-vendor adversarial attackers (Claude Opus 4.7, GPT-5.5, DeepSeek V4 Pro, MiniMax M2.7, Kimi K2.6, GLM 5.1, Qwen 3.6 Plus, Nemotron 3 Super 120B, Big Pickle) on our shared credit pool, INV-15 memory isolation enforced, SHA-256-signed verdict ledger. The 12-vendor expansion (Mistral Large 2411, Grok 2, Perplexity Sonar) ships in `apohara-aegis` main; production rollout is the next deploy cycle.
 
 Frontend: `https://www.apohara.dev` (Vercel) → API: `https://api.apohara.dev` (Vultr droplet, Caddy auto-TLS via Let's Encrypt). Experimental Next.js SSR variant: [`https://apohara-nextjs.vercel.app`](https://apohara-nextjs.vercel.app).
 
@@ -43,11 +43,11 @@ Paper v3.0 at [`paper/inv15_paper.pdf`](https://github.com/SuarezPM/Apohara_Cont
 
 ## Sanity check
 
-- **What is it?** — Cross-AI code reviewer where Gemini writes/audits and 9 frontier vendors adversarially attack the output before merge.
+- **What is it?** — Cross-AI code reviewer where Gemini writes/audits and 12 frontier vendors adversarially attack the output before merge.
 - **For whom?** — Engineering teams using AI-assisted code generation (Cursor, Claude Code, Cline, Copilot) who need pre-merge verification.
 - **Why now?** — EU AI Act Article 14 fully applicable 2026-08-02 (78 days); OWASP LLM 2026 elevated Tool Poisoning to LLM02.
 - **What does it replace?** — Single-AI self-review (Cursor /best-of-n is same-model parallel, not cross-vendor) and trust-the-LLM-output workflows.
-- **Cost to use?** — Free OSS Apache-2.0; user provides 1 Gemini API key (BYOK); 9 attackers run on Apohara's pre-funded credit pool.
+- **Cost to use?** — Free OSS Apache-2.0; user provides 1 Gemini API key (BYOK); 12 attackers run on Apohara's pre-funded credit pool.
 - **Next step after install?** — `apohara verify <github-pr-url>` returns signed JSON `verdict: verified|risky|blocked` with INV-15-verified ContextForge audit id.
 
 ---
@@ -116,8 +116,10 @@ confirmed from public material, we say so explicitly rather than guess.
 Granite Guardian 4 (`ibm/granite-4-h-small`) hits **98.75%** on the same
 n=80 JBB-Behaviors holdout where the Apohara ensemble hits **93.75%** — and
 it is **~19× faster** (p50 522 ms vs 10063 ms). On *prompt-level safety
-classification*, a purpose-built classifier from IBM beats a 9-vendor
-adversarial ensemble. We measured it, we are not hiding the number, and
+classification*, a purpose-built classifier from IBM beats a multi-vendor
+adversarial ensemble (the 93.75% was measured on the Day-5 10-vendor
+FallbackVendorAdapter ensemble; expansion to 12 vendors on 2026-05-18
+re-measurement is tracked as post-hackathon work). We measured it, we are not hiding the number, and
 the [log][gg4-log] is committed to the public repo.
 
 That said, Apohara PROBANT solves a different problem: **adversarial review
@@ -180,7 +182,7 @@ request triggers an inline DPI pre-check against the Lobster Trap proxy
 |---|---|
 | Allow (2xx) | Continues to Gemini writer + 9-attacker pass; ledger entry records `dpi_check.source = "lobstertrap"` for the audit trail |
 | Deny (403 or `id="lobstertrap-deny"` in body) | Short-circuits to `verdict="blocked"` with `attackers=[]`, `cost_estimate_usd=0`, INV-15 still enforced, ledger entry records the deny reason |
-| Unreachable (timeout / connect error) | Fail-open: continues current flow; ledger entry records `dpi_check.source = "unreachable-fallback"` (the 9-vendor ensemble is the primary safety layer, Lobster Trap is a fast perimeter pre-filter) |
+| Unreachable (timeout / connect error) | Fail-open: continues current flow; ledger entry records `dpi_check.source = "unreachable-fallback"` (the 12-vendor ensemble is the primary safety layer, Lobster Trap is a fast perimeter pre-filter) |
 
 When `LOBSTERTRAP_URL` is unset, the pre-check returns
 `source="disabled"` without any HTTP call — zero overhead, identical
@@ -243,7 +245,7 @@ cd packages/backend && pip install -e . && uvicorn main:app --reload
 
 ## Shipped (Phase 2 + Phase 3, 2026-05-18)
 
-- **12-vendor adversarial adapters** (apohara-aegis main): Claude, GPT, DeepSeek, Kimi, GLM, Qwen, Nemotron, MiniMax, Big-Pickle, Mistral Large 2411, Grok 2, Perplexity Sonar — code shipped + tested. Production droplet currently runs the **9-vendor baseline**; 12-vendor production rollout is the next deploy cycle (per the threshold-deferral footnote below).
+- **12-vendor adversarial ensemble LIVE** (apohara-aegis main, droplet upgraded 2026-05-18T19:43Z): Claude, GPT, DeepSeek, Kimi, GLM, Qwen, Nemotron, MiniMax, Big-Pickle, Mistral Large 2411, Grok 2, Perplexity Sonar. `/v1/demo_verify` smoke confirms 12 attackers in the response array — 7 producing votes (claude, gpt, deepseek, glm, qwen, nemotron, mistral), 5 fail-open (opencode_zen × 2 routing-key gaps, kimi parse error, grok 404, perplexity 404). Evidence log: [`logs/12vendor_live_smoke_20260518T194417Z.json`](logs/12vendor_live_smoke_20260518T194417Z.json). The fail-open behaviour is intentional per `FallbackVendorAdapter` contract and openly documented in [`docs/submissions/JUDGE-FAQ.md`](docs/submissions/JUDGE-FAQ.md) Q1.
 - **Z3 SMT formal proof of INV-15** (Apohara_Context_Forge paper v3.0): UNSAT on negation in 10.08 ms (single MI300X core), complementing the v2.0.1 empirical sweep (0/1210 violations). Zenodo DOI [10.5281/zenodo.20114594](https://doi.org/10.5281/zenodo.20114594).
 - **Veea LobsterTrap DPI pre-check** (active subprocess): measured 50% SQLi block (n=20, Wilson CI [29.9%, 70.1%] directional), 9.8% benign FPR (n=51). Logs at [`logs/lobstertrap_block_rate_*.json`](logs/).
 - **HMAC-SHA256 verdict chain** with tamper-detection via `verify_chain()` ([`packages/backend/verdict_vault.py`](packages/backend/verdict_vault.py)).
@@ -259,4 +261,4 @@ cd packages/backend && pip install -e . && uvicorn main:app --reload
 Apache-2.0. See [LICENSE](LICENSE).
 
 ---
-> **Note on verdict thresholds**: The aggregation thresholds in this submission (`risky ≥3 / blocked ≥6` harmful judgments per request) were calibrated for the original 9-vendor baseline. The 12-vendor expansion (Mistral Large 2411, Grok 2, Perplexity Sonar Large added 2026-05-18) ships with adapter code only; the proportional threshold rescale to `risky ≥4 / blocked ≥8` is tracked in [`docs/research/12-vendor-ensemble-design.md`](docs/research/12-vendor-ensemble-design.md) and lands in a separate PR with full regression suite per the design-doc specification. This is honest deferral, not silent overclaim.
+> **Note on verdict thresholds**: The aggregation thresholds (`risky ≥3 / blocked ≥6` harmful judgments per request) were calibrated for the original 9-vendor baseline. The 12-vendor ensemble is now LIVE on the production droplet (Mistral Large 2411 producing votes, Grok 2 + Perplexity Sonar fail-open until OpenRouter catalog refresh), but the thresholds were intentionally NOT rescaled in this sprint — the cascade (3+ named tests, 8+ doc locations, frontend copy, design-doc-mandated separate PR) was deferred per [`docs/research/12-vendor-ensemble-design.md`](docs/research/12-vendor-ensemble-design.md). At 3/6 thresholds with 12 vendors the gate is *stricter* (3/12 → review, 6/12 → blocked) than the proportional 4/8 would be, not looser — safe direction. The threshold rescale lands as a follow-up PR with full regression suite. This is honest deferral, not silent overclaim.

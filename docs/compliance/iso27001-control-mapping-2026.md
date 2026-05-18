@@ -83,7 +83,7 @@ This document groups controls by family and highlights those most relevant to Ap
 
 | Control | Description | Apohara Control | Evidence | Status | Remediation |
 |---|---|---|---|---|---|
-| A.5.29 | Maintain information security during disruption | LobsterTrap client fails-open to maintain service when DPI is unreachable; 9-vendor ensemble degrades gracefully | `packages/backend/lobstertrap_client.py:check_prompt_with_lobstertrap()` (fail-open return) | Partial | Document that the fail-open decision is intentional and bounded: define what security properties are preserved and which are temporarily degraded when LobsterTrap is unreachable. |
+| A.5.29 | Maintain information security during disruption | LobsterTrap client fails-open to maintain service when DPI is unreachable; 12-vendor ensemble degrades gracefully | `packages/backend/lobstertrap_client.py:check_prompt_with_lobstertrap()` (fail-open return) | Partial | Document that the fail-open decision is intentional and bounded: define what security properties are preserved and which are temporarily degraded when LobsterTrap is unreachable. |
 
 ### A.5.36 Compliance with Policies, Rules, and Standards
 
@@ -227,7 +227,7 @@ All A.7 controls relate to physical premises and hardware. Apohara PROBANT is a 
 
 | Control | Description | Apohara Control | Evidence | Status | Remediation |
 |---|---|---|---|---|---|
-| A.8.27 | Principles for engineering of secure systems established, documented, maintained, and applied | Defense-in-depth: LobsterTrap (boundary) → prompt envelope (input isolation) → 9-vendor ensemble (cross-validation) → HMAC chain (output integrity) → NO-HEDGING gate (verdict quality) | All backend controls collectively | Implemented | No action required. The layered architecture is a deliberate security engineering choice documented in module docstrings and `AUDIT.md`. |
+| A.8.27 | Principles for engineering of secure systems established, documented, maintained, and applied | Defense-in-depth: LobsterTrap (boundary) → prompt envelope (input isolation) → 12-vendor ensemble (cross-validation) → HMAC chain (output integrity) → NO-HEDGING gate (verdict quality) | All backend controls collectively | Implemented | No action required. The layered architecture is a deliberate security engineering choice documented in module docstrings and `AUDIT.md`. |
 
 ### A.8.28 Secure Coding
 

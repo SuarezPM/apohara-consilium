@@ -65,7 +65,7 @@ Backup health endpoint: https://api.apohara.dev/health
 ```
 https://github.com/SuarezPM/apohara-inti           (frontend+backend monorepo)
 https://github.com/SuarezPM/Apohara_Context_Forge  (KV-cache + INV-15 core + paper)
-https://github.com/SuarezPM/apohara-aegis          (9-vendor adversarial ensemble)
+https://github.com/SuarezPM/apohara-aegis          (12-vendor adversarial ensemble)
 ```
 
 ## Field: Video URL

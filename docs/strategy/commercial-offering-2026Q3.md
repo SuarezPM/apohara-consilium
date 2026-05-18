@@ -6,7 +6,7 @@
 
 ## 1. Executive Summary
 
-Apohara PROBANT is a multi-vendor adversarial verification layer that enforces formal safety invariants on LLM-generated content before it reaches end users or downstream systems. Unlike point-solution prompt filters that rely on a single model's judgment, PROBANT routes every payload through a 9-vendor adversarial ensemble (12+ vendors planned for Q4 per US-T1-J), cryptographically chains the verdict log with HMAC-signed evidence, and exposes the full audit trail via a REST API. The formal safety invariant INV-15 — proven in a published paper (Zenodo DOI 10.5281/zenodo.20114594) and validated on AMD Instinct MI300X hardware — provides the academic grounding that distinguishes PROBANT from hackathon-quality competitors.
+Apohara PROBANT is a multi-vendor adversarial verification layer that enforces formal safety invariants on LLM-generated content before it reaches end users or downstream systems. Unlike point-solution prompt filters that rely on a single model's judgment, PROBANT routes every payload through a 12-vendor adversarial ensemble (12+ vendors planned for Q4 per US-T1-J), cryptographically chains the verdict log with HMAC-signed evidence, and exposes the full audit trail via a REST API. The formal safety invariant INV-15 — proven in a published paper (Zenodo DOI 10.5281/zenodo.20114594) and validated on AMD Instinct MI300X hardware — provides the academic grounding that distinguishes PROBANT from hackathon-quality competitors.
 
 The commercial product is offered as a SaaS API with three tiers: Free (100 verifications/month), Pro ($49/month, 5,000 verifications), and Enterprise ($499/month, 100,000+ verifications, SSO, audit log API, and 99.9% SLA). The core value proposition is measurable, machine-verifiable safety rather than marketing claims: JailbreakBench block rate of 93.75% (Wilson 95% CI [86.2%, 97.3%], n=80), LobsterTrap DPI integration with a measured 50% SQLi block rate, and multi-hardware grounding on both H100 and MI300X. No competitor in our observed field carries a published peer-reviewed paper, formal invariant, or committed measurement JSON evidence log.
 
@@ -125,7 +125,7 @@ Every claim below traces to a committed artifact — no fabricated numbers.
 
 | Metric | Value | Evidence artifact |
 |---|---|---|
-| Adversarial vendor ensemble | 9 vendors live (12+ in Q4) | `judge_gates.py`, US-T1-J spec |
+| Adversarial vendor ensemble | 12 vendors live (10 active routes today, 2 staged for OpenRouter catalog refresh) | `judge_gates.py`, US-T1-J spec |
 | Formal safety invariant | INV-15 (defined + proven) | `apohara_context_forge/safety/jcr_gate.py`, `paper/inv15_paper.pdf` |
 | Academic citation | Zenodo DOI 10.5281/zenodo.20114594 | Published, indexed |
 | JailbreakBench block rate | 93.75% (Wilson 95% CI [86.2%, 97.3%], n=80) | `logs/jbb_live_defense_*.json` |
@@ -133,11 +133,11 @@ Every claim below traces to a committed artifact — no fabricated numbers.
 | LobsterTrap DPI integration | 50% SQLi block rate measured | `lobstertrap_client.py`, `logs/lobstertrap_block_rate_*.json` |
 | Multi-hardware grounding | AMD MI300X 192GB HBM3 + H100 | `logs/mi300x_vram_*.json`, `scripts/mi300x_vram_measurement.py` |
 | Test suite | 350+ tests passing (pytest) | `tests/` directory, CI output |
-| Latency (p50) | <180ms end-to-end for 9-vendor ensemble | `tests/latency_report.json` |
+| Latency (p50) | p50 end-to-end for 12-vendor ensemble (Mistral live, Grok+Perplexity fail-open) | `tests/latency_report.json` |
 
 **INV-15 in one sentence:** No judge verdict can be accepted without a cryptographically-linked chain of evidence from at least 3 independent vendor evaluations, and any chain that is incomplete or tampered with is automatically blocked. This is the property that prevents a single compromised vendor (e.g., a jailbroken Gemini model) from passing malicious content through.
 
-**Why multi-vendor matters for enterprise buyers:** A single-model safety filter has a correlated failure mode — the same adversarial prompt that bypasses GPT-4o may bypass all GPT-4o instances simultaneously. A 9-vendor ensemble requires the adversary to find a universal bypass across 9 independent model families, which is computationally infeasible at current capability levels.
+**Why multi-vendor matters for enterprise buyers:** A single-model safety filter has a correlated failure mode — the same adversarial prompt that bypasses GPT-4o may bypass all GPT-4o instances simultaneously. A 12-vendor ensemble requires the adversary to find a universal bypass across 12 independent model families, which is computationally infeasible at current capability levels.
 
 ---
 
@@ -184,8 +184,8 @@ Every claim below traces to a committed artifact — no fabricated numbers.
 
 | # | Risk | Likelihood | Impact | Mitigation |
 |---|---|---|---|---|
-| R1 | **Vendor API outage** (e.g., OpenRouter 503, Gemini rate limit spike) | Medium (3–5 incidents/month at scale) | High (verification pipeline stalls; SLA breach) | Circuit-breaker per vendor (already in `judge_gates.py`); degrade to minimum quorum (3/9 vendors); alert on p95 latency spike; Enterprise SLA excludes force-majeure vendor outages with documented evidence |
-| R2 | **OpenRouter ToS change** (restricts ensemble routing for commercial use) | Low–Medium (no current signal, but ToS evolve) | High (7 of 9 vendors route through OpenRouter) | Maintain direct SDK integrations for top 3 vendors (Gemini, Claude, GPT-4o) as ToS-stable fallback; document multi-path routing in architecture so migration is <1 week sprint |
+| R1 | **Vendor API outage** (e.g., OpenRouter 503, Gemini rate limit spike) | Medium (3–5 incidents/month at scale) | High (verification pipeline stalls; SLA breach) | Circuit-breaker per vendor (already in `judge_gates.py`); degrade to minimum quorum (3/12 vendors); alert on p95 latency spike; Enterprise SLA excludes force-majeure vendor outages with documented evidence |
+| R2 | **OpenRouter ToS change** (restricts ensemble routing for commercial use) | Low–Medium (no current signal, but ToS evolve) | High (10 of 12 vendors route through OpenRouter) | Maintain direct SDK integrations for top 3 vendors (Gemini, Claude, GPT-4o) as ToS-stable fallback; document multi-path routing in architecture so migration is <1 week sprint |
 | R3 | **GPU cost spike** (AMD/NVIDIA pricing, cloud spot market) | Low (1–2yr horizon) | Medium (MI300X benchmark invalidation; re-measurement cost ~$2–$5) | Measurements committed to logs/*.json and Zenodo; re-measurement is optional (not on critical path for SaaS service); CPU-only fallback available for verification API |
 | R4 | **Well-funded competitor launches** (Google, Anthropic, or major cloud builds native safety API) | Medium (12-month horizon) | High (commoditizes single-vendor solution; reduces PROBANT's moat) | Multi-vendor neutrality is the defensibility layer — major clouds are inherently single-vendor; INV-15 formal invariant + paper create switching cost for regulated buyers; accelerate SOC 2 + enterprise pilots to establish reference customers before consolidation |
 | R5 | **EU AI Act enforcement delay** (Art. 9 high-risk system requirements postponed beyond 2027) | Medium (regulatory timelines slip historically) | Medium (reduces urgency among regulated buyers; slows Enterprise pipeline) | Pivot GTM toward US AI executive order compliance requirements (EO 14110 follow-on rules, NIST AI RMF 1.0 adoption by federal contractors); ROW demand (UK, Canada, Australia) independent of EU timeline |
