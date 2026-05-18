@@ -700,21 +700,9 @@ async def demo_verify(
 
 
 # ---------------------------------------------------------------------------
-# /v1/audit/{verdict_id}
-# ---------------------------------------------------------------------------
-
-
-@app.get("/v1/audit/{verdict_id}")
-def audit(verdict_id: str) -> JSONResponse:
-    """Return a previously-signed verdict from the ledger, or 404."""
-    entry = _read_ledger_entry(verdict_id)
-    if entry is None:
-        raise HTTPException(status_code=404, detail=f"no ledger entry for {verdict_id}")
-    return JSONResponse(status_code=200, content=entry)
-
-
-# ---------------------------------------------------------------------------
-# /v1/audit/recent
+# /v1/audit/recent  — MUST be declared BEFORE /v1/audit/{verdict_id}
+# Otherwise FastAPI matches "recent" as a verdict_id and 404s with
+# {"detail": "no ledger entry for recent"} (classic routing-order gotcha).
 # ---------------------------------------------------------------------------
 
 
@@ -750,6 +738,20 @@ def audit_recent(limit: int = 20, admin_key: str = "") -> JSONResponse:
         status_code=200,
         content={"entries": entries, "limit": limit, "total_returned": len(entries)},
     )
+
+
+# ---------------------------------------------------------------------------
+# /v1/audit/{verdict_id}  — declared AFTER /recent so the literal route wins.
+# ---------------------------------------------------------------------------
+
+
+@app.get("/v1/audit/{verdict_id}")
+def audit(verdict_id: str) -> JSONResponse:
+    """Return a previously-signed verdict from the ledger, or 404."""
+    entry = _read_ledger_entry(verdict_id)
+    if entry is None:
+        raise HTTPException(status_code=404, detail=f"no ledger entry for {verdict_id}")
+    return JSONResponse(status_code=200, content=entry)
 
 
 # ---------------------------------------------------------------------------
