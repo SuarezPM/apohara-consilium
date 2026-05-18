@@ -5,20 +5,43 @@
   "version": "0.1.0",
   "license": "Apache-2.0",
   "publisher": "SuarezPM",
-  "engines": { "vscode": "^1.80.0" },
-  "categories": ["Linters", "Other"],
-  "activationEvents": ["onCommand:apohara-probant.verifyPR", "onCommand:apohara-probant.verifySelection"],
+  "repository": { "type": "git", "url": "https://github.com/SuarezPM/apohara-probant" },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Linters",
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:apohara-probant.verifyPR",
+    "onCommand:apohara-probant.verifySelection"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
-      {"command": "apohara-probant.verifyPR", "title": "Apohara: Verify Current Diff"},
-      {"command": "apohara-probant.verifySelection", "title": "Apohara: Verify Selection"}
+      {
+        "command": "apohara-probant.verifyPR",
+        "title": "Apohara: Verify Current Diff"
+      },
+      {
+        "command": "apohara-probant.verifySelection",
+        "title": "Apohara: Verify Selection"
+      }
     ],
     "configuration": {
       "title": "Apohara PROBANT",
       "properties": {
-        "apohara.apiUrl": {"type": "string", "default": "https://api.apohara.dev", "description": "Apohara PROBANT backend URL"},
-        "apohara.geminiApiKey": {"type": "string", "default": "", "description": "Your Gemini API key (BYOK). Get one at https://aistudio.google.com/apikey"}
+        "apohara.apiUrl": {
+          "type": "string",
+          "default": "https://api.apohara.dev",
+          "description": "Apohara PROBANT backend URL"
+        },
+        "apohara.geminiApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Your Gemini API key (BYOK). Get one at https://aistudio.google.com/apikey"
+        }
       }
     }
   },
@@ -27,8 +50,9 @@
     "package": "vsce package"
   },
   "devDependencies": {
-    "@types/vscode": "^1.80.0",
     "@types/node": "^18.0.0",
+    "@types/vscode": "^1.80.0",
+    "@vscode/vsce": "^3.9.1",
     "typescript": "^5.0.0"
   }
 }
