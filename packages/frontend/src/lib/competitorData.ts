@@ -24,7 +24,7 @@ export type Tier1Competitor = {
 /** Tier 1: 4 rows (Apohara + 3 hackathon peers). Fully cited per-cell. */
 export const TIER_1: Tier1Competitor[] = [
   {
-    name: "Apohara Inti",
+    name: "Apohara PROBANT",
     highlighted: true,
     vendors: {
       value: "9",

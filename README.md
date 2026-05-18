@@ -1,4 +1,4 @@
-# Apohara Inti
+# Apohara PROBANT
 
 > A different AI reviews the code your AI just wrote, while your agent memory stays isolated.
 
@@ -82,7 +82,7 @@ backend repo:
 Acknowledgment: these patterns are ports from
 [`gadievron/raptor`](https://github.com/gadievron/raptor) (MIT, attribution
 preserved in `THIRD_PARTY_NOTICES.md`) and from the sister project Apohara
-Guard's `EvidenceVault`. Both fit Apohara Inti's audit-first design without
+Guard's `EvidenceVault`. Both fit Apohara PROBANT's audit-first design without
 modification.
 
 ---
@@ -95,7 +95,7 @@ confirmed from public material, we say so explicitly rather than guess.
 
 | Product | Approach | Adversarial testing | Memory isolation | License | User cost | Reproducible benchmark |
 |---|---|---|---|---|---|---|
-| **Apohara Inti** (us) → | **multi-vendor consensus** | **Yes** | **ContextForge INV-15** | **Apache-2.0** | **free with BYOK** | **Yes (see `logs/`)** |
+| **Apohara PROBANT** (us) → | **multi-vendor consensus** | **Yes** | **ContextForge INV-15** | **Apache-2.0** | **free with BYOK** | **Yes (see `logs/`)** |
 | Gemini Code Assist [^1] | single-vendor LLM | No | none | proprietary | free (33 PR/day) + paid enterprise | No |
 | DeepSource BYOK AI Review [^2] | hybrid static + AI | No | none | commercial | paid enterprise (BYOK) | No |
 | LlamaGuard / Purple Llama [^3] | safety classifier (single-vendor) | Yes (CyberSec Eval) | none | Llama Community License | free OSS | Partial (CyberSec Eval public) |
@@ -123,7 +123,7 @@ classification*, a purpose-built classifier from IBM beats a 9-vendor
 adversarial ensemble. We measured it, we are not hiding the number, and
 the [log][gg4-log] is committed to the public repo.
 
-That said, Apohara Inti solves a different problem: **adversarial review
+That said, Apohara PROBANT solves a different problem: **adversarial review
 of generated code with memory isolation**. Granite-4 cannot simulate nine
 different attacker perspectives reviewing the same patch (it is one model),
 it cannot enforce INV-15 KV-cache isolation (no such surface exists in
@@ -146,7 +146,7 @@ proprietary. Regulatory pressure makes this gap urgent: [EU AI Act
 Article 14][8] (human-oversight obligation) becomes fully applicable on
 2026-08-02 (78 days), and [OWASP Top-10 for LLM Apps 2026][9] (released
 2026-04-14) elevated **Tool Poisoning to LLM02** — precisely the surface
-Apohara Inti's cross-vendor attacker ensemble targets.
+Apohara PROBANT's cross-vendor attacker ensemble targets.
 
 [8]: https://artificialintelligenceact.eu/article/14/
 [9]: https://owasp.org/www-project-top-10-for-large-language-model-applications/
@@ -155,7 +155,7 @@ Apohara Inti's cross-vendor attacker ensemble targets.
 
 ## Deploy to TerraFabric
 
-Run the full Apohara Inti stack behind Veea's Lobster Trap DPI proxy with one
+Run the full Apohara PROBANT stack behind Veea's Lobster Trap DPI proxy with one
 command. The recipe brings up four services on a shared docker network:
 Lobster Trap as the ingress DPI, the FastAPI backend, the ContextForge MCP
 sidecar, and a mock VeeaONE control plane stub.
@@ -195,12 +195,12 @@ env var automatically for the `aegis-backend` service.
 
 ## Powered by Apohara Context Forge
 
-Apohara Inti's memory plane runs on
+Apohara PROBANT's memory plane runs on
 [**Apohara Context Forge**](https://github.com/SuarezPM/Apohara_Context_Forge),
 the only open-source multi-agent KV-cache registry for vLLM that ships
 with a formal safety invariant — `INV-15` — enforced at every judge
 call. ContextForge is a distinct upstream project (Apache-2.0,
-hardware-validated on AMD Instinct MI300X, V7.0.0-rc.2); Inti imports
+hardware-validated on AMD Instinct MI300X, V7.0.0-rc.2); PROBANT imports
 it as a git dependency, not as a vendored copy.
 
 **What it does.** ContextForge is a KV-cache coordination layer for
@@ -212,7 +212,7 @@ pipeline calls it once with `role="critic"`, and the gate's decision —
 plus a UUID-format audit id — is attached to the verdict JSON before
 it is signed into the SHA-256 ledger.
 
-**Why memory isolation matters here.** Inti spins up nine adversarial
+**Why memory isolation matters here.** PROBANT spins up nine adversarial
 attacker agents against every Gemini-written review. Without
 isolation, a poisoned attacker prompt could mutate the writer's
 KV-cache state and propagate to subsequent calls — a class of

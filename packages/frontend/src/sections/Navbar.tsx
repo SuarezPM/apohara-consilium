@@ -31,7 +31,7 @@ export function Navbar() {
             APOHARA
           </span>
           <Badge variant="outline" className="hidden sm:inline-flex font-mono text-[10px]">
-            INTI
+            PROBANT
           </Badge>
         </a>
 

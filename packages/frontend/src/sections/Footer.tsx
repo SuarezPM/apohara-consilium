@@ -2,7 +2,7 @@ const COLS = [
   {
     title: "Products",
     links: [
-      { href: "https://github.com/SuarezPM/apohara-inti", label: "Apohara Inti" },
+      { href: "https://github.com/SuarezPM/apohara-inti", label: "Apohara PROBANT" },
       { href: "https://github.com/SuarezPM/Apohara_Context_Forge", label: "Context Forge" },
       { href: "https://github.com/SuarezPM/apohara-aegis", label: "Aegis" },
     ],

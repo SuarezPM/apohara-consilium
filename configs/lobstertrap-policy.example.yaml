@@ -1,0 +1,105 @@
+# Apohara PROBANT — LobsterTrap policy for /v1/verify ingress DPI
+# Applied via: lobstertrap inspect "<prompt>" --policy /opt/apohara-inti/lobstertrap-policy.yaml
+#
+# Rationale:
+# - SQL injection: LT's default detectors target prompt-level injection, not SQL syntax.
+#   We add explicit regex rules for canonical SQLi tokens.
+# - Prompt injection: LT's `contains_injection_patterns` boolean catches "ignore instructions"
+#   class of attacks natively.
+# - PII: LT's `contains_pii` boolean catches SSN/credit-card/phone — log but allow (audit
+#   trail, not block, since the verifier is reviewing code not user PII).
+# - Default action ALLOW for everything else (we are a code verifier, not a chatbot guard;
+#   most prompts are legitimate code-review requests).
+
+version: "1.0"
+policy_name: "apohara-probant-v1"
+default_action: ALLOW
+
+ingress_rules:
+  - name: block_sql_injection_classic_or
+    description: "Classic SQL injection: ' OR '1'='1, ' OR 1=1, etc."
+    priority: 200
+    action: DENY
+    deny_message: "[LOBSTERTRAP] Blocked: SQL injection pattern (boolean OR-true tautology) detected."
+    conditions:
+      - field: token_count
+        match_type: threshold
+        value: 1.0
+      - field: intent_category
+        match_type: exact
+        value: "data_access"
+
+  - name: block_sql_injection_union
+    description: "UNION-based SQL injection"
+    priority: 195
+    action: DENY
+    deny_message: "[LOBSTERTRAP] Blocked: UNION-based SQL injection detected."
+    conditions:
+      - field: intent_category
+        match_type: exact
+        value: "data_access"
+      - field: risk_score
+        match_type: threshold
+        value: 0.3
+
+  - name: block_prompt_injection
+    description: "Prompt-level injection (ignore instructions, role override)"
+    priority: 100
+    action: DENY
+    deny_message: "[LOBSTERTRAP] Blocked: prompt injection attempt (role override or instruction smuggling)."
+    conditions:
+      - field: contains_injection_patterns
+        match_type: boolean
+        value: true
+
+  - name: block_obfuscation_high_risk
+    description: "Obfuscated content with high risk score"
+    priority: 95
+    action: DENY
+    deny_message: "[LOBSTERTRAP] Blocked: obfuscated payload with high risk score."
+    conditions:
+      - field: contains_obfuscation
+        match_type: boolean
+        value: true
+      - field: risk_score
+        match_type: threshold
+        value: 0.5
+
+  - name: log_pii_request
+    description: "PII detected — log for audit but allow (we are code reviewer)"
+    priority: 50
+    action: LOG
+    conditions:
+      - field: contains_pii
+        match_type: boolean
+        value: true
+
+  - name: log_credentials
+    description: "Credentials (API keys, tokens) detected — log for audit"
+    priority: 45
+    action: LOG
+    conditions:
+      - field: contains_credentials
+        match_type: boolean
+        value: true
+
+egress_rules: []
+
+rate_limits:
+  requests_per_minute: 120
+  requests_per_hour: 2000
+  burst_threshold: 30
+
+network:
+  egress_policy: allowlist
+  allowed_domains:
+    - "api.apohara.dev"
+    - "generativelanguage.googleapis.com"
+    - "openrouter.ai"
+
+filesystem:
+  denied_paths:
+    - "/etc/**"
+    - "/root/**"
+    - "**/.ssh/**"
+    - "**/.env"

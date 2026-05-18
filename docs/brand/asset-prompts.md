@@ -79,7 +79,7 @@ Already shipped as placeholder (`packages/frontend/public/favicon.svg`) — a 3�
 > (16×16px squares). Centered composition:
 > - Left side (40%): full-color mascot pixel art (from Asset #1), scaled to ~400px tall, vertically centered
 > - Right side (60%):
->   - "APOHARA INTI" in custom pixel-sans typeface (or Press Start 2P substitute), 60px height, bone-white #EDEFF0
+>   - "APOHARA PROBANT" in custom pixel-sans typeface (or Press Start 2P substitute), 60px height, bone-white #EDEFF0
 >   - One-line tagline below in mono font (JetBrains Mono), 24px, lighter weight, muted-gray #8B90A8: "A different AI audits the code your AI just wrote."
 >   - Three small chip badges below: "9 vendors" / "INV-15 isolation" / "Apache-2.0" — each in electric lime #16D63A border with mono text inside
 > - Bottom right corner: small bone-white "apohara.dev" wordmark in mono font, 16px

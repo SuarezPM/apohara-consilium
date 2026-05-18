@@ -1,4 +1,4 @@
-/** Single-source editorial copy for Apohara Inti frontend.
+/** Single-source editorial copy for Apohara PROBANT frontend.
  *  Pablo reviews this file at Phase 5 AC5.4 (content gate). */
 
 export const HOW_IT_WORKS_COPY = {

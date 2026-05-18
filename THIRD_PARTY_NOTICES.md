@@ -1,6 +1,6 @@
 # Third-Party Notices
 
-Apohara Inti is licensed under Apache-2.0. This file lists the third-party
+Apohara PROBANT is licensed under Apache-2.0. This file lists the third-party
 projects whose patterns or code we adapt, with their original licenses
 preserved as required by attribution clauses.
 
@@ -13,7 +13,7 @@ preserved as required by attribution clauses.
   Michael Bargury · John Cartwright · (22 named contributors)
 - License: MIT
 
-Patterns adapted in Apohara Inti (2026-05-18):
+Patterns adapted in Apohara PROBANT (2026-05-18):
 
 1. **Prompt envelope with per-call nonce + datamarking**
    - Original: `core/security/prompt_envelope.py`
@@ -30,7 +30,7 @@ Patterns adapted in Apohara Inti (2026-05-18):
    - Adapted to: `packages/backend/judge_gates.py`
 
 The patterns are reimplemented in Python (RAPTOR is a Python project,
-but the implementations are independently written to fit Apohara Inti's
+but the implementations are independently written to fit Apohara PROBANT's
 FastAPI / Pydantic shapes). Full MIT license text below.
 
 ### RAPTOR MIT License
@@ -74,5 +74,5 @@ Patterns adapted from Guard's evidence-vault subsystem:
    - Adapted to: `packages/backend/verdict_vault.py`
 
 Internal port from the same author (Pablo M. Suarez) — Apache-2.0
-relicensing within Apohara Inti is intentional and permitted as the
+relicensing within Apohara PROBANT is intentional and permitted as the
 original author transfers the contribution under Apache-2.0 here.

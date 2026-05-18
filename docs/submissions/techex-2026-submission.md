@@ -1,4 +1,4 @@
-# TechEx 2026 — Apohara Inti submission (paste-ready)
+# TechEx 2026 — Apohara PROBANT submission (paste-ready)
 
 > Target tracks: **Veea Agent Security & AI Governance** (primary) ·
 > AI Agents with Google AI Studio · Data & Intelligence
@@ -8,7 +8,7 @@
 
 ## Field: Project name
 ```
-Apohara Inti — Cross-AI Code Verifier
+Apohara PROBANT — Cross-AI Code Verifier
 ```
 
 ## Field: Tagline (max ~80 chars)
@@ -23,7 +23,7 @@ Open-source cross-AI verification: Gemini writes code, a 9-vendor adversarial en
 
 ## Field: Long description (max ~2000 chars)
 ```
-Apohara Inti is a cross-AI code verification platform. Gemini writes a
+Apohara PROBANT is a cross-AI code verification platform. Gemini writes a
 review; a 9-vendor adversarial ensemble (Claude, GPT, DeepSeek, Kimi, GLM,
 Qwen, Nemotron, MiniMax, Big-Pickle) independently audits the output for
 prompt injection, vulnerabilities, and logic bugs.
@@ -37,21 +37,23 @@ Verifiable, not claimed:
 - 350+ pytest tests + 15+ measurement JSON logs as evidence layer.
 - Multi-hardware: AMD MI300X (ROCm 7.2) + NVIDIA H100.
 
-Three hardening layers shipped this sprint (auditable in repo):
-1. Prompt envelope (envelope.py) — untrusted blocks wrapped in per-call
-   nonce-tagged sentinels (Hines et al. arXiv 2403.14720 Spotlighting).
-   Tag-forgery injection cannot break framing. AST linter
+Four hardening layers shipped this sprint (auditable in repo):
+1. Veea LobsterTrap DPI (subprocess pre-check on /v1/verify, MIT). Live:
+   SQLi payload returns verdict=blocked in 11ms WITHOUT reaching Gemini
+   or 9-vendor pass. Measured: 50% SQLi block (n=20, CI [29.9%,70.1%]
+   directional), 30% prompt-inj block (n=10, directional), 9.8% benign
+   FPR (n=51). Methodology: logs/lobstertrap_block_rate_*.json. Policy:
+   configs/lobstertrap-policy.example.yaml.
+2. Prompt envelope (envelope.py) — nonce-tagged sentinels (Hines et al.
+   arXiv 2403.14720 Spotlighting). AST linter
    (scripts/prompt_envelope_audit.py) gates CI on raw f-string use of
    untrusted attrs.
-2. HMAC-signed verdict chain (verdict_vault.py) — every /v1/verify
-   response carries HMAC-SHA256 + SHA-256 chain link. verify_chain()
-   detects payload tamper, signature tamper, key rotation.
-3. NO-HEDGING gate (judge_gates.py) — judge hedging (might/maybe/...)
-   auto-annotated [HEDGED:word] so operators see uncertainty surfaced.
+3. HMAC-signed verdict chain (verdict_vault.py) — every response carries
+   HMAC-SHA256 + SHA-256 chain. verify_chain() detects tamper.
+4. NO-HEDGING gate (judge_gates.py) — judge hedging auto-annotated.
 
-Stack: FastAPI/Python 3.11+, React+Vite, Apache-2.0, monorepo across
-three GitHub orgs. Live demo accepts BYOK Gemini or 5 free calls/IP/day.
-Cost ceiling $0.50/call, p50 latency ~30s for 9-vendor pass.
+Stack: FastAPI/Python 3.11+, React+Vite, Apache-2.0. Live demo BYOK or
+5 free/IP/day. Cost ceiling $0.50/call, p50 ~30s for 9-vendor pass.
 ```
 
 ## Field: Demo URL

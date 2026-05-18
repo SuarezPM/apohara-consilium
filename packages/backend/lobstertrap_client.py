@@ -2,6 +2,9 @@
 the 9-vendor adversarial ensemble is the primary safety layer."""
 from __future__ import annotations
 
+import asyncio
+import json
+import os
 import time
 from typing import Optional
 
@@ -10,6 +13,11 @@ import httpx
 LOBSTERTRAP_PATH = "/dpi/inspect"
 LOBSTERTRAP_TIMEOUT = 5.0
 DENY_MARKER = "lobstertrap-deny"
+
+LOBSTERTRAP_BIN_PATH = os.environ.get("LOBSTERTRAP_BIN", "/opt/lobstertrap/lobstertrap")
+LOBSTERTRAP_POLICY_PATH = os.environ.get(
+    "LOBSTERTRAP_POLICY", "/opt/apohara-inti/lobstertrap-policy.yaml"
+)
 
 
 def _make_client() -> httpx.AsyncClient:
@@ -34,6 +42,99 @@ def _extract_reason(resp: httpx.Response, default: str) -> str:
     return default
 
 
+def _parse_subprocess_verdict(combined: str) -> tuple[str, str]:
+    """Return (verdict, reason) from ``lobstertrap inspect`` combined stdout+stderr.
+
+    LT v0.1.0 prints DPI metadata JSON to stdout AND the Policy Decision
+    block ("Action:  DENY/ALLOW/LOG", "Rule: ...", "Message: ...") to
+    stderr. Callers MUST pass the concatenated stream. We scan line-by-line
+    for the "Action:" prefix which is the canonical verdict source.
+    """
+    verdict = "ALLOW"
+    reason = ""
+    rule = ""
+    message = ""
+    for line in combined.splitlines():
+        stripped_upper = line.strip().upper()
+        if stripped_upper.startswith("ACTION:"):
+            rhs = stripped_upper.split(":", 1)[1].strip()
+            if rhs.startswith("DENY") or rhs.startswith("BLOCK"):
+                verdict = "DENY"
+            elif rhs.startswith("LOG"):
+                verdict = "LOG"
+            elif rhs.startswith("ALLOW"):
+                verdict = "ALLOW"
+        elif stripped_upper.startswith("RULE:"):
+            rule = line.split(":", 1)[1].strip()
+        elif stripped_upper.startswith("MESSAGE:"):
+            message = line.split(":", 1)[1].strip()
+    if verdict in ("DENY", "BLOCK", "LOG"):
+        reason = (message or rule or f"verdict={verdict}")[:240]
+    else:
+        reason = "ok"
+    return verdict, reason
+
+
+async def _check_via_subprocess(text: str, bin_path: str, policy_path: str) -> dict:
+    """Invoke lobstertrap inspect via asyncio subprocess."""
+    started = time.perf_counter()
+    try:
+        proc = await asyncio.create_subprocess_exec(
+            bin_path, "inspect", text, "--policy", policy_path,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        try:
+            stdout_bytes, stderr_bytes = await asyncio.wait_for(
+                proc.communicate(), timeout=5.0
+            )
+        except asyncio.TimeoutError:
+            proc.kill()
+            await proc.communicate()
+            return {
+                "allowed": True,
+                "reason": "lobstertrap subprocess timeout",
+                "latency_ms": (time.perf_counter() - started) * 1000.0,
+                "source": "lobstertrap-subprocess-failed",
+            }
+        stdout = stdout_bytes.decode(errors="replace")
+        stderr = stderr_bytes.decode(errors="replace")
+        # LT v0.1.0 writes metadata JSON to stdout AND the "Policy Decision"
+        # section (Action: DENY/ALLOW/LOG) to stderr. Combine for parsing.
+        combined = stdout + "\n" + stderr
+        latency_ms = (time.perf_counter() - started) * 1000.0
+        verdict, reason = _parse_subprocess_verdict(combined)
+        if verdict in ("DENY", "BLOCK"):
+            return {
+                "allowed": False,
+                "reason": reason,
+                "latency_ms": latency_ms,
+                "source": "lobstertrap-subprocess",
+                "raw_stdout": stdout[:500],
+            }
+        return {
+            "allowed": True,
+            "reason": "ok",
+            "latency_ms": latency_ms,
+            "source": "lobstertrap-subprocess",
+            "raw_stdout": stdout[:500],
+        }
+    except FileNotFoundError:
+        return {
+            "allowed": True,
+            "reason": f"lobstertrap subprocess unavailable: binary not found at {bin_path}",
+            "latency_ms": (time.perf_counter() - started) * 1000.0,
+            "source": "lobstertrap-subprocess-failed",
+        }
+    except OSError as exc:
+        return {
+            "allowed": True,
+            "reason": f"lobstertrap subprocess unavailable: {exc}",
+            "latency_ms": (time.perf_counter() - started) * 1000.0,
+            "source": "lobstertrap-subprocess-failed",
+        }
+
+
 async def check_prompt_with_lobstertrap(
     prompt: str,
     lt_url: Optional[str],
@@ -41,7 +142,18 @@ async def check_prompt_with_lobstertrap(
     """Forward ``prompt`` to LobsterTrap for DPI inspection.
 
     Returns a dict ``{allowed, reason, latency_ms, source}``.
+
+    Code path selection:
+    - LOBSTERTRAP_BIN env set → subprocess mode (lobstertrap inspect CLI)
+    - LOBSTERTRAP_URL / lt_url set, no BIN → HTTP mode (legacy)
+    - Neither set → disabled, fail-open
     """
+    bin_path = os.environ.get("LOBSTERTRAP_BIN", "")
+    if bin_path:
+        return await _check_via_subprocess(
+            prompt, bin_path, os.environ.get("LOBSTERTRAP_POLICY", LOBSTERTRAP_POLICY_PATH)
+        )
+
     if not lt_url:
         return {
             "allowed": True,

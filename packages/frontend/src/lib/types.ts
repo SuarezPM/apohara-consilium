@@ -1,4 +1,4 @@
-// Shared TypeScript types for the Apohara Inti frontend.
+// Shared TypeScript types for the Apohara PROBANT frontend.
 // Mirrors the shape backend US-006 will emit from POST /v1/verify.
 
 export type Vendor = {

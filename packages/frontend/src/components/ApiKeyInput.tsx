@@ -76,7 +76,7 @@ export function ApiKeyInput({
       <p className="text-xs text-muted-foreground">
         {demoActive
           ? "Demo mode uses a server-side Gemini key shared across visitors, rate-limited to 5 calls per IP per UTC day. Switch back any time."
-          : "Your key is forwarded only to Google's Gemini endpoint via the Apohara Inti backend. It is never persisted in logs, audit blobs, or telemetry."}
+          : "Your key is forwarded only to Google's Gemini endpoint via the Apohara PROBANT backend. It is never persisted in logs, audit blobs, or telemetry."}
       </p>
     </div>
   );

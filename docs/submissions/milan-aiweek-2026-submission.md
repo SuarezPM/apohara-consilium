@@ -1,4 +1,4 @@
-# Milan AI Week 2026 — Apohara Inti submission (paste-ready)
+# Milan AI Week 2026 — Apohara PROBANT submission (paste-ready)
 
 > Target track: **Agent Bench** (primary, agentic benchmarking + governance)
 > Deadline: 2026-05-20. Live: https://www.apohara.dev
@@ -7,7 +7,7 @@
 
 ## Field: Project name
 ```
-Apohara Inti — Cross-AI Code Verifier
+Apohara PROBANT — Cross-AI Code Verifier
 ```
 
 ## Field: Tagline (max ~80 chars)
@@ -22,7 +22,7 @@ Open-source agent benchmark: 9 frontier LLMs adversarially audit AI-generated co
 
 ## Field: Long description (max ~2000 chars)
 ```
-Apohara Inti is a reproducible benchmark + production tool for adversarial
+Apohara PROBANT is a reproducible benchmark + production tool for adversarial
 auditing of AI-generated code. Gemini writes a review; 9 frontier vendors
 (Claude, GPT, DeepSeek, Kimi, GLM, Qwen, Nemotron, MiniMax, Big-Pickle)
 independently judge it. Aggregation: 0-2 harmful = verified · 3-5 = risky
@@ -43,12 +43,14 @@ Formal safety:
   load. Mechanically enforced per request, 0/1210 violations in sweep.
 
 Defenses shipped this sprint:
-- Prompt envelope (envelope.py) — untrusted blocks wrapped in per-call
-  nonce-tagged sentinels (Spotlighting, Hines et al. arXiv 2403.14720).
-  AST linter (scripts/prompt_envelope_audit.py) gates CI.
-- HMAC-signed verdict chain (verdict_vault.py) — every /v1/verify
-  response HMAC-SHA256 + SHA-256 chain-linked. verify_chain() re-derived
-  independently.
+- Veea LobsterTrap DPI (MIT) subprocess pre-check: SQLi blocked at LT
+  layer in 11ms before reaching Gemini. Measured: 50% SQLi block (n=20,
+  Wilson CI [29.9%,70.1%] directional), 30% prompt-inj (n=10), 9.8%
+  benign FPR (n=51). Methodology: logs/lobstertrap_block_rate_*.json.
+- Prompt envelope (envelope.py) — nonce-tagged Spotlighting (Hines et
+  al. arXiv 2403.14720) + AST linter CI gate.
+- HMAC-signed verdict chain (verdict_vault.py) — HMAC-SHA256 + SHA-256
+  chain. verify_chain() re-derives independently.
 - NO-HEDGING gate (judge_gates.py) — judge hedging auto-flagged.
 
 EU AI Act relevance: Article 14 (human oversight) + Article 15 (accuracy,

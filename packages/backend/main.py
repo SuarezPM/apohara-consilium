@@ -1,4 +1,4 @@
-"""Apohara Inti backend — FastAPI service for cross-AI code verification.
+"""Apohara PROBANT backend — FastAPI service for cross-AI code verification.
 
 US-006 (Day-6 sprint). Endpoints:
 
@@ -147,7 +147,7 @@ class VerifyResponse(BaseModel):
 # ---------------------------------------------------------------------------
 
 app = FastAPI(
-    title="Apohara Inti Backend",
+    title="Apohara PROBANT Backend",
     description="Cross-AI code verification: Gemini writes, 9 attackers audit, INV-15 isolates memory.",
     version=API_VERSION,
 )
