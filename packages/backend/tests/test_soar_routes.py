@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Smoke tests for /v1/soar/* SOAR module endpoints (US-79).
+"""Smoke tests for /v1/soar/* SOAR module endpoints (US-79, US-89).
 
-≥15 tests covering all 10 endpoint paths.
+≥18 tests covering all 10 endpoint paths + compliance/generate (US-89).
 Uses FastAPI TestClient — no live vendor API calls, no live DB.
 
 Run:
@@ -10,6 +10,8 @@ Run:
         python3 -m pytest tests/test_soar_routes.py -v
 """
 from __future__ import annotations
+
+from unittest.mock import MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
@@ -277,3 +279,78 @@ def test_metrics_prometheus_lines(client: TestClient) -> None:
             parts = line.rsplit(" ", 1)
             assert len(parts) == 2, f"Malformed metric line: {line!r}"
             assert parts[1].isdigit() or parts[1] in ("0", "1"), f"Non-numeric metric: {line!r}"
+
+
+# ---------------------------------------------------------------------------
+# /v1/soar/compliance/generate — US-89
+# ---------------------------------------------------------------------------
+
+
+def _mock_gemini_response(narrative: str) -> MagicMock:
+    """Build a minimal mock that looks like a google.genai generate_content response."""
+    mock_resp = MagicMock()
+    mock_resp.text = narrative
+    return mock_resp
+
+
+def test_compliance_generate_valid_incident_mocked_gemini(client: TestClient) -> None:
+    """POST valid AGT-PI-001 + EU AI Act returns 200 with static_report and narrative."""
+    fake_narrative = "## Executive Compliance Summary\n\nThis is a test narrative."
+    mock_client_instance = MagicMock()
+    mock_client_instance.models.generate_content.return_value = _mock_gemini_response(fake_narrative)
+
+    with patch("fastapi_soar_routes.time") as mock_time, \
+         patch.dict("os.environ", {"DEMO_GEMINI_KEY": "AIza-test-key"}):
+        mock_time.perf_counter.side_effect = [0.0, 1.5]  # 1500ms latency
+        with patch("google.genai.Client", return_value=mock_client_instance):
+            resp = client.post(
+                "/v1/soar/compliance/generate",
+                json={"incident_code": "AGT-PI-001", "framework_names": ["EU AI Act"]},
+            )
+
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["incident_code"] == "AGT-PI-001"
+    assert "static_report" in body
+    assert isinstance(body["static_report"], dict)
+    assert body["static_report"]  # non-empty
+    assert body["narrative_markdown"] == fake_narrative
+    assert body["byok_used"] is False
+    assert body.get("error") is None
+
+
+def test_compliance_generate_unknown_incident_graceful(client: TestClient) -> None:
+    """POST with unknown incident_code returns 200 with empty static_report and null narrative."""
+    resp = client.post(
+        "/v1/soar/compliance/generate",
+        json={"incident_code": "AGT-INVALID-999", "framework_names": ["EU AI Act"]},
+    )
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["incident_code"] == "AGT-INVALID-999"
+    assert body["static_report"] == {}
+    assert body["narrative_markdown"] is None
+    assert "error" in body
+    assert "unknown_incident_code" in body["error"]
+
+
+def test_compliance_generate_byok_sets_byok_used(client: TestClient) -> None:
+    """POST with byok_gemini_key sets byok_used=true in response."""
+    fake_narrative = "BYOK narrative content."
+    mock_client_instance = MagicMock()
+    mock_client_instance.models.generate_content.return_value = _mock_gemini_response(fake_narrative)
+
+    with patch("google.genai.Client", return_value=mock_client_instance):
+        resp = client.post(
+            "/v1/soar/compliance/generate",
+            json={
+                "incident_code": "AGT-PI-001",
+                "framework_names": ["EU AI Act"],
+                "byok_gemini_key": "AIza-byok-key-test",
+            },
+        )
+
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["byok_used"] is True
+    assert body["narrative_markdown"] == fake_narrative

@@ -25,6 +25,17 @@ interface ReportResult {
   generated_at?: string;
 }
 
+interface GenerateResult {
+  incident_code: string;
+  framework_names: string[];
+  static_report: object;
+  narrative_markdown: string | null;
+  vendor: string | null;
+  latency_ms: number;
+  byok_used: boolean;
+  error?: string;
+}
+
 const DEMO_INCIDENT_CODE = "AGT-PI-001";
 
 export function CompliancePage() {
@@ -33,6 +44,9 @@ export function CompliancePage() {
   const [error, setError] = useState<string | null>(null);
   const [reports, setReports] = useState<Record<string, ReportResult | "loading" | string>>({});
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [selectedFrameworks, setSelectedFrameworks] = useState<Set<string>>(new Set());
+  const [aiReport, setAiReport] = useState<GenerateResult | null>(null);
+  const [aiGenerating, setAiGenerating] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -55,6 +69,18 @@ export function CompliancePage() {
     };
     void load();
   }, []);
+
+  const toggleFramework = (fw: Framework) => {
+    setSelectedFrameworks((prev) => {
+      const next = new Set(prev);
+      if (next.has(fw.name)) {
+        next.delete(fw.name);
+      } else {
+        next.add(fw.name);
+      }
+      return next;
+    });
+  };
 
   const fetchReport = async (fw: Framework) => {
     const key = fw.name;
@@ -88,18 +114,75 @@ export function CompliancePage() {
     }
   };
 
+  const generateAiReport = async () => {
+    if (selectedFrameworks.size === 0 || aiGenerating) return;
+    setAiGenerating(true);
+    setAiReport(null);
+    try {
+      const byokKey = localStorage.getItem("apohara.settings.byokGeminiKey") || "";
+      const body: Record<string, unknown> = {
+        incident_code: DEMO_INCIDENT_CODE,
+        framework_names: Array.from(selectedFrameworks),
+      };
+      if (byokKey) body.byok_gemini_key = byokKey;
+
+      const resp = await fetch(`${BASE}/v1/soar/compliance/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(60_000),
+      });
+      const data = (await resp.json()) as GenerateResult;
+      setAiReport(data);
+    } catch (e) {
+      setAiReport({
+        incident_code: DEMO_INCIDENT_CODE,
+        framework_names: Array.from(selectedFrameworks),
+        static_report: {},
+        narrative_markdown: null,
+        vendor: null,
+        latency_ms: 0,
+        byok_used: false,
+        error: (e as Error).message,
+      });
+    } finally {
+      setAiGenerating(false);
+    }
+  };
+
   return (
     <DashboardLayout title="Compliance">
       <div className="p-6">
-        <h2
-          className="font-pixel-sans text-sm mb-1"
-          style={{ color: "var(--apohara-bone)" }}
-        >
-          Compliance Frameworks
-        </h2>
+        <div className="flex items-start justify-between gap-4 mb-1">
+          <h2
+            className="font-pixel-sans text-sm"
+            style={{ color: "var(--apohara-bone)" }}
+          >
+            Compliance Frameworks
+          </h2>
+          <button
+            onClick={() => void generateAiReport()}
+            disabled={selectedFrameworks.size === 0 || aiGenerating}
+            className="font-mono text-[11px] px-4 py-1.5 rounded transition-opacity"
+            style={{
+              border: "1.5px solid var(--apohara-lime)",
+              color: "var(--apohara-lime)",
+              backgroundColor: "rgba(37,177,63,0.08)",
+              opacity: selectedFrameworks.size === 0 || aiGenerating ? 0.35 : 1,
+              cursor: selectedFrameworks.size === 0 || aiGenerating ? "not-allowed" : "pointer",
+            }}
+          >
+            {aiGenerating ? "Generating…" : "Generate AI Report"}
+          </button>
+        </div>
         <p className="font-mono text-xs mb-6" style={{ color: "var(--apohara-bone)", opacity: 0.5 }}>
           GET /v1/soar/compliance/frameworks · click a card to pull a{" "}
           <span style={{ color: "var(--apohara-lime)" }}>{DEMO_INCIDENT_CODE}</span> mapping report
+          {selectedFrameworks.size > 0 && (
+            <span style={{ color: "var(--apohara-lime)" }}>
+              {" "}· {selectedFrameworks.size} selected for AI report
+            </span>
+          )}
         </p>
 
         {error && (
@@ -137,19 +220,20 @@ export function CompliancePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {frameworks.map((fw) => {
             const isExpanded = expanded === fw.name;
+            const isSelected = selectedFrameworks.has(fw.name);
             const report = reports[fw.name];
 
             return (
               <div key={fw.name}>
                 {/* Framework card */}
                 <button
-                  onClick={() => void fetchReport(fw)}
+                  onClick={() => { toggleFramework(fw); void fetchReport(fw); }}
                   className="w-full text-left rounded border p-4 transition-colors cursor-pointer"
                   style={{
-                    borderColor: isExpanded
+                    borderColor: isSelected
                       ? "var(--apohara-lime)"
                       : "hsl(var(--border))",
-                    backgroundColor: isExpanded
+                    backgroundColor: isSelected
                       ? "rgba(37,177,63,0.06)"
                       : "var(--apohara-bg-raised)",
                   }}
@@ -295,6 +379,71 @@ export function CompliancePage() {
             );
           })}
         </div>
+
+        {/* AI Narrative Report Panel */}
+        {(aiGenerating || aiReport) && (
+          <div
+            className="mt-8 rounded border p-6"
+            style={{
+              borderColor: "var(--apohara-lime)",
+              backgroundColor: "var(--apohara-bg-mid)",
+            }}
+          >
+            <h3
+              className="font-pixel-sans text-xs mb-3"
+              style={{ color: "var(--apohara-lime)" }}
+            >
+              AI Compliance Narrative — {DEMO_INCIDENT_CODE}
+            </h3>
+
+            {aiGenerating && (
+              <p className="font-mono text-xs" style={{ color: "var(--apohara-bone)", opacity: 0.5 }}>
+                Generating…
+              </p>
+            )}
+
+            {aiReport && !aiGenerating && (
+              <>
+                {aiReport.error === "key_missing" && (
+                  <p
+                    className="font-mono text-xs"
+                    style={{ color: "var(--apohara-red)" }}
+                  >
+                    Gemini key not configured on the server — provide a BYOK key in Settings to enable this feature.
+                  </p>
+                )}
+
+                {aiReport.error && aiReport.error !== "key_missing" && !aiReport.narrative_markdown && (
+                  <p
+                    className="font-mono text-xs"
+                    style={{ color: "var(--apohara-red)" }}
+                  >
+                    Error: {aiReport.error}
+                  </p>
+                )}
+
+                {aiReport.narrative_markdown && (
+                  <pre
+                    className="font-mono text-xs leading-relaxed whitespace-pre-wrap"
+                    style={{ color: "var(--apohara-bone)", opacity: 0.85 }}
+                  >
+                    {aiReport.narrative_markdown}
+                  </pre>
+                )}
+
+                {aiReport.latency_ms > 0 && (
+                  <p
+                    className="font-mono text-[10px] mt-4"
+                    style={{ color: "var(--apohara-bone)", opacity: 0.4 }}
+                  >
+                    Generated by {aiReport.vendor ?? "Gemini"} in {aiReport.latency_ms.toFixed(0)} ms
+                    {aiReport.byok_used ? " · BYOK key" : ""}
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );

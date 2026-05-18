@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -349,6 +350,147 @@ async def compliance_report(req: ReportRequest) -> dict:
                    f"Valid values: {[str(c) for c in IncidentCode]}",
         )
     return compliance_generate(code, req.framework_names)
+
+
+# ---------------------------------------------------------------------------
+# /v1/soar/compliance/generate — US-89
+# ---------------------------------------------------------------------------
+
+# Map display names (as returned by /compliance/frameworks) to FRAMEWORKS keys.
+_FW_NAME_TO_KEY: dict[str, str] = {
+    fw.name: key for key, fw in COMPLIANCE_FRAMEWORKS.items()
+}
+# Also accept the keys themselves (idempotent).
+_FW_NAME_TO_KEY.update({key: key for key in COMPLIANCE_FRAMEWORKS})
+
+
+def _resolve_fw_keys(names: list[str]) -> list[str]:
+    """Convert display names or key strings to FRAMEWORKS keys, drop unknowns."""
+    resolved = []
+    for n in names:
+        key = _FW_NAME_TO_KEY.get(n)
+        if key:
+            resolved.append(key)
+    return resolved or list(COMPLIANCE_FRAMEWORKS.keys())
+
+
+class GenerateRequest(BaseModel):
+    incident_code: str
+    framework_names: list[str] = Field(default_factory=list)
+    byok_gemini_key: Optional[str] = None
+
+
+@router.post("/compliance/generate")
+async def compliance_generate_narrative(req: GenerateRequest) -> dict:
+    """Generate a static compliance mapping + Gemini executive narrative.
+
+    Always returns 200 with static_report populated.
+    narrative_markdown may be null on Gemini failure (graceful degradation).
+    """
+    # ---- resolve incident code ------------------------------------------
+    try:
+        code = IncidentCode(req.incident_code)
+    except ValueError:
+        # Unknown incident code: return empty static report + null narrative
+        return {
+            "incident_code": req.incident_code,
+            "framework_names": req.framework_names,
+            "static_report": {},
+            "narrative_markdown": None,
+            "vendor": None,
+            "latency_ms": 0.0,
+            "byok_used": False,
+            "error": f"unknown_incident_code: {req.incident_code}",
+        }
+
+    fw_keys = _resolve_fw_keys(req.framework_names) if req.framework_names else None
+    static_report = compliance_generate(code, fw_keys)
+
+    # ---- select API key --------------------------------------------------
+    byok_used = bool(req.byok_gemini_key)
+    api_key = req.byok_gemini_key or os.environ.get("DEMO_GEMINI_KEY") or os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        return {
+            "incident_code": req.incident_code,
+            "framework_names": req.framework_names,
+            "static_report": static_report,
+            "narrative_markdown": None,
+            "vendor": None,
+            "latency_ms": 0.0,
+            "byok_used": False,
+            "error": "key_missing",
+        }
+
+    # ---- build prompt ----------------------------------------------------
+    incident_def = TAXONOMY[code]
+    controls_text_parts: list[str] = []
+    for fw_key, controls in static_report.get("frameworks", {}).items():
+        for ctrl in controls:
+            controls_text_parts.append(
+                f"- [{ctrl['control']}] {ctrl['title']}: {ctrl['description']} "
+                f"(audit fields: {', '.join(ctrl['audit_log_fields'])})"
+            )
+    controls_text = "\n".join(controls_text_parts) if controls_text_parts else "(no controls matched)"
+
+    narrative_prompt = (
+        f"You are a compliance officer writing an executive summary for a security incident report.\n\n"
+        f"## Incident\n"
+        f"Code: {incident_def.code.value}\n"
+        f"Name: {incident_def.name}\n"
+        f"Severity: {incident_def.severity}/10\n"
+        f"Description: {incident_def.description}\n\n"
+        f"## Matched Compliance Controls\n"
+        f"{controls_text}\n\n"
+        f"## Instructions\n"
+        f"Write a 250-400 word executive narrative in plain Markdown that:\n"
+        f"1. Summarizes the incident and its risk to the organization.\n"
+        f"2. Identifies the 3 most relevant compliance controls from the list above and explains why each applies.\n"
+        f"3. Suggests 2 concrete mitigation steps in plain English that a CISO can action immediately.\n"
+        f"Write for a non-technical executive audience. Do not use jargon. "
+        f"End with a one-line disclaimer: 'This narrative was AI-generated and does not constitute legal advice.'"
+    )
+
+    # ---- call Gemini via google-genai SDK --------------------------------
+    t0 = time.perf_counter()
+    narrative_markdown: Optional[str] = None
+    error_str: Optional[str] = None
+    vendor_str: Optional[str] = None
+
+    try:
+        from google import genai  # noqa: PLC0415
+        from google.genai import types as genai_types  # noqa: PLC0415
+
+        gemini_client = genai.Client(
+            api_key=api_key,
+            http_options=genai_types.HttpOptions(timeout=30_000),
+        )
+        model_name = "gemini-2.5-pro"
+        response = gemini_client.models.generate_content(
+            model=model_name,
+            contents=narrative_prompt,
+            config=genai_types.GenerateContentConfig(
+                temperature=0.3,
+                max_output_tokens=1024,
+            ),
+        )
+        raw_text = response.text if hasattr(response, "text") else str(response)
+        narrative_markdown = raw_text.strip() if raw_text else None
+        vendor_str = f"gemini/{model_name}"
+    except Exception as exc:  # noqa: BLE001
+        error_str = str(exc)[:300]
+
+    latency_ms = (time.perf_counter() - t0) * 1000.0
+
+    return {
+        "incident_code": req.incident_code,
+        "framework_names": req.framework_names,
+        "static_report": static_report,
+        "narrative_markdown": narrative_markdown,
+        "vendor": vendor_str,
+        "latency_ms": round(latency_ms, 1),
+        "byok_used": byok_used,
+        **({"error": error_str} if error_str else {}),
+    }
 
 
 # ---------------------------------------------------------------------------
