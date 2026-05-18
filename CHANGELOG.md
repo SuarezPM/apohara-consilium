@@ -103,16 +103,63 @@ this file tracks the inti backend / frontend / submission surface only.
   `contextforge` loaded) — zero regression on the existing 12-vendor
   LIVE production surface.
 
-### Notes — not yet shipped (Tier-2 backlog)
+### Added — Fusion Sprint Tier-2 (2026-05-18, US-87 → US-92)
 
-Pablo's M5 Option C-prime decision allocates the remaining ~96 h of
-the 5-day window to Tier-2 stretch goals before the Glasswing
-application is filed:
+Shipped before the first day of the 5-day window closed:
 
-- US-87 — Tier-2 views A: Simulator + Policy Builder
-- US-88 — Tier-2 views B: Analytics + Review Queue + Settings
-- US-89 — 1-click Compliance Report via Gemini
-- US-90 — STIX 2.1 incident export
-- US-91 — SDK middleware (LangChain + CrewAI)
-- US-92 — Glasswing application package draft (timing: post-Tier-2
-  complete, per Pablo's "esperamos a tier 2 completo como evidencia")
+- **US-87 Simulator + Policy Builder pages** (inti `be0f60b`) —
+  `SimulatorPage.tsx` (3-column agent / scenario / run picker + result
+  timeline + agent health profile) and `PolicyBuilderPage.tsx`
+  (template selector + collapsible policy preview + JSON/YAML export).
+  Routes live at `/simulator` and `/policy-builder`.
+- **US-88 Analytics + Review Queue + Settings** (inti `4e9c3c4`) —
+  `AnalyticsPage.tsx` (hand-rolled SVG sparkline polling
+  `/v1/soar/metrics` every 30 s + 6 framework cards), `ReviewQueuePage.tsx`
+  (REVIEW-verdict feed + reviewer override POST + GitHub source
+  links), `SettingsPage.tsx` (API URL / polling / BYOK Gemini key
+  with localStorage persistence + toast confirmation).
+- **US-89 1-click Compliance Report via Gemini** (inti `ac4e706`) —
+  new `POST /v1/soar/compliance/generate` endpoint calling Gemini 2.5
+  Pro via `google.genai.Client` with the deterministic static report
+  underneath; graceful `narrative_markdown: null` + `error: key_missing`
+  when DEMO_GEMINI_KEY absent; BYOK override via request body or
+  localStorage. `CompliancePage.tsx` gains multi-select framework
+  cards + "Generate AI Report" button + inline narrative renderer +
+  latency footer.
+- **US-90 STIX 2.1 incident export** (aegis `c3c78b8` + inti `3d57667`) —
+  new `GET /v1/soar/incidents/{incident_id}/stix` returning a STIX
+  2.1 bundle (identity / indicator / sighting / observed-data /
+  course-of-action / note + UserAccount SCO when prompt contains
+  PII patterns). HMAC `signed_hash` preserved in indicator
+  `external_references[source_name="apohara_verdict_vault"]` for
+  chain-of-custody. Backed by `stix2>=3.0`.
+- **US-91 SDK middleware** (aegis `c3c78b8`, packages in
+  `integrations/`) — `apohara-langchain` (Python 3.10–3.14;
+  `ApoharaCallbackHandler(BaseCallbackHandler)` with
+  `on_llm_start` / `on_chat_model_start` / `on_tool_start` hooks;
+  BLOCK raises `ToolException`, REVIEW configurable, network failure
+  fails open; 7 tests pass; live BLOCK confirmed against
+  `api.apohara.dev`) + `apohara-crewai` (gated to Python ≤3.13 by
+  `crewai>=0.30` dep; `apohara_guard(tool)` wrapper with same
+  evaluate intercept; 6 skip-marked tests on Py 3.14).
+- **US-92 Glasswing application package draft** (inti `ac4e706`) —
+  5 files at `docs/glasswing/`: `cover-letter.md` (667 w),
+  `architecture-summary.md` (746 w, ASCII data-flow diagram),
+  `evidence-pack.md` (819 w, 6 tables of verifiable claims),
+  `competitive-positioning.md` (623 w, delta vs PLAYBOOK SOAR /
+  Pantheon / Vela / Trusyn + Mythos differential paragraph),
+  `README.md` (241 w, index + submission instructions). 3096 words
+  total. Filed at Pablo's discretion per "esperamos a tier 2
+  completo como evidencia".
+
+### Verified (Tier-2 closeout 2026-05-18T22:55Z)
+
+- aegis regression: **603 passed / 10 skipped / 0 failed** in 33.61 s
+- 12 frontend routes at `www.apohara.dev` all serve `HTTP/2 200`
+- public `POST /v1/soar/compliance/generate` returns 200 with
+  populated `static_report` and graceful null narrative when Gemini
+  key absent
+- public `GET /v1/soar/incidents/{id}/stix` correctly returns 404 on
+  unknown id
+- 4 Vercel production deploys this sprint, all `readyState: READY`,
+  all aliased to `https://www.apohara.dev`

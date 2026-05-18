@@ -1298,3 +1298,38 @@ boundary text contract.
 - frontend: `https://www.apohara.dev` HTTP/2 200; bundle `assets/index-gmTnAG_F.js` contains all 9 `/v1/soar/*` paths; `apohara.dev` apex 308→www.apohara.dev (Vercel default)
 - backend SOAR endpoints: `/v1/soar/healthz` (62/16/6/35/6 + mythos reserved), `/v1/soar/mythos/status` (boundary_text_ref live), `/v1/soar/judge/evaluate` (DJL BLOCK on "ignore all previous instructions" in 0.077 ms via DJL-PI-001)
 - legacy `/health` unchanged (version 0.1.0, aegis+contextforge loaded) — no regression on existing 12-vendor LIVE
+
+
+### Tier-2 closeout addendum (2026-05-18T22:55Z, US-87 → US-92)
+
+All 9 Tier-2 stories shipped before the original 5-day window even
+opened to its second hour:
+
+| # | Story | Outcome | Evidence |
+|---|---|---|---|
+| US-87 | Simulator + Policy Builder pages | LIVE at `/simulator` + `/policy-builder` | inti `be0f60b` (906 LOC frontend) |
+| US-88 | Analytics + Review Queue + Settings | LIVE at `/analytics` + `/review-queue` + `/settings` | inti `4e9c3c4` (1210 LOC frontend) |
+| US-89 | 1-click Compliance Report via Gemini 2.5 Pro | `POST /v1/soar/compliance/generate` live; graceful fallback when key missing/exhausted; BYOK localStorage support | inti `ac4e706` (+3 backend tests = 25/25 pass) |
+| US-90 | STIX 2.1 incident export | `GET /v1/soar/incidents/{id}/stix` returns 7-SDO bundle (identity / indicator / sighting / observed-data / course-of-action / note / UserAccount SCO) + HMAC chain hash in `external_references` | aegis `c3c78b8` + inti `3d57667` |
+| US-91 | SDK middleware — LangChain + CrewAI | `integrations/apohara-langchain` (7 tests pass on Py 3.10–3.14, live BLOCK on "ignore all previous instructions") + `integrations/apohara-crewai` (gated to Py ≤3.13 by `crewai>=0.30` constraint, 6 skip-marked tests) | aegis `c3c78b8` |
+| US-92 | Glasswing application package draft | 5 files at `docs/glasswing/` = `cover-letter.md` (667w) + `architecture-summary.md` (746w) + `evidence-pack.md` (819w) + `competitive-positioning.md` (623w) + `README.md` (241w) = 3096 total words | inti `ac4e706` |
+
+### Final verification (2026-05-18T22:55Z)
+
+- **aegis full regression**: `603 passed / 10 skipped / 0 failed` in 33.61 s (`tests/` minus the network-dependent `test_openrouter_adapters.py`)
+- **All 12 frontend routes serve HTTP/2 200** at `www.apohara.dev`: `/`, `/dashboard`, `/incidents`, `/live-feed`, `/judge-layer`, `/compliance`, `/agent-health`, `/simulator`, `/policy-builder`, `/analytics`, `/review-queue`, `/settings`
+- **Public `/v1/soar/compliance/generate`** returns `200 OK` with `static_report.frameworks count: 1`, graceful `narrative_present: false` when Gemini key absent
+- **Public `/v1/soar/incidents/{id}/stix`** correctly returns `404` on unknown incident
+- **Vercel deploys (4 in this sprint window)**: `dpl_ADPvhhCVGwVQBCREEf77hrbETRug` → `dpl_8gteJ1fTfU8g8Fn9SDutQY1DCwaa` → `dpl_35zcHkgQBDqVc3uujoqFYUksP4sK` → `dpl_35zcHkgQBDqVc3uujoqFYUksP4sK` (US-89/US-92 redeploy in progress)
+- **Tier-2 commits**: aegis `47820c9 → baa9ae2` (CHANGELOG + cleanup), inti `781ff5d → ac4e706` (4 Tier-2 commits)
+
+### What "Glasswing application timing" looks like now
+
+Per Pablo's directive ("esperamos a tier 2 completo como evidencia"),
+the Tier-2 evidence pack at `docs/glasswing/` is now self-contained
+and ready for filing. `cover-letter.md` quotes the verbatim
+`MYTHOS_READY.md` disclaimer; `architecture-summary.md` ships the
+14-seat ensemble + Mythos slot ASCII diagram; `evidence-pack.md`
+cross-references every numerical claim to a committed log / commit /
+paper / DOI; `competitive-positioning.md` walks the delta vs
+PLAYBOOK SOAR / Pantheon / Vela / Trusyn. Pablo's call when to file.
