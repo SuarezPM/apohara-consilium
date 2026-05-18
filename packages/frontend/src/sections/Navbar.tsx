@@ -20,11 +20,11 @@ export function Navbar() {
       <div className="container max-w-6xl h-full flex items-center justify-between gap-4">
         <a href="#top" className="flex items-center gap-3 group">
           <img
-            src="/mascot-color.png"
+            src="/logo.svg"
             alt=""
             width={32}
             height={32}
-            className="pixel-render h-8 w-8 object-cover object-center"
+            className="h-8 w-8"
             aria-hidden="true"
           />
           <span className="font-pixel-sans text-sm tracking-wide text-foreground group-hover:text-primary transition-colors">

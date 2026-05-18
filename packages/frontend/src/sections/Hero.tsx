@@ -90,11 +90,11 @@ export function Hero() {
               />
               <div className="relative z-10 text-center">
                 <img
-                  src="/mascot-color.png"
-                  alt="Apohara chief mascot"
+                  src="/logo.svg"
+                  alt="Apohara shield mark"
                   width={320}
                   height={320}
-                  className="pixel-render mx-auto w-[70%] max-w-[280px]"
+                  className="mx-auto w-[70%] max-w-[280px]"
                 />
                 <p className="mt-2 font-pixel-sans text-xs text-primary tracking-wider">APOHARA</p>
                 <p className="mt-1 font-mono text-[10px] text-muted-foreground uppercase">: Inti</p>

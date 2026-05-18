@@ -33,11 +33,11 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <a href="#top" className="inline-flex items-center gap-2">
               <img
-                src="/mascot-outline.png"
+                src="/logo-bone.svg"
                 alt=""
                 width={32}
                 height={32}
-                className="pixel-render h-8 w-8 object-cover object-center"
+                className="h-8 w-8"
                 aria-hidden="true"
               />
               <span className="font-pixel-sans text-xs text-foreground">APOHARA</span>
