@@ -20,10 +20,15 @@ Part of the Apohara PROBANT Fusion Sprint (2026-05-18) — US-79.
 """
 from __future__ import annotations
 
-from typing import Literal, Optional
+import json
+import os
+import uuid
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Literal, Optional
 
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import PlainTextResponse, JSONResponse
 from pydantic import BaseModel, Field
 
 # ---------------------------------------------------------------------------
@@ -38,6 +43,7 @@ from apohara_aegis.nist_mapping import CONTROLS as NIST_CONTROLS
 from apohara_aegis.compliance import FRAMEWORKS as COMPLIANCE_FRAMEWORKS, generate as compliance_generate
 from apohara_aegis.verdict_combine import combine as verdict_combine, CombinedVerdict  # noqa: F401
 from apohara_aegis.mythos_slot import MythosAttackerAdapter
+from verdict_vault import VerdictVault
 
 # ---------------------------------------------------------------------------
 # Router
@@ -51,6 +57,19 @@ router = APIRouter(prefix="/v1/soar", tags=["soar"])
 
 _DJL_ENGINE = DjlEngine()
 _MYTHOS_ADAPTER = MythosAttackerAdapter()
+
+# VerdictVault singleton — reads the same ledger as main.py.
+# Path mirrors LEDGER_PATH in main.py; env APOHARA_LEDGER_PATH overrides.
+_LEDGER_PATH = Path(
+    os.environ.get("APOHARA_LEDGER_PATH")
+    or os.path.expanduser("~/.apohara-inti/ledger.jsonl")
+)
+_VAULT = VerdictVault(ledger_path=_LEDGER_PATH)
+
+# Deterministic UUID namespace for the Apohara PROBANT identity SDO.
+# Stable across restarts — derived from the project name.
+_STIX_NS = uuid.UUID("00abedb4-aa42-466c-9c01-fed23315a9b7")
+_IDENTITY_ID = "identity--" + str(uuid.uuid5(_STIX_NS, "apohara-probant"))
 
 # ---------------------------------------------------------------------------
 # /v1/soar/healthz
@@ -360,6 +379,179 @@ async def mythos_status() -> MythosStatusResponse:
         boundary_text_ref=(
             "https://github.com/SuarezPM/apohara-probant/blob/main/MYTHOS_READY.md"
         ),
+    )
+
+
+# ---------------------------------------------------------------------------
+# /v1/soar/incidents/{incident_id}/stix
+# ---------------------------------------------------------------------------
+
+
+def _incident_code_from_entry(entry: dict[str, Any]) -> Optional[str]:
+    """Extract the AGT-* incident code from a ledger entry if present."""
+    # SOAR pipeline forensics entries store incident_code in audit_fields
+    af = entry.get("audit_fields") or {}
+    code = af.get("incident_code")
+    if code:
+        return str(code)
+    # Fallback: event context
+    event = entry.get("event") or {}
+    ctx = event.get("context") or {}
+    return ctx.get("incident_code")
+
+
+def _build_stix_pattern(entry: dict[str, Any], code: Optional[str]) -> str:
+    """Produce a STIX patterning expression for the incident prompt."""
+    event = entry.get("event") or {}
+    prompt = str(event.get("prompt") or "")
+    # Escape single-quotes in STIX pattern value
+    escaped = prompt[:200].replace("'", "\\'")
+    # Route to appropriate STIX SCO type based on incident family
+    if code and code.startswith("AGT-PII-"):
+        return f"[user-account:user_id = '{escaped}']"
+    if code and code.startswith("AGT-PI-"):
+        return f"[process:command_line = '{escaped}']"
+    if code and code.startswith("AGT-EXF-"):
+        return f"[network-traffic:dst_ref.value = '{escaped}']"
+    return f"[process:command_line = '{escaped}']"
+
+
+@router.get("/incidents/{incident_id}/stix")
+async def incident_stix_bundle(incident_id: str) -> JSONResponse:
+    """Return a STIX 2.1 bundle for an incident in the verdict vault ledger.
+
+    The bundle contains 6 SDOs:
+      1. identity     -- Apohara PROBANT as the producer (deterministic UUID)
+      2. indicator    -- the triggering prompt as a STIX pattern
+      3. sighting     -- the incident observation (count=1, ledger timestamp)
+      4. observed-data -- DJL + LLM verdicts (x_apohara_verdict custom prop)
+      5. course-of-action -- the enforced action (BLOCK / ALLOW / REVIEW)
+      6. note         -- AGT-* code + IncidentDefinition description
+
+    The HMAC signed_hash from the ledger appears in the indicator's
+    external_references (source_name="apohara_verdict_vault") to preserve
+    chain-of-custody.
+    """
+    import stix2  # lazy import — stix2 is optional at module load time
+
+    entry = _VAULT.read_entry(incident_id)
+    if entry is None:
+        raise HTTPException(status_code=404, detail="incident not found")
+
+    # ---- timestamps ---------------------------------------------------------
+    ledger_ts_str = entry.get("ts") or datetime.now(timezone.utc).isoformat()
+    try:
+        ledger_ts = datetime.fromisoformat(
+            ledger_ts_str.replace("Z", "+00:00")
+        )
+    except ValueError:
+        ledger_ts = datetime.now(timezone.utc)
+
+    # ---- incident code + definition -----------------------------------------
+    code_str = _incident_code_from_entry(entry)
+    defn = None
+    if code_str:
+        try:
+            defn = TAXONOMY.get(IncidentCode(code_str))
+        except ValueError:
+            pass
+
+    # ---- SDO 1: identity (Apohara PROBANT producer) -------------------------
+    identity = stix2.Identity(
+        id=_IDENTITY_ID,
+        name="Apohara PROBANT",
+        identity_class="organization",
+        created=ledger_ts,
+        modified=ledger_ts,
+    )
+
+    # ---- SDO 2: indicator (the triggering prompt) ---------------------------
+    stix_pattern = _build_stix_pattern(entry, code_str)
+    indicator = stix2.Indicator(
+        name=defn.name if defn else (code_str or "Unknown Incident"),
+        description=(
+            defn.description if defn else "Prompt flagged by Apohara PROBANT."
+        ),
+        pattern=stix_pattern,
+        pattern_type="stix",
+        valid_from=ledger_ts,
+        labels=["malicious-activity"],
+        created_by_ref=_IDENTITY_ID,
+        external_references=[
+            {
+                "source_name": "apohara_verdict_vault",
+                "external_id": incident_id,
+                "description": (
+                    "HMAC-SHA256 chain hash from the Apohara PROBANT "
+                    "verdict vault ledger. Verifiable via VerdictVault.verify_chain()."
+                ),
+            }
+        ],
+    )
+
+    # ---- SDO 3: sighting (the incident observation) -------------------------
+    sighting = stix2.Sighting(
+        sighting_of_ref=indicator.id,
+        first_seen=ledger_ts,
+        last_seen=ledger_ts,
+        count=1,
+        created_by_ref=_IDENTITY_ID,
+    )
+
+    # ---- SDO 4: observed-data (DJL + LLM verdicts) -------------------------
+    # observed-data object_refs must be SCO/SRO; use a UserAccount SCO for
+    # the prompt source. Custom x_apohara_verdict carries the actual verdicts.
+    event_data = entry.get("event") or {}
+    event_id = event_data.get("event_id") or "unknown"
+    user_account = stix2.UserAccount(user_id=str(event_id)[:64] or "unknown")
+    observed_data = stix2.ObservedData(
+        first_observed=ledger_ts,
+        last_observed=ledger_ts,
+        number_observed=1,
+        object_refs=[user_account.id],
+        created_by_ref=_IDENTITY_ID,
+        x_apohara_verdict={
+            "djl_verdict": entry.get("djl_verdict"),
+            "llm_verdict": entry.get("llm_verdict"),
+            "action": entry.get("action"),
+            "reason": entry.get("reason"),
+        },
+        allow_custom=True,
+    )
+
+    # ---- SDO 5: course-of-action (enforced action) --------------------------
+    action = str(entry.get("action") or "UNKNOWN")
+    coa = stix2.CourseOfAction(
+        name=f"{action} enforced by Apohara PROBANT",
+        description=(
+            f"The Apohara PROBANT SOAR pipeline enforced action '{action}' "
+            f"on incident {incident_id}. "
+            f"Reason: {entry.get('reason') or 'not recorded'}."
+        ),
+        created_by_ref=_IDENTITY_ID,
+    )
+
+    # ---- SDO 6: note (AGT-* code + description) -----------------------------
+    note_content = (
+        f"{code_str}: {defn.description}"
+        if (code_str and defn)
+        else f"Incident ID: {incident_id}. No AGT-* taxonomy code recorded."
+    )
+    note = stix2.Note(
+        content=note_content,
+        object_refs=[indicator.id],
+        created_by_ref=_IDENTITY_ID,
+    )
+
+    # ---- Bundle (allow_custom for x_apohara_verdict) -----------------------
+    bundle = stix2.Bundle(
+        objects=[identity, indicator, sighting, user_account, observed_data, coa, note],
+        allow_custom=True,
+    )
+
+    return JSONResponse(
+        content=json.loads(bundle.serialize()),
+        media_type="application/json",
     )
 
 
