@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { VerdictTrendChart } from "./VerdictTrendChart";
 
 interface LedgerEntry {
   verdict: "verified" | "risky" | "blocked";
@@ -117,6 +118,24 @@ export function Dashboard() {
           <span className="text-primary">● verified {counts.verified}</span>
           <span className="text-yellow-600">● risky {counts.risky}</span>
           <span className="text-destructive">● blocked {counts.blocked}</span>
+        </div>
+      </div>
+
+      {/* Verdict trend over time */}
+      <div className="mb-8">
+        <h2 className="text-xl mb-2">
+          Verdict trend{" "}
+          <span className="text-muted-foreground text-base font-normal">
+            (5-min buckets, UTC)
+          </span>
+        </h2>
+        <div className="border border-border rounded p-3 bg-card">
+          <VerdictTrendChart entries={entries} />
+        </div>
+        <div className="flex gap-4 mt-2 text-sm font-mono">
+          <span style={{ color: "#22c55e" }}>● verified</span>
+          <span style={{ color: "#ca8a04" }}>● risky</span>
+          <span style={{ color: "#ef4444" }}>● blocked</span>
         </div>
       </div>
 
