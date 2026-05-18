@@ -1,0 +1,1 @@
+{"verdict":"blocked","attackers":[],"memory_isolation":{"inv15_enforced":true,"contextforge_audit_id":"501036d2-f7d0-42b0-895b-1e8e8d12b189"},"signed_hash":"5bd151bd5b6ee2f7402147d5a76c7e0593e60772495a52617b887c824cbbfc40","latency_ms":11.975,"cost_estimate_usd":0.0,"cost_capped":false}
