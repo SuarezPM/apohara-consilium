@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 const NAV = [
   { href: "#try", label: "Try it" },
   { href: "#how", label: "How it works" },
+  { href: "/dashboard", label: "Dashboard", route: true },
   { href: "#compare", label: "Compare" },
   { href: "#why", label: "Why" },
 ];
@@ -40,7 +41,12 @@ export function Navbar() {
             <a
               key={item.href}
               href={item.href}
-              className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-md"
+              className={[
+                "px-3 py-2 text-sm transition-colors rounded-md",
+                item.route
+                  ? "text-primary hover:text-primary/80 font-mono font-semibold border border-primary/30 hover:border-primary/60"
+                  : "text-muted-foreground hover:text-foreground",
+              ].join(" ")}
             >
               {item.label}
             </a>
@@ -57,16 +63,6 @@ export function Navbar() {
           >
             <Github className="h-3.5 w-3.5" />
             <span>SuarezPM/apohara-probant</span>
-          </a>
-          {/* Hidden admin link — no SEO, no labelling */}
-          <a
-            href="/dashboard"
-            rel="nofollow"
-            aria-hidden="true"
-            tabIndex={-1}
-            className="sr-only"
-          >
-            dashboard
           </a>
           <Button asChild size="sm" variant="default" className="font-pixel-sans text-[11px] tracking-wider">
             <a href="#try">
