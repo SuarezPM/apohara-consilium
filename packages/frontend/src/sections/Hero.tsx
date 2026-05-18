@@ -80,14 +80,9 @@ export function Hero() {
           {/* Right 40% — mascot + terminal mockup */}
           <div className="lg:col-span-2 space-y-4">
             <div
-              className="aspect-square rounded-md border border-primary/30 bg-apohara-dark relative overflow-hidden flex items-center justify-center"
+              className="matrix-rain aspect-square rounded-md border border-primary/30 flex items-center justify-center"
               aria-hidden="true"
             >
-              <img
-                src="/hero-grid.png"
-                alt=""
-                className="absolute inset-0 w-full h-full object-cover opacity-40 pixel-render"
-              />
               <div className="relative z-10 text-center">
                 <img
                   src="/logo.svg"

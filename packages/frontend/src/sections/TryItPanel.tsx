@@ -62,7 +62,7 @@ export function TryItPanel() {
           <p className="font-mono text-[10px] text-primary uppercase tracking-widest mb-2">
             Try it live
           </p>
-          <h2 id="try-title" className="font-pixel-sans text-2xl lg:text-3xl text-foreground leading-tight">
+          <h2 id="try-title" className="font-pixel-sans text-lg sm:text-xl lg:text-2xl text-foreground leading-tight whitespace-nowrap">
             Paste code &rarr; verify in 30s.
           </h2>
           <p className="mt-3 text-sm text-muted-foreground">
