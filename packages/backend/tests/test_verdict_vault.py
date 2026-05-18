@@ -110,3 +110,20 @@ def test_read_last_hash_after_appends(vault: VerdictVault) -> None:
     b = vault.append({"verdict": "v2"})
     assert vault.read_last_hash() == b["signed_hash"]
     assert a["signed_hash"] != b["signed_hash"]
+
+
+def test_append_with_tenant_id_writes_field(vault: VerdictVault) -> None:
+    vault.append({"verdict": "verified", "ts": 1.0}, tenant_id="org-acme")
+    import json
+    with vault.ledger_path.open() as fh:
+        entry = json.loads(fh.read())
+    assert entry["tenant_id"] == "org-acme"
+
+
+def test_append_without_tenant_id_omits_field(vault: VerdictVault) -> None:
+    """Backward compat: single-tenant ledger must not gain a tenant_id field."""
+    vault.append({"verdict": "verified", "ts": 1.0})
+    import json
+    with vault.ledger_path.open() as fh:
+        entry = json.loads(fh.read())
+    assert "tenant_id" not in entry

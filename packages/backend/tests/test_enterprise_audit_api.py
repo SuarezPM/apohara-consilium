@@ -1,7 +1,11 @@
-"""Tests for enterprise/audit_api.py — query filters, pagination, tenant isolation, ndjson export."""
+"""Tests for enterprise/audit_api.py — query filters, pagination, tenant isolation, ndjson export.
+
+Also covers the /v1/admin/audit HTTP endpoint auth dependency (_verify_admin_jwt).
+"""
 from __future__ import annotations
 
 import json
+import os
 import time
 from pathlib import Path
 
@@ -158,3 +162,149 @@ def test_ndjson_export_yields_lines(tmp_path: Path):
     assert len(lines_admin) == 2
     parsed_admin = [json.loads(l) for l in lines_admin]
     assert all(e["tenant_id"] == "org-a" for e in parsed_admin)
+
+
+# ---------------------------------------------------------------------------
+# Test 5: legacy entries without tenant_id are visible to any admin role
+# ---------------------------------------------------------------------------
+
+def test_legacy_entries_without_tenant_id_visible_to_admin(tmp_path: Path):
+    """Single-tenant / legacy entries (no tenant_id field) must pass through
+    tenant isolation for any admin, not just super_admin."""
+    # Legacy entries have no tenant_id field at all
+    legacy_entries = [
+        {"verdict": "verified", "signed_hash": "leg1", "ts": time.time()},
+        {"verdict": "risky",    "signed_hash": "leg2", "ts": time.time()},
+    ]
+    ledger = _write_ledger(tmp_path, legacy_entries)
+
+    result = query_audit_log(
+        ledger,
+        role="admin",
+        requester_org_id="org-x",
+    )
+    # Both legacy entries must be visible — no tenant_id means single-tenant ledger
+    assert result["total_returned"] == 2
+
+    # Same via ndjson export
+    lines = list(export_audit_ndjson(ledger, role="admin", requester_org_id="org-x"))
+    assert len(lines) == 2
+
+
+# ---------------------------------------------------------------------------
+# Test 6: multi-tenant entries filtered for non-super_admin
+# ---------------------------------------------------------------------------
+
+def test_multi_tenant_entries_filtered_for_non_super_admin(tmp_path: Path):
+    """When tenant_id IS present, non-super_admin must only see their own org."""
+    entries = [
+        _make_entry("verified", tenant_id="org-a", signed_hash="ma1"),
+        _make_entry("verified", tenant_id="org-b", signed_hash="mb1"),
+        _make_entry("blocked",  tenant_id="org-a", signed_hash="ma2"),
+        # One legacy entry mixed in — must still be visible to admin
+        {"verdict": "verified", "signed_hash": "leg1", "ts": time.time()},
+    ]
+    ledger = _write_ledger(tmp_path, entries)
+
+    result = query_audit_log(
+        ledger,
+        role="admin",
+        requester_org_id="org-a",
+    )
+    # org-a sees its 2 entries + 1 legacy entry = 3
+    assert result["total_returned"] == 3
+    for e in result["entries"]:
+        assert e.get("tenant_id") in ("org-a", None)
+
+    # org-b sees its 1 entry + 1 legacy = 2
+    result_b = query_audit_log(
+        ledger,
+        role="admin",
+        requester_org_id="org-b",
+    )
+    assert result_b["total_returned"] == 2
+    for e in result_b["entries"]:
+        assert e.get("tenant_id") in ("org-b", None)
+
+    # super_admin sees all 4
+    result_super = query_audit_log(ledger, role="super_admin")
+    assert result_super["total_returned"] == 4
+
+
+# ---------------------------------------------------------------------------
+# Tests 5-8: /v1/admin/audit HTTP endpoint — _verify_admin_jwt dependency
+# ---------------------------------------------------------------------------
+
+_JWT_SECRET = "test-secret-for-auth-dep-tests"
+
+
+def _get_test_client(tmp_path: Path, monkeypatch):
+    """Return a TestClient with APOHARA_ENTERPRISE_MODE=1 and a seeded ledger."""
+    monkeypatch.setenv("APOHARA_ENTERPRISE_MODE", "1")
+    monkeypatch.setenv("APOHARA_JWT_SECRET", _JWT_SECRET)
+
+    # sso.py reads APOHARA_JWT_SECRET at module-import time into a module-level
+    # constant. Patch it directly so verify_apohara_jwt() sees our test secret.
+    import enterprise.sso as _sso
+    monkeypatch.setattr(_sso, "APOHARA_JWT_SECRET", _JWT_SECRET)
+
+    # Write a small ledger so the endpoint has something to serve
+    ledger = tmp_path / "ledger.jsonl"
+    entries = [
+        {"verdict": "verified", "tenant_id": "org-a", "signed_hash": "h1", "ts": time.time()},
+        {"verdict": "blocked",  "tenant_id": "org-b", "signed_hash": "h2", "ts": time.time()},
+    ]
+    with ledger.open("w") as fh:
+        for e in entries:
+            fh.write(json.dumps(e) + "\n")
+
+    # Patch LEDGER_PATH inside main so the endpoint reads our fixture
+    import main as _main
+    monkeypatch.setattr(_main, "LEDGER_PATH", ledger)
+
+    from fastapi.testclient import TestClient
+    return TestClient(_main.app, raise_server_exceptions=False)
+
+
+def _make_token(role: str = "super_admin", org_id: str = "org-a", expired: bool = False) -> str:
+    from enterprise.sso import issue_apohara_jwt
+    ttl = -60 if expired else 900
+    return issue_apohara_jwt(sub="test-user", org_id=org_id, role=role,
+                              secret=_JWT_SECRET, ttl_seconds=ttl)
+
+
+def test_admin_audit_no_auth_header_401(tmp_path, monkeypatch):
+    """Missing Authorization header must return 401."""
+    client = _get_test_client(tmp_path, monkeypatch)
+    resp = client.get("/v1/admin/audit")
+    assert resp.status_code == 401
+    assert "missing Bearer token" in resp.json()["detail"]
+
+
+def test_admin_audit_invalid_token_401(tmp_path, monkeypatch):
+    """Garbage Bearer token must return 401."""
+    client = _get_test_client(tmp_path, monkeypatch)
+    resp = client.get("/v1/admin/audit", headers={"Authorization": "Bearer not-a-jwt"})
+    assert resp.status_code == 401
+    assert "invalid token" in resp.json()["detail"]
+
+
+def test_admin_audit_expired_token_401(tmp_path, monkeypatch):
+    """Expired JWT must return 401."""
+    client = _get_test_client(tmp_path, monkeypatch)
+    token = _make_token(expired=True)
+    resp = client.get("/v1/admin/audit", headers={"Authorization": f"Bearer {token}"})
+    assert resp.status_code == 401
+    assert "invalid token" in resp.json()["detail"]
+
+
+def test_admin_audit_super_admin_sees_all_tenants(tmp_path, monkeypatch):
+    """super_admin with valid JWT receives entries from all tenants."""
+    client = _get_test_client(tmp_path, monkeypatch)
+    token = _make_token(role="super_admin", org_id="org-a")
+    resp = client.get("/v1/admin/audit", headers={"Authorization": f"Bearer {token}"})
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["total_returned"] == 2
+    tenant_ids = {e["tenant_id"] for e in data["entries"]}
+    assert "org-a" in tenant_ids and "org-b" in tenant_ids

@@ -96,8 +96,13 @@ class VerdictVault:
             return ZERO_HASH
         return last
 
-    def append(self, entry: dict[str, Any]) -> dict[str, str]:
+    def append(self, entry: dict[str, Any], tenant_id: Optional[str] = None) -> dict[str, str]:
         """Append entry with ``prev_hash`` + ``signed_hash`` + ``signature``.
+
+        Optional *tenant_id* is included in the canonical payload so that
+        multi-tenant audit queries can filter by org_id.  Backward compat:
+        when *tenant_id* is ``None``, no field is added and the ledger format
+        is identical to the pre-enterprise single-tenant format.
 
         Returns the three derived fields so callers can echo them.
         """
@@ -105,6 +110,8 @@ class VerdictVault:
         prev_hash = self.read_last_hash()
         payload = dict(entry)
         payload["prev_hash"] = prev_hash
+        if tenant_id is not None:
+            payload["tenant_id"] = tenant_id
         canonical = self._canonical(payload)
         signed_hash = hashlib.sha256(
             (prev_hash + canonical).encode("utf-8")

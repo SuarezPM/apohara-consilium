@@ -1,5 +1,6 @@
 """Tests for SaaS billing scaffold."""
 import os
+import sqlite3
 import tempfile
 from pathlib import Path
 
@@ -72,3 +73,38 @@ def test_stripe_scaffold_unconfigured_returns_false():
     # Without STRIPE_TEST_SECRET, should return False
     os.environ.pop("STRIPE_TEST_SECRET", None)
     assert not is_configured()
+
+
+def test_check_quota_no_overquota_under_concurrency(tmp_db: Path):
+    """Two concurrent threads + a 1-quota tenant must not both succeed."""
+    import threading
+    from billing.tenant_model import create_tenant, check_quota, init_schema
+    init_schema(tmp_db)
+    t = create_tenant("ConcurrencyTest", "free", tmp_db)
+    org_id = t["org_id"]
+    # Manually set quota=1 to force collision
+    conn = sqlite3.connect(str(tmp_db))
+    try:
+        conn.execute(
+            "UPDATE tenants SET monthly_quota = 1, used_calls_this_month = 0 WHERE org_id = ?",
+            (org_id,),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+    results = []
+    barrier = threading.Barrier(8)
+
+    def attempt():
+        barrier.wait()  # release all threads simultaneously
+        results.append(check_quota(org_id, tmp_db))
+
+    threads = [threading.Thread(target=attempt) for _ in range(8)]
+    for th in threads:
+        th.start()
+    for th in threads:
+        th.join()
+    # Exactly ONE thread should have succeeded (allowed=True); 7 should have failed
+    allowed_count = sum(1 for allowed, _ in results if allowed)
+    assert allowed_count == 1, f"Expected exactly 1 allowed under concurrency, got {allowed_count}"

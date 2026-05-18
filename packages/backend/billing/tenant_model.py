@@ -93,28 +93,45 @@ def get_tenant(org_id: str, db_path: Path = DEFAULT_DB_PATH) -> Optional[dict]:
 
 
 def check_quota(org_id: str, db_path: Path = DEFAULT_DB_PATH) -> tuple[bool, int]:
-    """Return (allowed, remaining). Decrements used count if allowed.
+    """Atomically check + consume quota. Returns (allowed, remaining).
 
-    Returns (False, 0) if tenant not found.
+    Returns (False, 0) if tenant not found OR quota exhausted.
+    Uses BEGIN IMMEDIATE for SQLite write-lock acquisition before the conditional
+    UPDATE — prevents two concurrent callers from each passing a stale SELECT.
     """
     init_schema(db_path)
-    conn = sqlite3.connect(str(db_path))
+    conn = sqlite3.connect(str(db_path), isolation_level=None)  # autocommit off via manual BEGIN
     try:
-        conn.row_factory = sqlite3.Row
-        row = conn.execute("SELECT * FROM tenants WHERE org_id = ?", (org_id,)).fetchone()
-        if not row:
-            return (False, 0)
-        used = row["used_calls_this_month"]
-        quota = row["monthly_quota"]
-        if used >= quota:
-            return (False, 0)
-        conn.execute(
-            "UPDATE tenants SET used_calls_this_month = used_calls_this_month + 1, "
-            "updated_at = ? WHERE org_id = ?",
+        conn.execute("BEGIN IMMEDIATE")
+        # Atomic conditional UPDATE: only succeeds if used < quota
+        cur = conn.execute(
+            "UPDATE tenants "
+            "SET used_calls_this_month = used_calls_this_month + 1, updated_at = ? "
+            "WHERE org_id = ? AND used_calls_this_month < monthly_quota",
             (datetime.now(timezone.utc).isoformat(), org_id),
         )
-        conn.commit()
-        return (True, quota - used - 1)
+        rows_affected = cur.rowcount
+        if rows_affected == 0:
+            # Either tenant not found OR quota exhausted — distinguish via second SELECT.
+            row = conn.execute(
+                "SELECT used_calls_this_month, monthly_quota FROM tenants WHERE org_id = ?",
+                (org_id,),
+            ).fetchone()
+            conn.execute("COMMIT")
+            if row is None:
+                return (False, 0)  # tenant not found
+            return (False, 0)  # quota exhausted
+        # Quota consumed successfully — return remaining
+        row = conn.execute(
+            "SELECT used_calls_this_month, monthly_quota FROM tenants WHERE org_id = ?",
+            (org_id,),
+        ).fetchone()
+        conn.execute("COMMIT")
+        used, quota = row
+        return (True, quota - used)
+    except Exception:
+        conn.execute("ROLLBACK")
+        raise
     finally:
         conn.close()
 

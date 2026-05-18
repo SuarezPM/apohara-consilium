@@ -99,8 +99,11 @@ def query_audit_log(
                         continue
                     if until_dt and entry_dt > until_dt:
                         continue
-                if enforce_tenant and entry.get("tenant_id") != requester_org_id:
-                    continue
+                if enforce_tenant:
+                    entry_tenant = entry.get("tenant_id")  # None for legacy / single-tenant entries
+                    if entry_tenant is not None and entry_tenant != requester_org_id:
+                        continue
+                    # Legacy entries with no tenant_id field are visible to any admin role.
                 if tenant_id and entry.get("tenant_id") != tenant_id and role == "super_admin":
                     continue
                 entries.append(entry)
@@ -146,8 +149,11 @@ def export_audit_ndjson(
                     entry_dt = datetime.fromtimestamp(ts, tz=until_dt.tzinfo)
                     if entry_dt > until_dt:
                         continue
-                if enforce_tenant and entry.get("tenant_id") != requester_org_id:
-                    continue
+                if enforce_tenant:
+                    entry_tenant = entry.get("tenant_id")  # None for legacy / single-tenant entries
+                    if entry_tenant is not None and entry_tenant != requester_org_id:
+                        continue
+                    # Legacy entries with no tenant_id field are visible to any admin role.
                 yield line + "\n"
     except OSError:
         return

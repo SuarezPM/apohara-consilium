@@ -26,9 +26,9 @@ import time
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Optional
+from typing import Annotated, Any, Optional
 
-from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi import Depends, FastAPI, Header, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field
@@ -235,7 +235,10 @@ def _append_ledger(entry: dict[str, Any], prev_hash: str) -> str:
     stale-write races between concurrent appends.
     """
     _ = prev_hash  # documented as ignored
-    return _vault.append(entry)["signed_hash"]
+    # Backward-compatible: single-tenant default (tenant_id=None preserves legacy
+    # ledger format). TODO multi-tenant: pass tenant_id from JWT claims when
+    # APOHARA_MULTI_TENANT=1 is set and JWT extraction is wired up.
+    return _vault.append(entry, tenant_id=None)["signed_hash"]
 
 
 def _read_ledger_entry(signed_hash: str) -> Optional[dict[str, Any]]:
@@ -1034,21 +1037,40 @@ async def verify_stream(req: VerifyRequest) -> StreamingResponse:
 # Enterprise mode endpoints — gated by APOHARA_ENTERPRISE_MODE=1
 # ---------------------------------------------------------------------------
 
+async def _verify_admin_jwt(authorization: Annotated[str | None, Header()] = None) -> dict:
+    """Extract + verify Apohara JWT from Authorization: Bearer ... header.
+
+    Returns claims dict {sub, org_id, role, ...}. Raises HTTPException 401 if
+    invalid/missing.
+    """
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="missing Bearer token")
+    token = authorization[7:].strip()
+    try:
+        from enterprise.sso import verify_apohara_jwt
+        claims = verify_apohara_jwt(token)
+    except Exception as exc:
+        raise HTTPException(status_code=401, detail=f"invalid token: {exc}") from exc
+    role = claims.get("role")
+    if role not in ("admin", "super_admin", "viewer"):
+        raise HTTPException(status_code=403, detail=f"role {role!r} not authorized")
+    return claims
+
+
 if os.environ.get("APOHARA_ENTERPRISE_MODE", "").lower() in ("1", "true"):
     from enterprise import audit_api as _audit_api
 
     @app.get("/v1/admin/audit")
     def admin_audit(
+        claims: Annotated[dict, Depends(_verify_admin_jwt)],
         since: Optional[str] = None,
         until: Optional[str] = None,
         verdict_filter: Optional[str] = None,
         tenant_id: Optional[str] = None,
         cursor: Optional[str] = None,
         limit: int = 50,
-        # auth: JWT verification omitted in PoC — production would use Depends()
-        admin_role: str = "admin",
-        admin_org_id: Optional[str] = None,
     ) -> JSONResponse:
+        from enterprise import audit_api as _audit_api
         result = _audit_api.query_audit_log(
             LEDGER_PATH,
             since=since,
@@ -1057,7 +1079,7 @@ if os.environ.get("APOHARA_ENTERPRISE_MODE", "").lower() in ("1", "true"):
             tenant_id=tenant_id,
             cursor=cursor,
             limit=limit,
-            role=admin_role,
-            requester_org_id=admin_org_id,
+            role=claims["role"],
+            requester_org_id=claims["org_id"],
         )
         return JSONResponse(status_code=200, content=result)
