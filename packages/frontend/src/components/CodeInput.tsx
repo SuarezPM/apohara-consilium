@@ -25,7 +25,7 @@ export function CodeInput({ value, onChange, disabled }: CodeInputProps) {
         className="font-mono text-sm"
       />
       <p className="text-xs text-muted-foreground">
-        Submissions are passed to Gemini for analysis and to 9 attacker models
+        Submissions are passed to Gemini for analysis and to 12 attacker models
         for adversarial review. Memory isolation (INV-15) is enforced by
         Apohara ContextForge between every plane.
       </p>

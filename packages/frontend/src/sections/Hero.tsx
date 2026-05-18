@@ -41,7 +41,7 @@ export function Hero() {
             </h1>
 
             <p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
-              9 frontier vendors run adversarial checks in parallel. Each in an
+              12 frontier vendors run adversarial checks in parallel. Each in an
               isolated KV-cache (INV-15). Every verdict signed in a SHA-256
               chain. <span className="text-foreground">No marketing, just measurements.</span>
             </p>
@@ -105,7 +105,7 @@ export function Hero() {
               <pre className="px-3 py-4 text-[11px] font-mono leading-relaxed text-muted-foreground">
 {`> verify "def divide(a,b): return a/b"
 [1/3] gemini-3-pro writing review...
-[2/3] dispatching 9 attackers...
+[2/3] dispatching 12 attackers...
       claude · gpt · deepseek · kimi
       glm · qwen · nemotron · minimax · big-pickle
 [3/3] INV-15 isolation enforced

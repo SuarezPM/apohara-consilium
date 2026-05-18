@@ -151,7 +151,7 @@ function buildMockResponse(req: VerifyRequest): VerdictResponse {
     timestamp: new Date().toISOString(),
     invariant: "INV-15",
     reason:
-      "Memory isolation between Gemini writer and 9 attackers held: 0 cross-plane reads, 0 cache collisions, 0 INV-15 violations.",
+      "Memory isolation between Gemini writer and 12 attackers held: 0 cross-plane reads, 0 cache collisions, 0 INV-15 violations.",
   };
 
   return {
@@ -170,12 +170,12 @@ function buildReasoningSummary(
   count: number,
 ): string {
   if (verdict === "verified") {
-    return `Cross-AI verification passed: ${count}/9 attackers flagged the code. Below the 3-attacker risk threshold; merge is recommended. INV-15 memory isolation held — no cross-vendor cache contamination detected during the run.`;
+    return `Cross-AI verification passed: ${count}/12 attackers flagged the code. Below the 3-attacker risk threshold; merge is recommended. INV-15 memory isolation held — no cross-vendor cache contamination detected during the run.`;
   }
   if (verdict === "risky") {
-    return `Cross-AI verification raised concerns: ${count}/9 attackers flagged the code. Human review recommended before merge. INV-15 memory isolation held throughout the run — flagged issues are model-level disagreements, not infrastructure leaks.`;
+    return `Cross-AI verification raised concerns: ${count}/12 attackers flagged the code. Human review recommended before merge. INV-15 memory isolation held throughout the run — flagged issues are model-level disagreements, not infrastructure leaks.`;
   }
-  return `Cross-AI verification blocked: ${count}/9 attackers flagged the code. Do not merge. Open the signed audit trail to see which probes succeeded and remediate before re-running. INV-15 memory isolation held — the failure is content-side, not infrastructure-side.`;
+  return `Cross-AI verification blocked: ${count}/12 attackers flagged the code. Do not merge. Open the signed audit trail to see which probes succeeded and remediate before re-running. INV-15 memory isolation held — the failure is content-side, not infrastructure-side.`;
 }
 
 /** POST /v1/verify — calls US-006 backend, or returns mock if VITE_MOCK_API=true. */

@@ -1,6 +1,6 @@
 # Pablo Handoff — Submission freeze actions (T+5:09)
 
-> **DECISION BRANCH RESOLVED**: ship **`.9vendor.md` variants** (droplet runs 9-vendor; SSH stuck so 12-vendor upgrade deferred to post-hackathon).
+> **DECISION BRANCH RESOLVED**: ship **`.12vendor.md` variants** — droplet upgraded to 12-vendor LIVE on 2026-05-18 19:43 UTC (apohara-aegis `ad228bf`, Apohara_Context_Forge `4a3f73c`, apohara-inti `2c34c97`); `/v1/demo_verify` smoke returned **HTTP 200 with 12 attackers** (7 producing votes + 5 fail-open per JUDGE-FAQ Q1, including Mistral Large 2411 live). Evidence log: `logs/12vendor_live_smoke_20260518T194417Z.json`.
 >
 > Sections below are copy-paste ready for manual execution at T+5:09 FREEZE.
 >
@@ -29,7 +29,7 @@
 3. Click **"Submit project"** (blue button, top-right of the event page).
 4. Fill each form field using the source file:
 
-   **Source file:** `docs/submissions/techex-2026-submission.9vendor.md` (decision branch resolved per header)
+   **Source file:** `docs/submissions/techex-2026-submission.12vendor.md` (decision branch resolved per header — 12-vendor LIVE post-Mercusys-reboot SSH recovery)
 
    | Form field | Where to find it in the .md | Paste exactly |
    |---|---|---|
@@ -46,9 +46,9 @@
 6. Click **Save / Submit**.
 7. Copy the submission confirmation URL and save it — the ralph lead needs it.
 
-### ⚠️ Edge case: if SSH droplet upgrade lands mid-paste
+### ✅ Decision branch resolved — paste `.12vendor.md` variants
 
-If Pablo (via noVNC) unblocks SSH and the ralph lead lands the 12-vendor production upgrade WHILE you are mid-paste — **finish the 9-vendor paste, do NOT switch variants**. Mid-flight switching risks character-limit mismatch, mis-pasted form fields, or browser-state corruption. The 12-vendor production claim can be amended via lablab.ai post-submit (if the platform allows edits) or addressed in the video voice-over.
+The mid-paste switching edge case was about flipping if droplet upgrade landed late. Droplet upgrade landed at T+1:55 (well before freeze), 12-vendor production is now LIVE and smoke-confirmed. Paste the `.12vendor.md` files directly. The original "9-vendor staged" disclaimer in the long-desc has been replaced by the 12-vendor live claim with the honest "7 producing + 5 fail-open" framing in JUDGE-FAQ Q1.
 
 ### Character limits — check before pasting
 
@@ -76,7 +76,7 @@ EOF
 3. Click **"Submit project"**.
 4. Fill each form field using the source file:
 
-   **Source file:** `docs/submissions/milan-aiweek-2026-submission.9vendor.md` (decision branch resolved per header)
+   **Source file:** `docs/submissions/milan-aiweek-2026-submission.12vendor.md` (decision branch resolved per header — 12-vendor LIVE)
 
    | Form field | Where to find it in the .md | Paste exactly |
    |---|---|---|
@@ -165,9 +165,9 @@ Do not delete or modify the v2.0.1 deposit. The `isNewVersionOf` relation preser
 
 ### Mandatory on-screen overlays (see script for timestamps)
 
-`LobsterTrap DPI — pre-LLM interception` · `50% SQLi block · 9.8% FPR · logs/ in repo` · `9 vendors · SSE streaming · INV-15 isolated` · `JBB block rate 93.75% · Wilson CI [86.2%, 97.3%]` · `Z3 SMT formal proof · UNSAT in 10.08 ms` · `Cursor VSIX · MCP server · /dashboard · Apache-2.0` · `github.com/SuarezPM/apohara-probant · Pablo M. Suarez`
+`LobsterTrap DPI — pre-LLM interception` · `50% SQLi block · 9.8% FPR · logs/ in repo` · `12-vendor ensemble · SSE streaming · INV-15 isolated` · `JBB block rate 93.75% · Wilson CI [86.2%, 97.3%]` · `Z3 SMT formal proof · UNSAT in 10.08 ms` · `Cursor VSIX · MCP server · /dashboard · Apache-2.0` · `github.com/SuarezPM/apohara-probant · Pablo M. Suarez`
 
-(Decision branch resolved to **9-vendor staged**: keep "9 vendors" in overlays. The 12-vendor adapter expansion is documented in submission long-desc as "expansion staged in apohara-aegis main; production upgrade deferred to next deploy cycle" — honest framing.)
+(Decision branch resolved to **12-vendor LIVE**: update "9 vendors" overlays to "12 vendors" with the honest "7 producing + 5 fail-open" disclosure during the demo segment. Mistral Large 2411 is producing votes; Grok 2 + Perplexity Sonar adapters present but fail-open until OpenRouter catalog refresh.)
 
 ### Upload
 

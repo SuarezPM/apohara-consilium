@@ -42,7 +42,7 @@ export function MemoryPlaneIndicator({
             </h3>
             <p className="mt-1 text-xs text-muted-foreground">
               {active
-                ? "Live: enforcing INV-15 between Gemini writer and 9 attackers"
+                ? "Live: enforcing INV-15 between Gemini writer and 12 attackers"
                 : "Memory Isolation: ACTIVE — INV-15 enforced by ContextForge"}
             </p>
           </div>

@@ -19,19 +19,19 @@ const COPY: Record<
   verified: {
     title: "Verified",
     emoji: "✅",
-    subtitle: (count) => `${count} of 9 attackers found issues — safe to merge.`,
+    subtitle: (count) => `${count} of 12 attackers found issues — safe to merge.`,
   },
   risky: {
     title: "Risky",
     emoji: "⚠️",
     subtitle: (count) =>
-      `${count} of 9 attackers found issues — human review recommended.`,
+      `${count} of 12 attackers found issues — human review recommended.`,
   },
   blocked: {
     title: "Blocked",
     emoji: "🔴",
     subtitle: (count) =>
-      `${count} of 9 attackers found issues — do not merge.`,
+      `${count} of 12 attackers found issues — do not merge.`,
   },
 };
 

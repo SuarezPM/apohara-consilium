@@ -3,7 +3,7 @@
 
 export const HOW_IT_WORKS_COPY = {
   step1: "Paste a PR URL, code diff, or natural-language task. BYOK Gemini key (free tier covers hundreds of runs) or the shared demo key (5 calls per IP per UTC day).",
-  step2: "Gemini writes a review. In parallel, 9 frontier vendors adversarially probe both inputs. Each attacker runs in an isolated KV-cache — formal invariant INV-15 enforced by Apohara ContextForge.",
+  step2: "Gemini writes a review. In parallel, 12 frontier vendors adversarially probe both inputs. Each attacker runs in an isolated KV-cache — formal invariant INV-15 enforced by Apohara ContextForge.",
   step3: "Aggregate harmful-count → verdict (verified / risky / blocked). Signed into an append-only SHA-256 ledger chain. Every verdict has a fetchable audit_id pointing at the exact attacker outputs.",
 };
 
@@ -20,7 +20,7 @@ export const COMPARISON_TIER2_NARRATIVE =
 export const COMPARISON_GRANITE_CALLOUT = {
   title: "Granite Guardian 4 — honest call-out",
   body:
-    "We measured ourselves vs IBM Granite Guardian 4 on the same JBB-Behaviors n=80 holdout. Granite scores 98.75% block rate. Apohara scores 93.75% (Wilson [86.2%, 97.3%]) on the 9-vendor ensemble. Granite is a purpose-built single-vendor safety classifier. Apohara is 9-vendor adversarial consensus with formal memory isolation. Different products, different trade-offs.",
+    "We measured ourselves vs IBM Granite Guardian 4 on the same JBB-Behaviors n=80 holdout. Granite scores 98.75% block rate. Apohara scores 93.75% (Wilson [86.2%, 97.3%]) on the 12-vendor ensemble. Granite is a purpose-built single-vendor safety classifier. Apohara is 12-vendor adversarial consensus with formal memory isolation. Different products, different trade-offs.",
   interpretation:
     "A purpose-built classifier wins on its home turf benchmark. Apohara's value isn't 'beats Granite on JBB' — it's multi-vendor consensus (Granite is single-model and shares its blind spots across requests), formal KV-cache isolation (Granite has none), reproducible adversarial framework (Granite has internal claims but no published per-prompt logs), and availability isolation (Granite outage = total failure; Apohara routes through 9 providers).",
   measurementSource: "apohara-aegis/logs/granite4_jbb_n80_20260516T164541Z.json + apohara-aegis AUDIT.md entry #23 (commit cd1f439)",
@@ -31,9 +31,9 @@ export const WHY_THIS_MATTERS = {
   title: "Three things this fixes that other tools don't.",
 
   multiVendor: {
-    heading: "Why 9 vendors, not 1.",
+    heading: "Why 12 vendors, not 1.",
     body:
-      "Every LLM has shared blind spots across its own requests. If you ask Claude to review code Claude wrote, you get one vendor's worldview twice. We dispatch 9 frontier vendors in parallel — Claude, GPT, DeepSeek, Kimi, GLM, Qwen, Nemotron, MiniMax, Big Pickle — and aggregate their verdicts. The 93.75% block rate on JailbreakBench (apohara-aegis/logs/baseline_aegis-ensemble-10frontier_day5_FALLBACK_20260515T212737Z.json, Wilson [86.2%, 97.3%], n=80 holdout, 75 of 80 blocked) is what consensus buys you. Single-vendor review never gets there.",
+      "Every LLM has shared blind spots across its own requests. If you ask Claude to review code Claude wrote, you get one vendor's worldview twice. We dispatch 12 frontier vendors in parallel — Claude, GPT, DeepSeek, Kimi, GLM, Qwen, Nemotron, MiniMax, Big Pickle — and aggregate their verdicts. The 93.75% block rate on JailbreakBench (apohara-aegis/logs/baseline_aegis-ensemble-10frontier_day5_FALLBACK_20260515T212737Z.json, Wilson [86.2%, 97.3%], n=80 holdout, 75 of 80 blocked) is what consensus buys you. Single-vendor review never gets there.",
   },
 
   inv15: {

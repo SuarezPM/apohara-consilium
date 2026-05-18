@@ -10,8 +10,8 @@ const STEPS = [
   {
     n: "02",
     icon: Swords,
-    title: "9 attackers + INV-15",
-    body: "Gemini writes a review. In parallel, 9 frontier vendors adversarially probe both inputs. Each attacker runs in an isolated KV-cache — formal invariant INV-15 enforced by Apohara ContextForge.",
+    title: "12 attackers + INV-15",
+    body: "Gemini writes a review. In parallel, 12 frontier vendors adversarially probe both inputs. Each attacker runs in an isolated KV-cache — formal invariant INV-15 enforced by Apohara ContextForge.",
   },
   {
     n: "03",

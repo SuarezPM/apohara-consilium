@@ -53,9 +53,10 @@ export default function Home() {
 
             <p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
               <span className="text-foreground">Apohara PROBANT</span> runs a
-              12-vendor adversarial ensemble (9 vendors live in the demo
-              droplet today). Each judge runs in an isolated KV-cache
-              (Z3-proven{" "}
+              12-vendor adversarial ensemble (7 producing votes + 5 fail-open
+              per the JUDGE-FAQ honest disclosure — Mistral Large is live,
+              Grok&nbsp;2 and Perplexity Sonar await OpenRouter catalog refresh).
+              Each judge runs in an isolated KV-cache (Z3-proven{" "}
               <span className="text-foreground">INV-15</span>). Every verdict
               is signed in a SHA-256 chain. No marketing — just measurements.
             </p>
@@ -84,7 +85,7 @@ export default function Home() {
                   Vendors live
                 </dt>
                 <dd className="text-2xl font-pixel-sans text-primary mt-1">
-                  9
+                  12
                 </dd>
               </div>
               <div>
@@ -135,9 +136,10 @@ export default function Home() {
               <pre className="px-3 py-4 text-[11px] font-mono leading-relaxed text-muted-foreground whitespace-pre-wrap">
 {`> verify "def divide(a,b): return a/b"
 [1/3] gemini-3-pro writing review...
-[2/3] dispatching adversarial ensemble...
-      claude · gpt · deepseek · kimi
-      glm · qwen · nemotron · minimax · big-pickle
+[2/3] dispatching 12-vendor adversarial ensemble...
+      claude · gpt · deepseek · kimi · glm
+      qwen · nemotron · minimax · big-pickle
+      mistral · grok · perplexity
 [3/3] INV-15 isolation enforced`}
                 <span className="block text-primary mt-2">
                   verdict: verified

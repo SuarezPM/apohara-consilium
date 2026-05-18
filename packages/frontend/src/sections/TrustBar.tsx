@@ -13,13 +13,13 @@ const ATTACKERS = [
 export function TrustBar() {
   return (
     <section
-      aria-label="9 vendor compatibility"
+      aria-label="12 vendor compatibility"
       className="border-b border-border/40 py-6 bg-card/30"
     >
       <div className="container max-w-6xl">
         <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
           <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest shrink-0">
-            9 vendor ensemble &mdash;
+            12 vendor ensemble &mdash;
           </p>
           <ul className="flex flex-wrap items-center gap-x-5 gap-y-2 justify-center sm:justify-start">
             {ATTACKERS.map((name) => (

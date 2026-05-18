@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Apohara PROBANT — Cross-AI Code Verifier",
   description:
-    "A different AI audits the code your AI just wrote. 9-vendor adversarial ensemble + INV-15 formal memory isolation.",
+    "A different AI audits the code your AI just wrote. 12-vendor adversarial ensemble + INV-15 formal memory isolation.",
 };
 
 export default function RootLayout({

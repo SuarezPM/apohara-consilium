@@ -193,7 +193,7 @@ export function TryItPanel() {
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-6">
           <div className="flex flex-col gap-1.5">
             <p className="text-xs text-muted-foreground max-w-xl">
-              Gemini writes/audits. 9 frontier vendors adversarially attack. Apohara
+              Gemini writes/audits. 12 frontier vendors adversarially attack. Apohara
               ContextForge enforces memory isolation (INV-15) between every plane.
             </p>
             <label className="inline-flex items-center gap-2 cursor-pointer select-none w-fit">
@@ -250,7 +250,7 @@ export function TryItPanel() {
 
           <div>
             <header className="flex items-baseline justify-between mb-3">
-              <h3 className="font-pixel-sans text-sm text-foreground">Defense Plane &mdash; 9 attackers</h3>
+              <h3 className="font-pixel-sans text-sm text-foreground">Defense Plane &mdash; 12 attackers</h3>
               <p className="font-mono text-[10px] text-muted-foreground">
                 {response
                   ? `${response.found_issue_count} of ${response.attacker_count} flagged an issue`

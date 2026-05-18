@@ -1,8 +1,12 @@
 import type { Vendor } from "./types";
 
 /**
- * The 9 attacker vendors that adversarially review the user-submitted code.
- * Order is load-bearing: it defines how the 3x3 grid populates.
+ * The 12 attacker vendors that adversarially review the user-submitted code.
+ * Order is load-bearing: it defines how the grid populates.
+ *
+ * Live status (2026-05-18 smoke): 7 producing votes (claude, gpt, deepseek, glm,
+ * qwen, nemotron, mistral) + 5 fail-open (opencode_zen × 2 routing, kimi parse,
+ * grok 404, perplexity 404). See JUDGE-FAQ.md Q1 for the honest disclosure.
  */
 export const ATTACKER_VENDORS: Vendor[] = [
   {
@@ -67,5 +71,26 @@ export const ATTACKER_VENDORS: Vendor[] = [
     gateway: "opencode Zen",
     badge: "BP",
     seat: "big-pickle-seat",
+  },
+  {
+    name: "Mistral Large 2411",
+    model: "mistralai/mistral-large-2411",
+    gateway: "OpenRouter",
+    badge: "MT",
+    seat: "mistral-large-seat",
+  },
+  {
+    name: "Grok 2",
+    model: "x-ai/grok-2-1212",
+    gateway: "OpenRouter",
+    badge: "GK",
+    seat: "grok-2-seat",
+  },
+  {
+    name: "Perplexity Sonar Large",
+    model: "perplexity/llama-3.1-sonar-large-128k-online",
+    gateway: "OpenRouter",
+    badge: "PS",
+    seat: "perplexity-sonar-seat",
   },
 ];
