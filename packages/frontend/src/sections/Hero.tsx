@@ -1,6 +1,7 @@
 import { ArrowRight, Github, Terminal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { MythosBadge } from "@/components/MythosBadge";
 
 const REPO_URL = "https://github.com/SuarezPM/apohara-inti";
 const PAPER_DOI = "https://doi.org/10.5281/zenodo.20114594";
@@ -28,6 +29,7 @@ export function Hero() {
                   DOI 10.5281/zenodo.20114594
                 </a>
               </Badge>
+              <MythosBadge compact />
             </div>
 
             <h1

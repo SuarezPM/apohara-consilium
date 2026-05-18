@@ -177,3 +177,45 @@ Do not delete or modify the v2.0.1 deposit. The `isNewVersionOf` relation preser
 
 ### Fallback
 If the LobsterTrap ~25 ms timer runs slow on recording day, note in voice-over that the endpoint is under load, then cut to a pre-recorded capture if you have one. Do not re-record the full video for one slow widget.
+
+---
+
+## Section 5 — Mythos badge social proof: what to say if a judge asks
+
+### Talking points (3-4 bullets, verbatim)
+
+- "The `mythos_attacker_slot` is an architecturally reserved seat in our 12-vendor
+  adversarial ensemble. The adapter is in the repo (`apohara-aegis/apohara_aegis/mythos_slot.py`),
+  the contract tests are green, and a pure environment-variable flip activates it — no code
+  change required."
+- "We have NOT been granted Mythos access today. That is the honest framing. The badge says
+  'MYTHOS-READY' because the architecture is ready; access is a calendar issue, not an
+  engineering issue."
+- "Our application is via the publicly documented Claude for Open Source program
+  (anthropic.com/glasswing — the public application channel, not a private Glasswing invite).
+  We cite Apohara's Apache-2.0 license, the ensemble+INV-15 paper (Zenodo DOI 10.5281/zenodo.20114594),
+  and the defensive-cybersecurity OSS profile."
+- "The `/v1/soar/mythos/status` endpoint exposes the live state. You can hit it right now and
+  verify `enabled: false`, `reserved: true`. There is no hidden claim."
+
+### Where to find the boundary text in repo
+
+`Apohara_Context_Forge/MYTHOS_READY.md` — contains the verbatim boundary language, the
+architectural readiness checklist (6 items, all checked), the activation path (5 steps), and
+the application status. This is the single source of truth for what "MYTHOS-READY" means.
+
+### Technical depth cross-link
+
+`apohara-inti/docs/research/mythos-integration.md` — explains how Mythos fits into the
+ensemble architecture, the adapter contract, the verdict field path
+(`vendor_votes["mythos-glasswing"]`), and why the slot is a structural investment rather than
+marketing.
+
+### Reminder: what NOT to say
+
+- Do NOT say "Anthropic approved this" or "we have Anthropic's endorsement" — the boundary
+  text prohibits both.
+- Do NOT use phrases like "[adjective] by Mythos" or imply Anthropic endorsement — the
+  honesty CI gate (`scripts/check_honesty_fusion.sh` Rule 1) catches exact forbidden patterns.
+- Do NOT claim access that has not been granted. If pressed, the correct answer is: "Application
+  pending — architectural readiness is the claim, not access."

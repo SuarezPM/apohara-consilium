@@ -48,8 +48,7 @@ Formal safety:
 
 Defenses (four layers, all auditable):
 - Veea LobsterTrap DPI subprocess pre-check: SQLi blocked before reaching
-  Gemini. Measured: 50% SQLi block (n=20, Wilson CI [29.9%,70.1%]
-  directional), 9.8% benign FPR (n=51). logs/lobstertrap_block_rate_*.json.
+  Gemini. Measured: 50% SQLi block (n=20, CI [29.9%,70.1%]), 9.8% FPR (n=51).
 - Prompt envelope (envelope.py) — nonce-tagged Spotlighting (Hines et
   al. arXiv 2403.14720) + AST linter CI gate.
 - HMAC-signed verdict chain (verdict_vault.py) — verify_chain() detects
@@ -58,10 +57,12 @@ Defenses (four layers, all auditable):
 
 Distribution: Cursor VSIX, MCP server (stdio), SSE /v1/verify_stream, /dashboard.
 
-EU AI Act: Article 14 (human oversight) + Article 15 (cybersecurity).
-Aug 2 2026 enforcement. SOC2 + ISO 27001 control-mapping in docs/compliance/.
+EU AI Act: Article 14 + 15. SOC2/ISO27001 control-mapping in docs/compliance/.
 
 Stack: FastAPI/Python 3.11+, React+Vite, Apache-2.0. BYOK or 5 free/IP/day.
+
+MYTHOS-READY: mythos_attacker_slot reserved for Claude Mythos via Claude for
+Open Source program (pending). See MYTHOS_READY.md for boundary text.
 ```
 
 ## Field: Demo URL

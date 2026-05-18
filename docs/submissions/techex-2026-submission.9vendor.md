@@ -57,6 +57,11 @@ live per-vendor results. /dashboard for ops view.
 
 Stack: FastAPI/Python 3.11+, React+Vite + Next.js SSR PoC, Apache-2.0,
 monorepo across 3 GitHub orgs. Live demo BYOK or 5 free/IP/day.
+
+MYTHOS-READY: the mythos_attacker_slot in our ensemble is architecturally
+reserved for Claude Mythos via Anthropic's Claude for Open Source program
+(application pending). MYTHOS_READY.md documents the boundary text and
+activation path.
 ```
 
 ## Field: Demo URL

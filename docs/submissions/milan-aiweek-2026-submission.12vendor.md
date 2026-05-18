@@ -57,11 +57,12 @@ Defenses (four layers, all auditable):
 Distribution: Cursor plugin (VSIX), MCP server (stdio), SSE streaming
 endpoint (/v1/verify_stream), ops dashboard (/dashboard).
 
-EU AI Act: Article 14 (human oversight) + Article 15 (accuracy,
-robustness, cybersecurity). Aug 2 2026 enforcement window. SOC2 + ISO
-27001 control-mapping docs included (docs/compliance/).
+EU AI Act: Article 14 + 15. SOC2/ISO27001 control-mapping in docs/compliance/.
 
 Stack: FastAPI/Python 3.11+, React+Vite, Apache-2.0. BYOK or 5 free/IP/day.
+
+MYTHOS-READY: mythos_attacker_slot reserved for Claude Mythos via Claude for
+Open Source program (pending). See MYTHOS_READY.md for boundary text.
 ```
 
 ## Field: Demo URL

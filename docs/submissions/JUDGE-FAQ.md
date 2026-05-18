@@ -384,3 +384,42 @@ is in `README.md:25`. Dependency pins are in
 | Day-5 JBB ensemble log | `apohara-aegis/logs/baseline_aegis-ensemble-10frontier_day5_FALLBACK_20260515T212737Z.json` |
 | Cost cap definition | `apohara-aegis/apohara_aegis/multi_judge.py:1537` |
 | Aegis CHANGELOG | `apohara-aegis/CHANGELOG.md` |
+| Mythos readiness | `Apohara_Context_Forge/MYTHOS_READY.md` |
+| Mythos integration design | `apohara-inti/docs/research/mythos-integration.md` |
+
+---
+
+## Bonus Q: What does "MYTHOS-READY" mean? Do you have Mythos access?
+
+**No — Apohara has not been granted Claude Mythos access at the time of
+submission.** "MYTHOS-READY" is an architectural claim, not an access claim.
+The precise boundary text is in `Apohara_Context_Forge/MYTHOS_READY.md` and
+is reproduced verbatim here: *"This document describes architectural readiness
+for Claude Mythos integration via the Claude for Open Source program (and/or
+Project Glasswing if invited). Apohara has NOT been granted Mythos access at
+the time of writing. The `mythos_attacker_slot` in the adversarial ensemble is
+reserved and inactive; it activates only upon Claude for Open Source program
+approval AND provisioning of legitimate API credentials."* This document does
+not claim Anthropic endorsement, sponsorship, or relationship beyond Apohara's
+submitted application.
+
+The architectural readiness is concrete and verifiable. The
+`mythos_attacker_slot` exists as `apohara-aegis/apohara_aegis/mythos_slot.py`,
+subclasses the same `VendorAdapter` interface as all active vendors, implements
+`_available()` / `_call_api()` / `_parse_response()`, and is registered in
+`make_default_adapters()`. The slot is gated behind two environment variables
+(`APOHARA_MYTHOS_ENABLED=1` and `ANTHROPIC_MYTHOS_API_KEY`); with those unset,
+`_available()` returns `False` and the slot silently yields an `unavailable`
+verdict — exactly the same fail-open contract every other adapter uses when its
+API key is missing. A contract test (`tests/test_mythos_slot.py`) verifies the
+adapter exists, is registered, and raises correctly in the disabled state. The
+`/v1/soar/mythos/status` endpoint surfaces the live state at runtime.
+
+The application channel is the publicly documented
+[Claude for Open Source program](https://www.anthropic.com/glasswing)
+(not a private Glasswing invite — Glasswing is the program umbrella, not a
+separate channel for external applicants). If the program approves and provides
+credentials, activation requires only two environment variables and a process
+restart — no code change. That is the correct definition of "architecture
+reserved and ready." Honesty about the pending vs. live state is itself an
+Apohara discipline value tracked in `AUDIT.md`.

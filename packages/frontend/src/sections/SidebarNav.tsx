@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { MythosBadge } from "@/components/MythosBadge";
 import {
   LayoutDashboard,
   AlertTriangle,
@@ -133,17 +134,8 @@ export function SidebarNav() {
         </ul>
       </nav>
 
-      {/* Mythos badge placeholder (US-83 will refine) */}
-      <div
-        className="mx-2 mb-4 px-3 py-2 rounded border border-border/30 font-mono text-[10px]"
-        style={{ backgroundColor: "var(--apohara-bg-raised)", color: "var(--apohara-bone)", opacity: 0.7 }}
-        title="Mythos governance badge (US-83)"
-      >
-        <span className="font-pixel-sans text-[7px] block mb-0.5" style={{ color: "var(--apohara-lime)" }}>
-          MYTHOS
-        </span>
-        INV-15 compliant
-      </div>
+      {/* Mythos badge — US-83 */}
+      <MythosBadge />
     </aside>
   );
 }
