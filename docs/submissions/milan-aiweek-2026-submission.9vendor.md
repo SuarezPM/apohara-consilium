@@ -34,7 +34,7 @@ independently judge it. Aggregation: 0-2 harmful = verified · 3-5 = risky
 in apohara-aegis main, staged for the next production deploy cycle.
 
 Reproducibility:
-- 128 pytest tests + 15+ measurement JSONs in /logs/.
+- 120+ pytest tests + 15+ measurement JSONs in /logs/.
 - JBB-Behaviors block rate 93.75% (Wilson 95% CI [86.2%, 97.3%], n=80
   holdout). Auditable methodology; numbers not hand-picked.
 - Multi-hardware: AMD MI300X (ROCm 7.2) + NVIDIA H100.

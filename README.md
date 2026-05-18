@@ -227,19 +227,33 @@ agents, preventing a class of indirect prompt injection attacks.**
 
 ---
 
-## Install
+## Install + try
 
-Coming in US-006 / US-007. Not yet installable.
+**Live demo**: <https://www.apohara.dev> (BYOK or 5 free/IP/day). Backend health: <https://api.apohara.dev/health>.
+
+**Cursor / VS Code plugin**: install the VSIX from [`plugins/cursor-claude/apohara-probant-verify-0.1.0.vsix`](plugins/cursor-claude/apohara-probant-verify-0.1.0.vsix) — commands `Apohara: Verify PR` + `Apohara: Verify Selection`.
+
+**MCP server**: stdio protocol for Claude Desktop / Cursor / Zed — see [`docs/mcp/`](docs/mcp/).
+
+**Local backend** (contributors):
+```bash
+cd packages/backend && pip install -e . && uvicorn main:app --reload
+```
+
+**Self-hosted production**: Vultr droplet (~$24/mo) + Caddy auto-TLS recipe in [`deploy/`](deploy/). Multi-tenant mode opt-in via `APOHARA_MULTI_TENANT=1`.
 
 ---
 
-## Coming soon
+## Shipped (Phase 2 + Phase 3, 2026-05-18)
 
-- **US-006** — FastAPI backend with `/verify` endpoint, Gemini writer, 9-vendor attacker ensemble.
-- **US-007** — Tauri + React desktop client with PR-URL verification UI.
-- **US-008** — Side-by-side comparison vs Cursor /best-of-n, GitHub Copilot Reviews, and trust-only workflows.
-- **US-011** — BENCHMARKS.md grounded in `logs/` evidence files.
-- **Featured integration** — Apohara ContextForge audit ids on every verdict, surfacing INV-15 memory isolation between Gemini-writer and the 9 attackers.
+- **12-vendor adversarial adapters** (apohara-aegis main): Claude, GPT, DeepSeek, Kimi, GLM, Qwen, Nemotron, MiniMax, Big-Pickle, Mistral Large 2411, Grok 2, Perplexity Sonar — code shipped + tested. Production droplet currently runs the **9-vendor baseline**; 12-vendor production rollout is the next deploy cycle (per the threshold-deferral footnote below).
+- **Z3 SMT formal proof of INV-15** (Apohara_Context_Forge paper v3.0): UNSAT on negation in 10.08 ms (single MI300X core), complementing the v2.0.1 empirical sweep (0/1210 violations). Zenodo DOI [10.5281/zenodo.20114594](https://doi.org/10.5281/zenodo.20114594).
+- **Veea LobsterTrap DPI pre-check** (active subprocess): measured 50% SQLi block (n=20, Wilson CI [29.9%, 70.1%] directional), 9.8% benign FPR (n=51). Logs at [`logs/lobstertrap_block_rate_*.json`](logs/).
+- **HMAC-SHA256 verdict chain** with tamper-detection via `verify_chain()` ([`packages/backend/verdict_vault.py`](packages/backend/verdict_vault.py)).
+- **Prompt envelope** (Hines et al. arXiv 2403.14720 Spotlighting) + AST audit linter CI gate.
+- **120+ pytest tests** (re-count via `grep -c "^def test_\|^async def test_" packages/backend/tests/test_*.py`) + 15+ committed measurement JSONs in [`logs/`](logs/).
+- **AGPL-3.0 sister repo** [Apohara-Guard](https://github.com/SuarezPM/Apohara-Guard) for isolation primitives.
+- **Experimental Next.js SSR view** at <https://apohara-nextjs.vercel.app> (Server Components — content in initial HTML for SEO).
 
 ---
 

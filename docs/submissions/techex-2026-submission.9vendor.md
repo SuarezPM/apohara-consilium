@@ -40,7 +40,7 @@ Verifiable, not claimed:
   violations). DOI 10.5281/zenodo.20114594.
 - JBB-Behaviors block rate 93.75% (Wilson 95% CI [86.2%, 97.3%], n=80
   holdout). Numbers from logs/*.json, not marketing.
-- 128 pytest tests + 15+ measurement JSON logs.
+- 120+ pytest tests + 15+ measurement JSON logs.
 - Multi-hardware: AMD MI300X (ROCm 7.2) + NVIDIA H100.
 
 Four hardening layers (auditable in repo):

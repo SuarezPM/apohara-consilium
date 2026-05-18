@@ -46,6 +46,10 @@
 6. Click **Save / Submit**.
 7. Copy the submission confirmation URL and save it — the ralph lead needs it.
 
+### ⚠️ Edge case: if SSH droplet upgrade lands mid-paste
+
+If Pablo (via noVNC) unblocks SSH and the ralph lead lands the 12-vendor production upgrade WHILE you are mid-paste — **finish the 9-vendor paste, do NOT switch variants**. Mid-flight switching risks character-limit mismatch, mis-pasted form fields, or browser-state corruption. The 12-vendor production claim can be amended via lablab.ai post-submit (if the platform allows edits) or addressed in the video voice-over.
+
 ### Character limits — check before pasting
 
 Open a terminal and run:
