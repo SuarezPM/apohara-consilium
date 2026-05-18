@@ -1196,3 +1196,105 @@ Hot Aisle VM `enc1-gpuvm010`: Pablo confirmed `terminate` post-run
 (this Ralph closeout). Per-minute meter stopped. No further spend
 until next rental.
 
+
+
+## 12. 🟢 Fusion Sprint Tier-1 — PLAYBOOK SOAR features merged into Apohara PROBANT (2026-05-18, US-69→US-86)
+
+### Mandate (verbatim)
+
+> "QUIERO TODO LO QUE TIENE PLAYBOOK SOAR en Apohara PROBANT. TODO.
+> NIST first-implementation, Zero-LLM Judge prompt-injection-immune,
+> Lifecycle completo <200ms, dashboard estilo + métricas alineado a
+> brand board. FUSION ENTRE PLAYBOOK SOAR Y APOHARA PROBANT CON TODA
+> NUESTRA TECNOLOGIA, PAPER, BENCHMARK = BOOOM!!"
+
+Pablo, 2026-05-18T19:50Z. Pivoted off the original TechEx 3h-deadline
+push (which already shipped 12-vendor LIVE + paper v3.0) into a 5-day
+Tier-1 Option C-prime fusion sprint (16-22h estimate, 18 user stories
+US-69 through US-86).
+
+### Single-product-naming directive (verbatim)
+
+> "No existe tal cosa como Apohara PROBANT v2, todo debe ser tratado
+> como Apohara PROBANT. La url debe ser apohara.dev"
+
+Pablo, 2026-05-18T20:15Z. Enforced as `check_honesty_fusion.sh` Rule 4
+(no "v2" labels in user-facing docs). Module paths use inline names
+(`apohara_aegis/djl.py`, not `apohara_aegis/v2/djl.py`); URL is
+exclusively `apohara.dev` (no /v2/ subpath, no v2.apohara.dev subdomain).
+
+### Tier-1 deliverables — 16/18 stories shipped end-to-end
+
+| # | Story | Outcome | Evidence |
+|---|---|---|---|
+| US-69 | Confirm 5-day deadline | DONE | Direct Pablo quote |
+| US-70 | NIST prior-art survey | `docs/research/prior-art-nist-agentic-profile.md` (76 lines, 873w) | CSA Agentic Profile (draft Mar 2026) cited; Microsoft AGT base RMF 1.0 12/19 cited; NIST official Q4 2026 cited |
+| US-71 | Scaffold + CI gates | 10 new aegis modules + 13 stub tests + brand/honesty scripts | aegis `6ebfdfc` (now `56e023d` post-rebase) + inti `b0a17f0` |
+| US-72 | DJL (Zero-LLM judge) | 62 regex rules, p99 0.114 ms, TPR/TNR 1.000, Wilson [0.9962, 1.0000] | `logs/djl_latency.json`, aegis `cde6da4` |
+| US-73 | 4-stage SOAR pipeline | DETECT→JUDGE→ENFORCE→FORENSICS, p99 10.6 ms (19× under 200 ms) | `logs/lifecycle_latency.json`, aegis `1c37030` |
+| US-74 | 16 incident codes | AGT-PI/EXF/MIS/FIN/PII/GOV taxonomy | `docs/research/incident-taxonomy.md` (1771w), aegis `5454d5e` |
+| US-75 | 6 templates + NIST | Finance/Healthcare/Government/Retail/Manufacturing/Energy + 35 NIST controls (19 base + 16 CSA) | `docs/research/{industry-templates,nist-mapping}.md`, aegis `c939069` |
+| US-76 | Compliance suite | 49 controls across 6 frameworks (EU AI Act / NIST AI RMF / SP 800-53 / SOC 2 / ISO 27001 / OWASP LLM 2026) | `docs/research/compliance-suite.md`, aegis `7353a8c` |
+| US-77 | Verdict combine | Parallel DJL + LLM ensemble via `asyncio.gather`, safe-merge BLOCK∨BLOCK / ALLOW∧ALLOW / else REVIEW | aegis `f30326a` |
+| US-78 | Mythos slot reserved | `MythosAttackerAdapter(VendorAdapter)`, INACTIVE until Glasswing; `MYTHOS_READY.md` boundary text contract | aegis `f7a712d` + inti `3d1b341` |
+| US-79 | FastAPI `/v1/soar/*` | 10 endpoints (healthz / incidents/types / incidents/recent / judge/evaluate / templates / compliance/frameworks / compliance/report / mythos/status / metrics / agents/{id}/profile stub) | inti `b60933a` |
+| US-80 | Health + Simulator | `AgentProfile` w/ Wilson CI + 3 demo agents + 9 scenarios + CLI | aegis `886a130` |
+| US-81 | Dashboard layout shell | `SidebarNav` + `DashboardLayout` + 11 page stubs + react-router-dom@7.15.1 | inti `e33c8bd` |
+| US-82 | 6 Tier-1 dashboard sections | Incidents / LiveFeed / JudgeLayer / Compliance / AgentHealth + Dashboard extension wired to `/v1/soar/*` | inti `8992a5d` |
+| US-83 | Mythos badge UI + sub refresh | `MythosBadge.tsx` + SidebarNav + Hero + 4 submission variants + JUDGE-FAQ Q&A + PABLO-HANDOFF §5 | inti `2ce0f0f` |
+| US-84 | Backend deploy + droplet | `/v1/soar/healthz` LIVE at api.apohara.dev (62/16/6/35/6 counts confirmed) | smoke 2026-05-18T22:09Z |
+| US-85 | Frontend deploy + alias | `dpl_ADPvhhCVGwVQBCREEf77hrbETRug` → www.apohara.dev; bundle contains 9 `/v1/soar/*` paths | smoke 2026-05-18T22:14Z |
+| US-86 | CI gates + AUDIT/CHANGELOG | This entry + V0.2.0 CHANGELOG + post-rebase `_scale_thresholds_for_adapter_count(14) = {high:14, med:10, human_review:4}` | (this section) |
+
+(US-86 closes self-referentially. Tier-2 stories US-87→US-92 are in the
+ralph queue for the remaining ~96h of the 5-day window: Simulator UI,
+Policy Builder, Analytics, Review Queue, Settings, 1-click compliance
+report via Gemini, STIX export, LangChain/CrewAI middleware, Glasswing
+application package draft.)
+
+### Honesty-discipline gates added (`scripts/check_honesty_fusion.sh`)
+
+1. **Mythos boundary language** — bans the four access-claim phrases
+   enumerated inside `scripts/check_honesty_fusion.sh` (this entry
+   keeps them out of literal text so the rule does not trip itself);
+   requires the verbatim `MYTHOS_READY.md` disclaimer to ship.
+2. **First-implementation backing** — every "first OSS" claim must trace
+   to `docs/research/prior-art-*.md`.
+3. **Test-count consistency** — placeholder; full reconciliation
+   between code, AUDIT, and CHANGELOG counts lands in Tier-2.
+4. **No "v2" labels** — enforces Pablo's single-product directive.
+
+`scripts/check_brand_fusion.sh` blocks the 10-hex teal palette
+(`#0E*A`, `#14B8*`, `#0D9488`, `#5EEAD4`, etc.) used by competitor
+PLAYBOOK SOAR.
+
+### Verdict-merge architectural decision (US-77)
+
+Both layers (DJL deterministic + LLM ensemble) run in parallel via
+`asyncio.gather`. The combine policy is `BLOCK ∨ BLOCK = BLOCK`,
+`ALLOW ∧ ALLOW = ALLOW`, `otherwise REVIEW`. Each layer's per-prompt
+verdict is independently auditable in the HMAC chain. This is *not* a
+"DJL is the primary gate" design — both layers have equal veto power.
+
+### Ensemble seat count post-rebase (`make_default_adapters` contract)
+
+| When | Seats | Composition | Threshold ladder |
+|---|---|---|---|
+| Day-4 (canonical) | 10 | 10 frontier `FallbackVendorAdapter` wrappers | `{high:10, med:6, human_review:3}` (DEFAULT_VOTE_THRESHOLDS) |
+| Phase-3 priority A (`ad228bf`) | 13 | + Mistral Large 2411, Grok-2 1212, Perplexity Sonar 128k | `{high:13, med:9, human_review:4}` |
+| Fusion Sprint (US-78, rebased) | **14** | + `MythosAttackerAdapter` reserved slot (index 13, INACTIVE) | `{high:14, med:10, human_review:4}` |
+
+Mythos is INACTIVE in production: `_available()` returns `False`
+unless `APOHARA_MYTHOS_ENABLED=1` AND a credential env var is set
+(`ANTHROPIC_MYTHOS_API_KEY` or `AWS_BEDROCK_MYTHOS_CREDS`). Apohara
+has NOT been granted Mythos access; activation gates on Claude for
+Open Source / Glasswing approval. See `MYTHOS_READY.md` for the full
+boundary text contract.
+
+### Live verification (smoke logs)
+
+- aegis: 500/500 fusion-test pass (1 skipped, pre-existing) — `tests/test_{djl,soar_pipeline,verdict_combine,mythos_slot,ensemble,compliance,incident_taxonomy,industry_templates,nist_mapping,agent_health,simulator,soar_routes}.py`
+- droplet: `systemctl status apohara-inti.service` ACTIVE (uvicorn on 127.0.0.1:8000), pulled aegis `dce5377` + inti `81f2598` at 22:09 UTC
+- frontend: `https://www.apohara.dev` HTTP/2 200; bundle `assets/index-gmTnAG_F.js` contains all 9 `/v1/soar/*` paths; `apohara.dev` apex 308→www.apohara.dev (Vercel default)
+- backend SOAR endpoints: `/v1/soar/healthz` (62/16/6/35/6 + mythos reserved), `/v1/soar/mythos/status` (boundary_text_ref live), `/v1/soar/judge/evaluate` (DJL BLOCK on "ignore all previous instructions" in 0.077 ms via DJL-PI-001)
+- legacy `/health` unchanged (version 0.1.0, aegis+contextforge loaded) — no regression on existing 12-vendor LIVE
