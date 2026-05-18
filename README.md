@@ -1,5 +1,7 @@
 # Apohara PROBANT
 
+🔱 **Built for Claude Mythos** · MYTHOS-READY architecture · [details](MYTHOS_READY.md)
+
 > A different AI reviews the code your AI just wrote, while your agent memory stays isolated.
 
 Open-source defense-in-depth for AI-generated code. Gemini writes and audits the
