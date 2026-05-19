@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Apohara CONSILIUM Cover</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+@page { size: 1920px 1080px; margin: 0; }
+html, body {
+  width: 1920px;
+  height: 1080px;
+  background: #0E1010;
+  color: #EDEFF0;
+  font-family: "JetBrains Mono", monospace;
+  overflow: hidden;
+}
+.cover {
+  width: 1920px;
+  height: 1080px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  position: relative;
+}
+.left {
+  padding: 90px 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: linear-gradient(135deg, #0E1010 0%, #1a1d28 100%);
+  position: relative;
+  overflow: hidden;
+}
+.left::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 6px; height: 100%;
+  background: #25B13F;
+}
+.brand-tag {
+  font-family: "Press Start 2P", monospace;
+  font-size: 18px;
+  color: #25B13F;
+  letter-spacing: 4px;
+  margin-bottom: 32px;
+}
+.headline {
+  font-family: "Press Start 2P", monospace;
+  font-size: 64px;
+  line-height: 1.2;
+  margin-bottom: 28px;
+  letter-spacing: 1px;
+}
+.headline .accent { color: #25B13F; }
+.tagline {
+  font-size: 26px;
+  line-height: 1.5;
+  margin-bottom: 32px;
+  max-width: 900px;
+  opacity: 0.9;
+}
+.italian-hook {
+  background: rgba(184, 38, 42, 0.12);
+  border-left: 5px solid #B8262A;
+  padding: 22px 28px;
+  font-size: 19px;
+  line-height: 1.5;
+  margin-bottom: 36px;
+  max-width: 900px;
+}
+.italian-hook strong { color: #B8262A; }
+.cta-row {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  font-family: "Press Start 2P", monospace;
+  font-size: 16px;
+}
+.cta-row .url {
+  background: #25B13F;
+  color: #0E1010;
+  padding: 16px 28px;
+  font-weight: 700;
+}
+.cta-row .secondary {
+  color: #EDEFF0;
+  opacity: 0.7;
+  font-size: 13px;
+  letter-spacing: 2px;
+}
+.right {
+  background: #2A2D3A;
+  padding: 70px 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+.right::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 6px;
+  background: #25B13F;
+}
+.tier-card {
+  margin-bottom: 30px;
+  padding: 26px 28px;
+  background: #0E1010;
+  border-left: 5px solid #25B13F;
+}
+.tier-card .label {
+  font-family: "Press Start 2P", monospace;
+  font-size: 13px;
+  color: #25B13F;
+  margin-bottom: 12px;
+  letter-spacing: 2px;
+}
+.tier-card .title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.tier-card .desc {
+  font-size: 16px;
+  opacity: 0.85;
+  line-height: 1.45;
+}
+.right .footer-strip {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 2px solid #2A2D3A;
+  font-size: 13px;
+  opacity: 0.7;
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+.right .footer-strip span { color: #25B13F; }
+.numbers {
+  position: absolute;
+  bottom: 80px;
+  left: 80px;
+  display: flex;
+  gap: 60px;
+}
+.num {
+  font-family: "Press Start 2P", monospace;
+}
+.num .v { font-size: 38px; color: #25B13F; margin-bottom: 8px; }
+.num .l { font-size: 12px; opacity: 0.7; letter-spacing: 2px; }
+</style>
+</head>
+<body>
+<div class="cover">
+  <div class="left">
+    <div class="brand-tag">🇮🇹 APOHARA · CONSILIUM</div>
+    <h1 class="headline">The <span class="accent">Agent Governance OS</span><br>for Autonomous AI.</h1>
+    <p class="tagline">9-vendor adversarial ensemble · INV-15 Z3 formal proof · HMAC-SHA256 + RFC 3161 court-grade verdict chain · 6 compliance frameworks mapped.</p>
+    <div class="italian-hook">
+      <strong>Italian banks need DORA + EU AI Act compliance evidence by Aug 2, 2026.</strong><br>
+      UniCredit · Intesa Sanpaolo · Banca d'Italia · CONSOB · IVASS · ACN — €35M fines incoming.
+    </div>
+    <div class="cta-row">
+      <span class="url">apohara.dev/consilium</span>
+      <span class="secondary">▸ TRY LIVE · OPEN SOURCE · APACHE-2.0</span>
+    </div>
+    <div class="numbers">
+      <div class="num"><div class="v">9</div><div class="l">VENDORS</div></div>
+      <div class="num"><div class="v">10ms</div><div class="l">Z3 UNSAT</div></div>
+      <div class="num"><div class="v">RFC 3161</div><div class="l">TSA SIGNED</div></div>
+      <div class="num"><div class="v">€35M</div><div class="l">EU FINE / AGENT</div></div>
+    </div>
+  </div>
+  <div class="right">
+    <div class="tier-card">
+      <div class="label">▸ TIER A</div>
+      <div class="title">OSS Self-hosted Box</div>
+      <div class="desc">9-vendor ensemble · 78-rule DJL · Z3 formal proof · Apache-2.0</div>
+    </div>
+    <div class="tier-card">
+      <div class="label">▸ TIER B</div>
+      <div class="title">"Splunk for AI Agents"</div>
+      <div class="desc">SOAR pipeline · HMAC verdict chain · STIX 2.1 · 6 frameworks</div>
+    </div>
+    <div class="tier-card">
+      <div class="label">▸ TIER D · CAICEP</div>
+      <div class="title">Court-grade Evidence</div>
+      <div class="desc">RFC 3161 TSA timestamps · eIDAS QTSP roadmap Q3 2026</div>
+    </div>
+    <div class="footer-strip">
+      <span>▸ MILAN AI WEEK 2026</span>
+      <span>▸ VULTR TRACK</span>
+      <span>▸ DOI 10.5281/zenodo.20277875</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>
