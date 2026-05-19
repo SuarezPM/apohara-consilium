@@ -1,5 +1,7 @@
 <p align="center">
-  <img src="packages/frontend/public/logo.svg" alt="Apohara · CONSILIUM" width="200">
+  <a href="https://www.apohara.dev/consilium">
+    <img src="assets/apohara-consilium-cover.png" alt="Apohara · CONSILIUM — The Agent Governance OS for Autonomous AI in Regulated Industries (Milan AI Week 2026)" width="100%">
+  </a>
 </p>
 
 <h1 align="center">APOHARA · CONSILIUM</h1>

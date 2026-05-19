@@ -1,165 +1,44 @@
-# Changelog — Apohara PROBANT
+# Changelog — Apohara CONSILIUM
 
-All notable changes documented here. Format loosely follows
-[Keep a Changelog](https://keepachangelog.com/). Older day-by-day
-measurements live in [`AUDIT.md`](AUDIT.md).
+All notable CONSILIUM changes documented here. Format follows [Keep a Changelog](https://keepachangelog.com/).
 
-The companion library [`apohara-aegis`](https://github.com/SuarezPM/apohara-aegis)
-keeps its own [`CHANGELOG.md`](https://github.com/SuarezPM/apohara-aegis/blob/main/CHANGELOG.md);
-this file tracks the inti backend / frontend / submission surface only.
+For pre-CONSILIUM history (the [Apohara PROBANT](https://github.com/SuarezPM/apohara-probant) codebase this repo was derived from under Apache-2.0), see [`docs/README-probant-legacy.md`](docs/README-probant-legacy.md).
 
-## [Unreleased]
+---
 
-### Added — Fusion Sprint Tier-1 (2026-05-18, US-69 → US-86)
+## [v0.1.0-tsa] — 2026-05-19
 
-- **SOAR HTTP surface** (`packages/backend/fastapi_soar_routes.py`,
-  US-79): 10 endpoints under `/v1/soar/*`:
-  - `GET /v1/soar/healthz` (counts: DJL rules / incident codes / templates / NIST controls / compliance frameworks / mythos slot reserved)
-  - `GET /v1/soar/incidents/types` (16 incident codes — AGT-PI/EXF/MIS/FIN/PII/GOV)
-  - `GET /v1/soar/incidents/recent?limit=N` (HMAC-chained ledger feed)
-  - `POST /v1/soar/judge/evaluate` (DJL + LLM ensemble combine via US-77 verdict\_combine)
-  - `GET /v1/soar/templates` and `GET /v1/soar/templates/{name}` (6 industry templates)
-  - `GET /v1/soar/compliance/frameworks` (5 frameworks + OWASP LLM 2026 = 6)
-  - `POST /v1/soar/compliance/report` (per-incident control mapping)
-  - `GET /v1/soar/mythos/status` (Glasswing-pending boundary text)
-  - `GET /v1/soar/metrics` (Prometheus text format, 6 gauges)
-- **Dashboard layout shell** (US-81): `SidebarNav` + `DashboardLayout`
-  + react-router-dom@7.15.1 + 11 page routes (`/dashboard`, `/incidents`,
-  `/live-feed`, `/judge-layer`, `/compliance`, `/agent-health`,
-  `/simulator`, `/policy-builder`, `/analytics`, `/review-queue`,
-  `/settings`). Landing route `/` untouched.
-- **Six Tier-1 dashboard sections** (US-82): `IncidentsPage` (16-type
-  table with severity badges + category filters), `LiveFeedPage`
-  (5 s scroll feed), `JudgeLayerPage` (dual-panel DJL+LLM evaluate +
-  last-5 scrollback), `CompliancePage` (clickable framework cards
-  with inline control mapping), `AgentHealthPage` (3-agent stub
-  cards), and `Dashboard.tsx` extension with a 4-tile metrics panel
-  parsing `/v1/soar/metrics` Prometheus output.
-- **Mythos UI integration** (US-83): `MythosBadge.tsx` (lime border /
-  ink background, hover tooltip, click-open modal fetching
-  `/v1/soar/mythos/status`, keyboard nav + ARIA). Wired into
-  `SidebarNav` bottom slot and `Hero` badge row.
-- **Submission surface refresh** (US-83):
-  - 4 paste-ready submission variants (`docs/submissions/{techex,milan}-aiweek-2026-submission.{9,12}vendor.md`)
-    gain the MYTHOS-READY sentence inside the long-description; all
-    four pass `scripts/check_submission_lengths.sh` (≤2000 chars).
-  - `docs/submissions/JUDGE-FAQ.md` gains explicit Mythos Q&A
-    (3-paragraph honest answer; cites `mythos_slot.py`, env-var gate,
-    contract test, and `/v1/soar/mythos/status`).
-  - `docs/submissions/PABLO-HANDOFF.md` Section 5: judge-facing
-    talking-point bullets + boundary text path + cross-link to
-    `docs/research/mythos-integration.md`.
-- **Honesty discipline (4 new rules)** — `scripts/check_honesty_fusion.sh`:
-  1. Mythos boundary language present and forbidden access-claim
-     phrases absent.
-  2. "First implementation" claims must trace to a `prior-art-*.md`.
-  3. Test-count consistency (placeholder for Tier-2).
-  4. No "v2" labels in user-facing docs (single-product directive).
-- **Brand discipline** — `scripts/check_brand_fusion.sh` greps for
-  the 10-hex PLAYBOOK SOAR teal palette and rejects any contamination.
-- **Brand tokens source-of-truth** — `scripts/brand-tokens-source.json`
-  pins lime `#25B13F`, dark `#2A2D3A`, bone `#EDEFF0`, ink `#0E1010`,
-  red `#B8262A` (canonical post-US-FE-7c desaturation).
-- **MYTHOS_READY.md** (new) — boundary text contract describing
-  architectural readiness for Claude Mythos via Project Glasswing /
-  Claude for Open Source program. Explicit "Apohara has NOT been
-  granted Mythos access" disclaimer; no Anthropic endorsement claim.
-- **README badge** — `🔱 Built for Claude Mythos · MYTHOS-READY architecture
-  · [details](MYTHOS_READY.md)` in line 3.
-- **Research docs** under `docs/research/`:
-  `prior-art-nist-agentic-profile.md` (US-70),
-  `incident-taxonomy.md` (US-74), `industry-templates.md` (US-75),
-  `nist-mapping.md` (US-75), `compliance-suite.md` (US-76),
-  `mythos-integration.md` (US-78).
+### Added — Milan AI Week 2026 submission
 
-### Changed
+- **3-tier B + D + A frame** locked via [ADR 0001](docs/adr/0001-milan-submission-frame-bda.md): B (Splunk for AI agents / Agent Governance OS) as core, D (CAICEP RFC 3161 compliance evidence) as differentiator, A (OSS Apache-2.0) as entry tier.
+- **RFC 3161 TSA-timestamped verdict chain** shipped to production `api.apohara.dev`:
+  - `verdict_vault.py` extended with optional `tsa_token`, `tsa_authority`, `tsa_timestamp` fields (additive, backward-compat preserved)
+  - `_request_tsa_token()` helper with Freetsa.org primary + DigiCert fallback
+  - `verify_tsa_token()` method validates token integrity
+  - New endpoint `GET /v1/verdicts/{signed_hash}/verify-timestamp` returns `{valid, authority, timestamp}`
+  - Library: `rfc3161-client` (Sigstore Python, MIT)
+  - Tests: 16/16 pre-existing pass (backward compat) + 2 minimum-to-ship Step-5a tests added
+  - Live evidence: 1312-byte TimeStampToken from freetsa.org signed `2026-05-19T12:21:50+00:00`
+- **LiteLLM Docker compose** deployed parallel on Vultr droplet (port 4000 internal-only, 9 vendors mapped) as Tier-A vendor-independence proof — see [`docs/infra/litellm-parallel-deployment.md`](docs/infra/litellm-parallel-deployment.md). 30-day roadmap to traffic shift.
+- **Honesty CI gate** `scripts/check_honesty_consilium.sh` scoped to CONSILIUM-active content. Enforces corrections table (no inflated vendor counts, no `$1.4B Cisco` myth, no "court-admissible today" overclaim) + Zenodo v3 DOI citation.
+- **Live landing** at [apohara.dev/consilium](https://www.apohara.dev/consilium) with 4 routes:
+  - `/consilium` — hero, 3-tier model, Italian regulatory hook (DORA + EU AI Act)
+  - `/consilium/verify` — interactive demo (paste prompt → DJL + Gemini verdict; verify 3 real TSA-signed verdicts against freetsa.org)
+  - `/consilium/compliance` — 6 framework dashboard
+  - `/consilium/about` — jury verification manual with OpenSSL independent-verify flow
+- **Pitch deck Milan variant** at [`docs/submissions/pitch-deck-milan/apohara-consilium-milan-pitch.pdf`](docs/submissions/pitch-deck-milan/apohara-consilium-milan-pitch.pdf) (8 pages, 372 KB, B+D+A frame).
+- **Cover image** at [`assets/apohara-consilium-cover.png`](assets/apohara-consilium-cover.png) (1920×1080).
 
-- `packages/frontend/src/components/MythosBadge.tsx`: switched from
-  relative `/v1/soar/mythos/status` to absolute
-  `https://api.apohara.dev/v1/soar/mythos/status` (Vercel SPA-rewrite
-  catch-all would 404 the relative path). Matches the
-  `const BASE = "https://api.apohara.dev"` convention used across
-  the other US-82 sections.
-- `packages/frontend/vercel.json`: `VITE_API_URL` flipped from the
-  IP-based nip.io domain (149.28.56.91.nip.io) to `api.apohara.dev`
-  per Pablo's "URL debe ser apohara.dev" directive. Same droplet,
-  cleaner URL surface.
-- `packages/frontend-nextjs/.gitignore`: expanded from `.vercel`-only
-  (8 bytes) to a minimal Next.js stanza
-  (`node_modules/`, `.next/`, `.vercel/`, `out/`, `dist/`, `*.log`,
-  `.env*.local`) to stop `.next/` build artefacts leaking into
-  `git status`.
+### Fixed
 
-### Verified live (smoke 2026-05-18T22:14Z)
+- `cert_request(True)` → `cert_request()` (rfc3161-client API mismatch, silently caught by exception handler — discovered during prod canary).
+- Vercel rewrite resolution: `fetch('/api/...')` from `apohara.dev/consilium/verify` now correctly resolves to `/consilium/api/...` (was hitting PROBANT SPA, returning HTTP 405).
 
-- `https://www.apohara.dev` → HTTP/2 200 (Vercel deploy
-  `dpl_ADPvhhCVGwVQBCREEf77hrbETRug`, aliased)
-- `https://apohara.dev` → 308 → `www.apohara.dev` (Vercel apex default)
-- `https://api.apohara.dev/v1/soar/healthz` →
-  `{djl_rules_loaded: 62, incident_codes_loaded: 16, industry_templates_loaded: 6, nist_controls_loaded: 35, compliance_frameworks_loaded: 6, mythos_slot: {enabled: false, reserved: true, status: "pending_glasswing_application"}}`
-- `https://api.apohara.dev/v1/soar/judge/evaluate` → DJL BLOCK on
-  "ignore all previous instructions" in 0.077 ms via rule `DJL-PI-001`
-- Legacy `/health` unchanged (version `0.1.0`, deps `aegis` +
-  `contextforge` loaded) — zero regression on the existing 12-vendor
-  LIVE production surface.
+### Repository hygiene
 
-### Added — Fusion Sprint Tier-2 (2026-05-18, US-87 → US-92)
+- 20 internal/draft/duplicate documents removed for Milan submission cleanliness (strategy drafts, old hackathon submission texts, internal handoff notes, brand assets, video scripts, prior-hackathon blog post).
+- `docs/README-probant-legacy.md` preserved as Apache-2.0 derivative-work attribution.
 
-Shipped before the first day of the 5-day window closed:
+---
 
-- **US-87 Simulator + Policy Builder pages** (inti `be0f60b`) —
-  `SimulatorPage.tsx` (3-column agent / scenario / run picker + result
-  timeline + agent health profile) and `PolicyBuilderPage.tsx`
-  (template selector + collapsible policy preview + JSON/YAML export).
-  Routes live at `/simulator` and `/policy-builder`.
-- **US-88 Analytics + Review Queue + Settings** (inti `4e9c3c4`) —
-  `AnalyticsPage.tsx` (hand-rolled SVG sparkline polling
-  `/v1/soar/metrics` every 30 s + 6 framework cards), `ReviewQueuePage.tsx`
-  (REVIEW-verdict feed + reviewer override POST + GitHub source
-  links), `SettingsPage.tsx` (API URL / polling / BYOK Gemini key
-  with localStorage persistence + toast confirmation).
-- **US-89 1-click Compliance Report via Gemini** (inti `ac4e706`) —
-  new `POST /v1/soar/compliance/generate` endpoint calling Gemini 2.5
-  Pro via `google.genai.Client` with the deterministic static report
-  underneath; graceful `narrative_markdown: null` + `error: key_missing`
-  when DEMO_GEMINI_KEY absent; BYOK override via request body or
-  localStorage. `CompliancePage.tsx` gains multi-select framework
-  cards + "Generate AI Report" button + inline narrative renderer +
-  latency footer.
-- **US-90 STIX 2.1 incident export** (aegis `c3c78b8` + inti `3d57667`) —
-  new `GET /v1/soar/incidents/{incident_id}/stix` returning a STIX
-  2.1 bundle (identity / indicator / sighting / observed-data /
-  course-of-action / note + UserAccount SCO when prompt contains
-  PII patterns). HMAC `signed_hash` preserved in indicator
-  `external_references[source_name="apohara_verdict_vault"]` for
-  chain-of-custody. Backed by `stix2>=3.0`.
-- **US-91 SDK middleware** (aegis `c3c78b8`, packages in
-  `integrations/`) — `apohara-langchain` (Python 3.10–3.14;
-  `ApoharaCallbackHandler(BaseCallbackHandler)` with
-  `on_llm_start` / `on_chat_model_start` / `on_tool_start` hooks;
-  BLOCK raises `ToolException`, REVIEW configurable, network failure
-  fails open; 7 tests pass; live BLOCK confirmed against
-  `api.apohara.dev`) + `apohara-crewai` (gated to Python ≤3.13 by
-  `crewai>=0.30` dep; `apohara_guard(tool)` wrapper with same
-  evaluate intercept; 6 skip-marked tests on Py 3.14).
-- **US-92 Glasswing application package draft** (inti `ac4e706`) —
-  5 files at `docs/glasswing/`: `cover-letter.md` (667 w),
-  `architecture-summary.md` (746 w, ASCII data-flow diagram),
-  `evidence-pack.md` (819 w, 6 tables of verifiable claims),
-  `competitive-positioning.md` (623 w, delta vs PLAYBOOK SOAR /
-  Pantheon / Vela / Trusyn + Mythos differential paragraph),
-  `README.md` (241 w, index + submission instructions). 3096 words
-  total. Filed at Pablo's discretion per "esperamos a tier 2
-  completo como evidencia".
-
-### Verified (Tier-2 closeout 2026-05-18T22:55Z)
-
-- aegis regression: **603 passed / 10 skipped / 0 failed** in 33.61 s
-- 12 frontend routes at `www.apohara.dev` all serve `HTTP/2 200`
-- public `POST /v1/soar/compliance/generate` returns 200 with
-  populated `static_report` and graceful null narrative when Gemini
-  key absent
-- public `GET /v1/soar/incidents/{id}/stix` correctly returns 404 on
-  unknown id
-- 4 Vercel production deploys this sprint, all `readyState: READY`,
-  all aliased to `https://www.apohara.dev`
+For PROBANT-era changelog (pre-2026-05-19) see [github.com/SuarezPM/apohara-probant](https://github.com/SuarezPM/apohara-probant/blob/main/CHANGELOG.md).
