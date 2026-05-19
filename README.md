@@ -76,7 +76,7 @@
 </table>
 
 <p align="center">
-  <a href="https://www.apohara.dev/consilium"><b>▶️ Live demo (todo en uno)</b></a> ·
+  <a href="https://www.apohara.dev/consilium"><b>▶️ Live demo (all in one)</b></a> ·
   <a href="#-the-problem">Problem</a> ·
   <a href="#-the-solution">Solution</a> ·
   <a href="#%EF%B8%8F-live-evidence-verify-yourself">Live evidence</a> ·
