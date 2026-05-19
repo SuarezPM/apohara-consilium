@@ -314,10 +314,10 @@ export function Dashboard() {
                     >
                       {e.verdict}
                     </td>
-                    <td className="p-2">{e.attackers.length}</td>
-                    <td className="p-2">{e.latency_ms.toFixed(0)}ms</td>
+                    <td className="p-2">{Array.isArray(e.attackers) ? e.attackers.length : "—"}</td>
+                    <td className="p-2">{typeof e.latency_ms === "number" && isFinite(e.latency_ms) ? `${e.latency_ms.toFixed(0)}ms` : "—"}</td>
                     <td className="p-2 text-muted-foreground" title={e.signed_hash}>
-                      {e.signed_hash.slice(0, 16)}…
+                      {typeof e.signed_hash === "string" && e.signed_hash.length > 16 ? `${e.signed_hash.slice(0, 16)}…` : (e.signed_hash ?? "—")}
                     </td>
                   </tr>
                 ))}
