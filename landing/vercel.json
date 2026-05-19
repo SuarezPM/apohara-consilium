@@ -1,0 +1,20 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ],
+  "redirects": [
+    { "source": "/repo", "destination": "https://github.com/SuarezPM/apohara-consilium", "permanent": true },
+    { "source": "/paper", "destination": "https://doi.org/10.5281/zenodo.20277875", "permanent": true },
+    { "source": "/deck", "destination": "https://github.com/SuarezPM/apohara-consilium/blob/main/docs/submissions/pitch-deck-milan/apohara-consilium-milan-pitch.pdf", "permanent": true },
+    { "source": "/api", "destination": "https://api.apohara.dev/v1/soar/healthz", "permanent": true }
+  ]
+}

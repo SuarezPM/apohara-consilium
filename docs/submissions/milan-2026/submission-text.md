@@ -9,10 +9,12 @@
 
 ## URLs
 
+- **Live demo / landing**: https://apohara-consilium.vercel.app (production-ready Vercel deploy; **apohara.io** custom domain attached, awaiting DNS A-record propagation at Porkbun)
 - **GitHub repo**: https://github.com/SuarezPM/apohara-consilium
-- **Live API**: https://api.apohara.dev/v1/soar/healthz (shared backend; CONSILIUM brand at apohara.io is the frontend surface)
-- **Paper / DOI**: https://doi.org/10.5281/zenodo.20277875 (v3, May 2026, Z3 SMT formal proof)
-- **Pitch deck PDF**: `docs/submissions/pitch-deck-milan/apohara-consilium-milan-pitch.pdf` (in repo)
+- **Live API backend**: https://api.apohara.dev/v1/soar/healthz (shared backend with apohara-probant; CONSILIUM-specific RFC 3161 TSA endpoint at `/v1/verdicts/{hash}/verify-timestamp`)
+- **Paper / DOI**: https://doi.org/10.5281/zenodo.20277875 (v3, May 2026, Z3 SMT formal proof, 12 references)
+- **Pitch deck PDF**: `docs/submissions/pitch-deck-milan/apohara-consilium-milan-pitch.pdf` (in repo, 8 pages, 372 KB)
+- **ADR**: `docs/adr/0001-milan-submission-frame-bda.md` (decision record for B+D+A frame)
 - **Demo video**: (reuse from TechEx if accepted, OR record fresh — Pablo's call)
 
 ---
