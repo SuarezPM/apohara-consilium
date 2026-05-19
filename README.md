@@ -37,9 +37,13 @@
   <a href="https://github.com/Z3Prover/z3"><img src="https://img.shields.io/badge/Z3%20SMT-UNSAT%20proof-9B59B6.svg?style=flat-square" alt="Z3"></a>
 </p>
 
-<!-- Row 4 — event -->
+<!-- Row 4 — event + powered-by -->
 <p align="center">
   <strong>🇮🇹 Milan AI Week 2026 · AI Agent Olympics Hackathon · Vultr / Google / Collaborative Systems tracks</strong>
+</p>
+
+<p align="center">
+  <strong>⚡ Powered by <a href="https://www.vultr.com/">Vultr</a> (cloud) &amp; <a href="https://ai.google.dev/gemini-api">Gemini 3.1 PRO</a> (LLM judge layer)</strong>
 </p>
 
 <!-- Hero stat strip — 4 headline numbers, video-ready -->
