@@ -43,6 +43,18 @@
   ],
   "rewrites": [
     {
+      "source": "/consilium",
+      "destination": "https://apohara-consilium.vercel.app/"
+    },
+    {
+      "source": "/consilium/",
+      "destination": "https://apohara-consilium.vercel.app/"
+    },
+    {
+      "source": "/consilium/:path*",
+      "destination": "https://apohara-consilium.vercel.app/:path*"
+    },
+    {
       "source": "/((?!assets/|.*\\.).*)",
       "destination": "/index.html"
     }
