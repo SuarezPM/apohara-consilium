@@ -48,11 +48,19 @@ try:
         JudgeVerdict,
         make_default_adapters,
     )
+    from apohara_aegis.djl import DjlEngine as _DjlEngine
 except Exception as exc:  # noqa: BLE001
     _aegis_err = f"{type(exc).__name__}: {exc!s}"[:200]
     _aegis_version = "unknown"
     EnsembleJudge = None  # type: ignore[assignment]
     make_default_adapters = None  # type: ignore[assignment]
+    _DjlEngine = None  # type: ignore[assignment]
+
+# Module-level singleton: shared DJL engine used by the /v1/verify
+# pre-LLM block path (added 2026-05-18 to mirror /v1/soar/judge/evaluate's
+# DJL pre-block — see TechEx-eve Pablo gap-test). Stateless after init,
+# so safe across concurrent requests.
+_DJL_VERIFY_ENGINE = _DjlEngine() if _DjlEngine is not None else None
 
 try:
     import apohara_context_forge as _ctx_mod  # noqa: F401
@@ -479,6 +487,54 @@ async def verify(req: VerifyRequest) -> VerifyResponse:
         )
 
     t0 = time.perf_counter()
+
+    # ---- 0.4 Zero-LLM DJL pre-block (76 regex rules · p99 < 1 ms) ----------
+    # Catches obvious harmful content (drug synthesis, weapon assembly,
+    # password-stealing apps, prompt-injection patterns, CSAM, terrorism,
+    # generic data theft, etc.) before spending a single LLM token. Mirrors
+    # /v1/soar/judge/evaluate's DJL layer so the Hero /v1/verify panel
+    # benefits from the same deterministic floor. Fails open: any DjlEngine
+    # exception lets the request continue to LobsterTrap + Gemini + ensemble.
+    if _DJL_VERIFY_ENGINE is not None:
+        try:
+            djl_v = _DJL_VERIFY_ENGINE.evaluate(req.task_input, None)
+        except Exception:
+            djl_v = None
+        if djl_v is not None and djl_v.decision == "BLOCK":
+            djl_audit_id = str(uuid.uuid4())
+            djl_latency_ms = (time.perf_counter() - t0) * 1000.0
+            djl_prev_hash = _read_last_hash()
+            djl_entry = {
+                "verdict": "blocked",
+                "attackers": [],
+                "memory_isolation": {
+                    "inv15_enforced": True,
+                    "contextforge_audit_id": djl_audit_id,
+                },
+                "djl_check": {
+                    "decision": djl_v.decision,
+                    "matched_rules": list(djl_v.matched_rules),
+                    "latency_ms": round(djl_v.latency_ms, 3),
+                    "source": "djl-pre-llm",
+                },
+                "latency_ms": round(djl_latency_ms, 3),
+                "cost_estimate_usd": 0.0,
+                "cost_capped": False,
+                "ts": time.time(),
+            }
+            djl_signed = _append_ledger(djl_entry, djl_prev_hash)
+            return VerifyResponse(
+                verdict="blocked",
+                attackers=[],
+                memory_isolation=MemoryIsolationReport(
+                    inv15_enforced=True,
+                    contextforge_audit_id=djl_audit_id,
+                ),
+                signed_hash=djl_signed,
+                latency_ms=round(djl_latency_ms, 3),
+                cost_estimate_usd=0.0,
+                cost_capped=False,
+            )
 
     # ---- 0.5 LobsterTrap DPI pre-check (active when LOBSTERTRAP_URL set) ----
     lt_url = (os.environ.get("LOBSTERTRAP_URL") or "").strip() or None
