@@ -172,18 +172,16 @@ footer a:hover { text-decoration: underline; }
   </div>
 </div>
 
-<h2>Live evidence — verify yourself</h2>
-<div class="evidence">
-  <p><strong>Health check:</strong></p>
-  <code>curl https://api.apohara.dev/v1/soar/healthz
-# → 200 OK</code>
-
-  <p style="margin-top:18px;"><strong>RFC 3161 TSA verification on any verdict:</strong></p>
-  <code>curl https://api.apohara.dev/v1/verdicts/{signed_hash}/verify-timestamp
-# → {"valid": true, "authority": "freetsa.org",
-#    "timestamp": "2026-05-19T12:21:50+00:00"}</code>
-
-  <p style="margin-top:18px;"><strong>Live token shipped today:</strong> 1312-byte RFC 3161 TimeStampToken from <code style="display:inline;padding:2px 8px;">freetsa.org</code> at <code style="display:inline;padding:2px 8px;">2026-05-19T12:21:50+00:00</code>. Tag <code style="display:inline;padding:2px 8px;">v0.1.0-tsa</code>.</p>
+<h2>Try CONSILIUM Live → 60 seconds, no signup</h2>
+<div class="evidence" style="text-align:center; padding:36px 28px;">
+  <p style="font-size:14px; margin-bottom:24px; opacity:0.9;">
+    Two honest demos for jurors: <strong>(A)</strong> paste any prompt → see DJL bloquear en 0.17ms + Gemini layer · <strong>(B)</strong> click any of 3 real TSA-signed verdicts → verify the freetsa.org timestamp independently.
+  </p>
+  <a href="/verify" style="display:inline-block; background:var(--lime); color:var(--ink); padding:18px 36px; font-family:'Press Start 2P', monospace; font-size:14px; font-weight:700; text-decoration:none; margin:8px 8px 16px;">▸ TRY LIVE NOW</a>
+  <a href="/about" style="display:inline-block; background:transparent; color:var(--lime); border:2px solid var(--lime); padding:16px 30px; font-family:'Press Start 2P', monospace; font-size:11px; font-weight:700; text-decoration:none; margin:8px 8px 16px;">▸ JURY VERIFICATION MANUAL</a>
+  <p style="font-size:11px; margin-top:18px; opacity:0.7;">
+    Live token shipped today: <strong>1312-byte RFC 3161 TimeStampToken</strong> from <code style="padding:2px 6px; background:var(--ink); color:var(--lime);">freetsa.org</code> at <code style="padding:2px 6px; background:var(--ink); color:var(--lime);">2026-05-19T12:21:50+00:00</code>. Tag <code style="padding:2px 6px; background:var(--ink); color:var(--lime);">v0.1.0-tsa</code>. Curl examples: <a href="/about" style="color:var(--lime);">/about</a>.
+  </p>
 </div>
 
 <h2>Roadmap</h2>
