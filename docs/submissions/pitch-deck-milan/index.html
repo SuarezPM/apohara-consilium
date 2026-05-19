@@ -485,7 +485,7 @@
     <div>
       <h3>How the models compose</h3>
       <ul>
-        <li><span class="lime">Gemini 2.5 Pro</span> — writes the review (BYOK or demo key, 5/IP/day).</li>
+        <li><span class="lime">Gemini 3.1 PRO</span> — writes the review (BYOK or demo key, 5/IP/day).</li>
         <li><span class="lime">9-vendor adversarial ensemble</span> via OpenRouter + native APIs (Claude Opus 4.7, GPT-5.5, DeepSeek V4 Pro, Kimi K2.6, GLM 5.1, Qwen 3.6 Plus, Nemotron 3 Super 120B, MiniMax M2.7, Mistral Large 2411).</li>
         <li><span class="lime">HMAC-SHA256 chain + RFC 3161 TSA</span> — every verdict timestamped (freetsa.org · live evidence: 2026-05-19T12:21:50+00:00). Tamper-evident; roadmap to eIDAS QTSP Q3 2026.</li>
         <li><span class="lime">Verdict combine</span> — DJL ⟂ LLM ensemble in parallel via <code>asyncio.gather</code>, safe-merge <code>BLOCK∨BLOCK / ALLOW∧ALLOW / else REVIEW</code>. Equal veto.</li>
@@ -580,7 +580,7 @@
   <div class="box" style="margin-top: 20px; padding: 16px 24px;">
     <h3 style="margin-bottom: 6px;">1-click compliance reporting</h3>
     <p style="font-size: 17px; margin-bottom: 0; line-height: 1.45;">
-      <code>POST /v1/soar/compliance/generate</code> + Gemini 2.5 Pro → Markdown executive narrative per incident + selected frameworks. Deterministic control mapping underneath; LLM narrative on top. Graceful key-missing fallback. Output is auditor-ready.
+      <code>POST /v1/soar/compliance/generate</code> + Gemini 3.1 PRO → Markdown executive narrative per incident + selected frameworks. Deterministic control mapping underneath; LLM narrative on top. Graceful key-missing fallback. Output is auditor-ready.
     </p>
   </div>
   <div class="slide-footer">
@@ -738,7 +738,7 @@
   },
   <span class="c-key">"llm_verdict"</span>: {
     <span class="c-key">"decision"</span>: <span class="c-block">"BLOCK"</span>,
-    <span class="c-key">"vendor_votes"</span>: {<span class="c-str">"gemini-2.5-pro"</span>: <span class="c-block">"BLOCK"</span>}
+    <span class="c-key">"vendor_votes"</span>: {<span class="c-str">"gemini-3.1-pro"</span>: <span class="c-block">"BLOCK"</span>}
   }
 }</pre>
     </div>
