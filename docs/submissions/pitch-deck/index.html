@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Apohara PROBANT — Pitch Deck — TechEx 2026 / Milan AI Week 2026</title>
+  <title>Apohara PROBANT — Pitch Deck — TechEx 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;0,800&family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -239,17 +239,20 @@
     }
     td.us { color: var(--lime); font-weight: 700; }
     td.x { color: var(--bone-dim); }
-    /* COVER SLIDE specific */
+    /* COVER SLIDE specific — flex column with space-between to push footer
+       to natural bottom without absolute-positioning overlap. */
     .cover {
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
       text-align: center;
       height: 100%;
       gap: 0;
+      padding: 80px 88px 64px 88px;
     }
-    .cover .shield-row { display: flex; align-items: center; gap: 36px; margin-bottom: 36px; }
+    .cover .top-block { display: flex; flex-direction: column; align-items: center; flex: 1; justify-content: center; }
+    .cover .shield-row { display: flex; align-items: center; gap: 36px; margin-bottom: 32px; }
     .cover .brand {
       font-family: "Press Start 2P";
       font-size: 92px;
@@ -263,26 +266,24 @@
       color: var(--lime);
       letter-spacing: 0.04em;
       line-height: 1.3;
-      margin-top: 12px;
-      margin-bottom: 28px;
+      margin-top: 8px;
+      margin-bottom: 24px;
     }
     .cover .sub {
       font-size: 22px;
       color: var(--bone-dim);
       max-width: 1200px;
-      margin: 0 auto 48px auto;
+      margin: 0 auto 36px auto;
       line-height: 1.5;
     }
-    .cover .badge-row { display: flex; gap: 14px; justify-content: center; margin-bottom: 48px; }
+    .cover .badge-row { display: flex; gap: 14px; justify-content: center; }
     .cover .badge-row .badge { font-size: 15px; padding: 8px 16px; }
     .cover .footer-block {
-      position: absolute;
-      bottom: 64px;
-      left: 0; right: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
+      width: 100%;
     }
     .cover .author {
       font-size: 18px;
@@ -364,30 +365,32 @@
      SLIDE 1 — COVER
      ========================================================================== -->
 <section class="slide cover">
-  <div class="shield-row">
-    <svg class="shield-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-      <g transform="translate(256 256)" fill="none" stroke="#25B13F" stroke-width="22" stroke-linejoin="miter">
-        <path d="M -180,-200 L 180,-200 L 180,120 L 0,200 L -180,120 Z"/>
-        <path d="M -70,100 L 0,-110 L 70,100" stroke-linecap="square"/>
-      </g>
-    </svg>
-    <div class="brand">APOHARA<span class="dot">·</span>PROBANT</div>
-  </div>
-  <div class="tagline">A different AI audits<br>the code your AI just wrote.</div>
-  <p class="sub">
-    14-seat adversarial ensemble · INV-15 KV-cache isolation ·
-    Z3 SMT formal proof · SHA-256-signed verdicts<br>
-    Built for Claude Mythos — MYTHOS-READY architecture.
-  </p>
-  <div class="badge-row">
-    <span class="badge">STABLE v1.0</span>
-    <span class="badge">Apache-2.0</span>
-    <span class="badge">DOI 10.5281/zenodo.20277875</span>
-    <span class="badge">🔱 MYTHOS-READY</span>
+  <div class="top-block">
+    <div class="shield-row">
+      <svg class="shield-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(256 256)" fill="none" stroke="#25B13F" stroke-width="22" stroke-linejoin="miter">
+          <path d="M -180,-200 L 180,-200 L 180,120 L 0,200 L -180,120 Z"/>
+          <path d="M -70,100 L 0,-110 L 70,100" stroke-linecap="square"/>
+        </g>
+      </svg>
+      <div class="brand">APOHARA<span class="dot">·</span>PROBANT</div>
+    </div>
+    <div class="tagline">A different AI audits<br>the code your AI just wrote.</div>
+    <p class="sub">
+      14-seat adversarial ensemble · INV-15 KV-cache isolation ·
+      Z3 SMT formal proof · SHA-256-signed verdicts<br>
+      Built for Claude Mythos — MYTHOS-READY architecture.
+    </p>
+    <div class="badge-row">
+      <span class="badge">STABLE v1.0</span>
+      <span class="badge">Apache-2.0</span>
+      <span class="badge">DOI 10.5281/zenodo.20277875</span>
+      <span class="badge">🔱 MYTHOS-READY</span>
+    </div>
   </div>
   <div class="footer-block">
     <div class="author">Pablo M. Suarez · Universidad Nacional de Tucumán · Argentina</div>
-    <div class="events">🦞 TechEx 2026 · Track 1 · Veea-sponsored &nbsp; · &nbsp; 🤖 Milan AI Week 2026 · Agent Bench</div>
+    <div class="events">🦞 TechEx 2026 · Track 1 · Veea-sponsored · Agent Security &amp; AI Governance</div>
   </div>
 </section>
 
@@ -573,12 +576,10 @@
       </ul>
     </div>
   </div>
-  <div class="box" style="margin-top: 32px;">
-    <h3>1-click compliance reporting</h3>
-    <p style="font-size: 19px;">
-      <code>POST /v1/soar/compliance/generate</code> + Gemini 2.5 Pro → Markdown executive narrative
-      per incident + selected frameworks. Deterministic control mapping underneath; LLM narrative on top.
-      Graceful key-missing fallback. Output is auditor-ready.
+  <div class="box" style="margin-top: 20px; padding: 16px 24px;">
+    <h3 style="margin-bottom: 6px;">1-click compliance reporting</h3>
+    <p style="font-size: 17px; margin-bottom: 0; line-height: 1.45;">
+      <code>POST /v1/soar/compliance/generate</code> + Gemini 2.5 Pro → Markdown executive narrative per incident + selected frameworks. Deterministic control mapping underneath; LLM narrative on top. Graceful key-missing fallback. Output is auditor-ready.
     </p>
   </div>
   <div class="slide-footer">
@@ -618,27 +619,27 @@
       <div class="sub">Full aegis fusion-sprint regression in 33.61 s · 1 skip pre-existing · brand + honesty CI gates exit 0.</div>
     </div>
   </div>
-  <div class="cols" style="margin-top: 40px;">
-    <div class="box">
-      <h3>The honesty contract (committed CI gates)</h3>
-      <ul class="check">
-        <li><code>check_honesty_fusion.sh</code> — 4 rules: Mythos boundary language · first-implementation backing · test-count consistency · no "v2" labeling.</li>
-        <li><code>check_brand_fusion.sh</code> — bans the 10-hex PLAYBOOK SOAR teal palette.</li>
-        <li><code>check_submission_lengths.sh</code> — char-gate (4 submission variants, all under 2000 chars long-desc).</li>
-        <li><code>scripts/check_honesty.sh</code> — bans hardcoded latency / VRAM fabrication.</li>
+  <div class="cols" style="margin-top: 28px; gap: 40px;">
+    <div class="box" style="padding: 20px 24px;">
+      <h3 style="margin-bottom: 8px;">The honesty contract — committed CI gates</h3>
+      <ul class="check" style="margin-top: 6px;">
+        <li style="font-size: 17px; margin-bottom: 8px; line-height: 1.4;"><code>check_honesty_fusion.sh</code> — 4 rules: Mythos boundary · first-impl backing · test-count consistency · no "v2".</li>
+        <li style="font-size: 17px; margin-bottom: 8px; line-height: 1.4;"><code>check_brand_fusion.sh</code> — bans the 10-hex PLAYBOOK SOAR teal palette.</li>
+        <li style="font-size: 17px; margin-bottom: 8px; line-height: 1.4;"><code>check_submission_lengths.sh</code> — char-gate (4 submission variants &lt; 2000 chars long-desc).</li>
+        <li style="font-size: 17px; margin-bottom: 0; line-height: 1.4;"><code>scripts/check_honesty.sh</code> — bans hardcoded latency / VRAM fabrication.</li>
       </ul>
     </div>
-    <div class="box">
-      <h3>What we are NOT</h3>
-      <ul class="x">
-        <li>Not a generic LLM judge — IBM Granite Guardian 4 beats us on prompt-only classification (98.75% vs 93.75%, same JBB holdout). <span class="amber">We measured it, we did not hide it.</span></li>
-        <li>Not a content classifier — DJL is OWASP LLM 2026 + structured policy; we added a HARM category to cover the gap.</li>
-        <li>Not Mythos-active — explicit boundary text in <code>MYTHOS_READY.md</code>: "Apohara has NOT been granted Mythos access."</li>
+    <div class="box" style="padding: 20px 24px;">
+      <h3 style="margin-bottom: 8px;">What we are NOT</h3>
+      <ul class="x" style="margin-top: 6px;">
+        <li style="font-size: 17px; margin-bottom: 8px; line-height: 1.4;">Not a generic LLM judge — IBM Granite Guardian 4 beats us on prompt-only classification (98.75% vs 93.75%, same JBB holdout). <span class="amber">We measured it, we did not hide it.</span></li>
+        <li style="font-size: 17px; margin-bottom: 8px; line-height: 1.4;">Not a content classifier — DJL is OWASP LLM 2026 + structured policy; we added a HARM category to cover the gap.</li>
+        <li style="font-size: 17px; margin-bottom: 0; line-height: 1.4;">Not Mythos-active — explicit boundary text in <code>MYTHOS_READY.md</code>: "Apohara has NOT been granted Mythos access."</li>
       </ul>
     </div>
   </div>
   <div class="slide-footer">
-    <span class="left">AUDIT.md §12 · CHANGELOG.md · all logs at github.com/SuarezPM/apohara-aegis/tree/main/logs</span>
+    <span class="left">AUDIT.md §12 · CHANGELOG.md · logs at github.com/SuarezPM/apohara-aegis/tree/main/logs</span>
     <span>07 / 12</span>
   </div>
 </section>
@@ -910,7 +911,7 @@
   </div>
   <p class="dim" style="margin-top: 56px; font-size: 18px;">
     Pablo M. Suarez · UNT Argentina · dimensionequix@gmail.com<br>
-    🦞 TechEx 2026 · Track 1 · Veea-sponsored &nbsp; · &nbsp; 🤖 Milan AI Week 2026 · Agent Bench
+    🦞 TechEx 2026 · Track 1 · Veea-sponsored · Agent Security &amp; AI Governance
   </p>
 </section>
 
