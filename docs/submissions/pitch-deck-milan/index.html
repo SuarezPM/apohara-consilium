@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Apohara CONSILIUM — Pitch Deck — Milan AI Week 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;0,800&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --lime:   #25B13F;
+      --lime-dim: rgba(37, 177, 63, 0.40);
+      --lime-glow: rgba(37, 177, 63, 0.10);
+      --dark:   #2A2D3A;
+      --bone:   #EDEFF0;
+      --bone-dim: rgba(237, 239, 240, 0.55);
+      --ink:    #0E1010;
+      --raised: #1A1D2A;
+      --red:    #B8262A;
+      --amber:  #D89B1F;
+    }
+    /* 20in × 11.25in @ 96 DPI = 1920 × 1080 px. Chrome honours inch
+       units in @page reliably; px in @page is sometimes scaled. */
+    @page {
+      size: 20in 11.25in;
+      margin: 0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 1920px;
+      background: var(--ink);
+      color: var(--bone);
+      font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+      font-size: 22px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    .slide {
+      width: 1920px;
+      height: 1080px;
+      padding: 48px 88px 56px 88px;
+      page-break-after: always;
+      page-break-inside: avoid;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      background: var(--ink);
+      overflow: hidden;
+    }
+    .slide:last-child { page-break-after: auto; }
+    /* slide chrome — top bar with page number */
+    .slide::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--lime) 0%, var(--lime) 30%, transparent 30%);
+    }
+    .slide::after {
+      content: counter(page) " / 12";
+      counter-increment: page;
+      position: absolute;
+      top: 24px; right: 96px;
+      font-family: "JetBrains Mono";
+      font-size: 14px;
+      color: var(--bone-dim);
+      letter-spacing: 0.15em;
+    }
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 48px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--lime-dim);
+    }
+    .slide-header .crumb {
+      font-family: "Press Start 2P", "JetBrains Mono";
+      font-size: 12px;
+      color: var(--lime);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+    .slide-header .meta {
+      font-size: 13px;
+      color: var(--bone-dim);
+      letter-spacing: 0.1em;
+    }
+    h1.title {
+      font-family: "Press Start 2P", "JetBrains Mono";
+      font-size: 60px;
+      line-height: 1.15;
+      letter-spacing: 0.04em;
+      color: var(--bone);
+      margin-bottom: 28px;
+    }
+    h1.title .accent { color: var(--lime); }
+    h2.subtitle {
+      font-family: "Press Start 2P", "JetBrains Mono";
+      font-size: 28px;
+      line-height: 1.25;
+      letter-spacing: 0.04em;
+      color: var(--lime);
+      margin-bottom: 36px;
+    }
+    h3 {
+      font-family: "Press Start 2P", "JetBrains Mono";
+      font-size: 16px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--lime);
+      margin-bottom: 12px;
+    }
+    p { font-size: 24px; line-height: 1.5; color: var(--bone); margin-bottom: 16px; }
+    p.dim { color: var(--bone-dim); font-size: 22px; }
+    p.lead { font-size: 32px; line-height: 1.4; }
+    .muted { color: var(--bone-dim); }
+    .lime { color: var(--lime); }
+    .red { color: var(--red); }
+    .amber { color: var(--amber); }
+    /* stat cards */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 28px;
+      margin-top: 28px;
+    }
+    .stat {
+      background: var(--raised);
+      border: 1px solid var(--lime-dim);
+      padding: 28px 24px;
+      border-radius: 4px;
+    }
+    .stat .num {
+      font-family: "Press Start 2P";
+      font-size: 48px;
+      line-height: 1;
+      color: var(--lime);
+      margin-bottom: 12px;
+      letter-spacing: 0.02em;
+    }
+    .stat .num.small { font-size: 36px; }
+    .stat .label {
+      font-size: 14px;
+      color: var(--bone-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 8px;
+    }
+    .stat .sub { font-size: 14px; color: var(--bone); line-height: 1.45; }
+    /* two-column layout */
+    .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; flex: 1; }
+    .cols-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; flex: 1; }
+    /* boxes */
+    .box {
+      border: 1px solid var(--lime-dim);
+      padding: 28px;
+      border-radius: 4px;
+      background: var(--raised);
+    }
+    .box.warn { border-color: var(--red); }
+    .box.amber { border-color: var(--amber); }
+    /* code block */
+    pre {
+      background: #07070A;
+      border: 1px solid var(--lime-dim);
+      padding: 24px 28px;
+      border-radius: 4px;
+      font-family: "JetBrains Mono";
+      font-size: 17px;
+      line-height: 1.55;
+      color: var(--bone);
+      overflow: hidden;
+    }
+    pre .c-key { color: var(--lime); }
+    pre .c-str { color: var(--amber); }
+    pre .c-com { color: var(--bone-dim); font-style: italic; }
+    pre .c-block { color: var(--red); font-weight: 700; }
+    pre .c-allow { color: var(--lime); font-weight: 700; }
+    /* badge inline */
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border: 1px solid var(--lime-dim);
+      border-radius: 3px;
+      font-size: 13px;
+      color: var(--lime);
+      letter-spacing: 0.08em;
+      margin-right: 8px;
+    }
+    .badge.red { color: var(--red); border-color: rgba(184, 38, 42, 0.5); }
+    .badge.bone { color: var(--bone); border-color: var(--bone-dim); }
+    /* footer */
+    .slide-footer {
+      position: absolute;
+      bottom: 24px; left: 96px; right: 96px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--bone-dim);
+      letter-spacing: 0.1em;
+      border-top: 1px solid rgba(237,239,240,0.08);
+      padding-top: 14px;
+    }
+    .slide-footer .left { color: var(--lime); }
+    /* checkmarks/lists */
+    ul { list-style: none; padding-left: 0; }
+    ul li {
+      font-size: 22px;
+      line-height: 1.55;
+      color: var(--bone);
+      padding-left: 36px;
+      position: relative;
+      margin-bottom: 14px;
+    }
+    ul li::before {
+      content: "▸";
+      position: absolute;
+      left: 0;
+      color: var(--lime);
+      font-weight: 700;
+    }
+    ul.x li::before { content: "✗"; color: var(--red); }
+    ul.check li::before { content: "✓"; color: var(--lime); }
+    /* tables */
+    table { width: 100%; border-collapse: collapse; font-size: 16px; }
+    th, td {
+      padding: 10px 14px;
+      border: 1px solid var(--lime-dim);
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: var(--raised);
+      color: var(--lime);
+      font-family: "Press Start 2P";
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    td.us { color: var(--lime); font-weight: 700; }
+    td.x { color: var(--bone-dim); }
+    /* COVER SLIDE specific — flex column with space-between to push footer
+       to natural bottom without absolute-positioning overlap. */
+    .cover {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      height: 100%;
+      gap: 0;
+      padding: 80px 88px 64px 88px;
+    }
+    .cover .top-block { display: flex; flex-direction: column; align-items: center; flex: 1; justify-content: center; }
+    .cover .shield-row { display: flex; align-items: center; gap: 36px; margin-bottom: 32px; }
+    .cover .brand {
+      font-family: "Press Start 2P";
+      font-size: 92px;
+      letter-spacing: 0.06em;
+      color: var(--bone);
+    }
+    .cover .brand .dot { color: var(--lime); }
+    .cover .tagline {
+      font-family: "Press Start 2P";
+      font-size: 38px;
+      color: var(--lime);
+      letter-spacing: 0.04em;
+      line-height: 1.3;
+      margin-top: 8px;
+      margin-bottom: 24px;
+    }
+    .cover .sub {
+      font-size: 22px;
+      color: var(--bone-dim);
+      max-width: 1200px;
+      margin: 0 auto 36px auto;
+      line-height: 1.5;
+    }
+    .cover .badge-row { display: flex; gap: 14px; justify-content: center; }
+    .cover .badge-row .badge { font-size: 15px; padding: 8px 16px; }
+    .cover .footer-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+    }
+    .cover .author {
+      font-size: 18px;
+      color: var(--bone-dim);
+      letter-spacing: 0.05em;
+    }
+    .cover .events {
+      font-size: 14px;
+      color: var(--lime);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    /* ARCH DIAGRAM */
+    .arch-diagram {
+      font-family: "JetBrains Mono";
+      font-size: 14px;
+      line-height: 1.3;
+      color: var(--bone);
+      white-space: pre;
+      padding: 20px 28px;
+      background: #07070A;
+      border: 1px solid var(--lime-dim);
+      border-radius: 4px;
+      flex: 1;
+      overflow: hidden;
+    }
+    .arch-diagram .b { color: var(--lime); }
+    .arch-diagram .y { color: var(--amber); }
+    .arch-diagram .r { color: var(--red); }
+    /* SVG shield */
+    .shield-svg { width: 110px; height: 110px; }
+    /* Hide cover-specific decorations on regular slides */
+    .slide.cover::before { display: none; }
+    .slide.cover::after { display: none; }
+    .slide.cta::before { display: none; }
+    /* CTA slide */
+    .slide.cta {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .slide.cta h1 {
+      font-family: "Press Start 2P";
+      font-size: 72px;
+      color: var(--lime);
+      letter-spacing: 0.05em;
+      margin-bottom: 28px;
+    }
+    .slide.cta p.lead { font-size: 34px; color: var(--bone); margin-bottom: 56px; }
+    .slide.cta .links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      max-width: 1400px;
+    }
+    .slide.cta .link-box {
+      background: var(--raised);
+      border: 1px solid var(--lime);
+      padding: 28px;
+      text-align: left;
+    }
+    .slide.cta .link-box .l-lab {
+      font-family: "Press Start 2P";
+      font-size: 13px;
+      color: var(--lime);
+      letter-spacing: 0.2em;
+      margin-bottom: 12px;
+    }
+    .slide.cta .link-box .l-url {
+      font-size: 22px;
+      color: var(--bone);
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+
+<!-- =========================================================================
+     SLIDE 1 — COVER
+     ========================================================================== -->
+<section class="slide cover">
+  <div class="top-block">
+    <div class="shield-row">
+      <svg class="shield-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(256 256)" fill="none" stroke="#25B13F" stroke-width="22" stroke-linejoin="miter">
+          <path d="M -180,-200 L 180,-200 L 180,120 L 0,200 L -180,120 Z"/>
+          <path d="M -70,100 L 0,-110 L 70,100" stroke-linecap="square"/>
+        </g>
+      </svg>
+      <div class="brand">APOHARA<span class="dot">·</span>CONSILIUM</div>
+    </div>
+    <div class="tagline">The <span class="dot">Agent Governance OS</span><br>for Autonomous AI</div>
+    <p class="sub">
+      9-vendor adversarial ensemble · INV-15 Z3 formal proof · RFC 3161 TSA timestamps<br>
+      DORA Art 9/12/13 + EU AI Act Art 14 Aug-2026 ready
+    </p>
+    <div class="badge-row">
+      <span class="badge">STABLE v1.0</span>
+      <span class="badge">Apache-2.0</span>
+      <span class="badge">DOI 10.5281/zenodo.20277875</span>
+      <span class="badge">Milan AI Week 2026</span>
+    </div>
+  </div>
+  <div class="footer-block">
+    <div class="author">Pablo M. Suarez · Universidad Nacional de Tucumán · Argentina</div>
+    <div class="events">Milan AI Week 2026 · Vultr track · dimensionequix@gmail.com</div>
+  </div>
+</section>
+
+<!-- =========================================================================
+     SLIDE 2 — THE PROBLEM
+     ========================================================================== -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="crumb">02 · The Problem</span>
+    <span class="meta">Why now · the Italian regulatory deadline</span>
+  </div>
+  <h1 class="title">Italian banks <span class="accent">need DORA + EU AI Act</span><br>compliance evidence by Aug 2.</h1>
+  <div class="cols" style="margin-top: 40px;">
+    <div>
+      <h3>The regulatory mandate</h3>
+      <ul>
+        <li><span class="lime">DORA mandatory since 2025-01-17</span> — 22K+ EU financial entities; UniCredit + Intesa Sanpaolo as G-SIBs forced to comply. ICT risk management + audit trail requirements.</li>
+        <li><span class="lime">EU AI Act Art 14</span> (human-oversight obligation) — <span class="amber">fully enforceable 2026-08-02</span> (~75 days · penalties up to €35M or 7% global revenue).</li>
+        <li><span class="lime">Italian regulators</span>: Banca d'Italia, CONSOB, IVASS, ACN — all issuing AI governance guidance aligned to DORA + EU AI Act.</li>
+        <li><span class="red">No audit trail = no compliance evidence.</span> Autonomous AI agent workflows require tamper-evident logs under both frameworks.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>The technical gap</h3>
+      <ul>
+        <li><span class="lime">OWASP LLM Top-10 2026</span> elevated <strong>Tool Poisoning to LLM02</strong> on 2026-04-14 — AI agents need independent veto layers.</li>
+        <li>Self-review is same-model — same training data, same blind spots, same hallucinations. Cross-vendor adversarial ensemble closes this.</li>
+        <li><span class="lime">CSA Agentic Profile</span> (March 2026 DRAFT) extends NIST AI RMF for autonomous agents. NIST "Agent Interoperability Profile" — Q4 2026 planned.</li>
+        <li>RFC 3161 TSA timestamps + HMAC-SHA256 chain → tamper-evident audit trail aligned to DORA ICT Art 9/12/13 requirements.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span class="left">apohara.dev · api.apohara.dev</span>
+    <span>Apohara CONSILIUM — Pitch Deck — Milan AI Week 2026</span>
+  </div>
+</section>
+
+<!-- =========================================================================
+     SLIDE 3 — THE SOLUTION
+     ========================================================================== -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="crumb">03 · The Solution</span>
+    <span class="meta">A+B+D tiers · OSS entry → Governance OS → court-grade audit</span>
+  </div>
+  <h1 class="title"><span class="accent">9-vendor adversarial</span> ensemble<br>+ <span class="accent">court-grade audit trail.</span></h1>
+  <div class="cols-3" style="margin-top: 36px; flex: 1;">
+    <div class="box">
+      <h3>A — OSS Entry</h3>
+      <p class="dim" style="font-size: 18px; margin-bottom: 10px;"><span class="lime">Apache-2.0 · free forever</span></p>
+      <ul style="margin-top: 4px;">
+        <li style="font-size: 17px; margin-bottom: 8px; line-height: 1.4;">9-vendor adversarial ensemble (Claude · GPT · DeepSeek · Kimi · GLM · Qwen · Nemotron · MiniMax · Mistral)</li>
+        <li style="font-size: 17px; margin-bottom: 8px; line-height: 1.4;">78-rule DJL deterministic judge · TPR/TNR 1.000 · p99 0.114 ms</li>
+        <li style="font-size: 17px; margin-bottom: 0; line-height: 1.4;">INV-15 Z3 SMT formal proof · UNSAT in 10.08 ms · 0/1210 empirical sweep</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>B — Governance OS Core</h3>
+      <p class="dim" style="font-size: 18px; margin-bottom: 10px;"><span class="lime">"Splunk for AI agents"</span></p>
+      <ul style="margin-top: 4px;">
+        <li style="font-size: 17px; margin-bottom: 8px; line-height: 1.4;">4-stage SOAR pipeline · DETECT → JUDGE → ENFORCE → FORENSICS · p99 10.6 ms</li>
+        <li style="font-size: 17px; margin-bottom: 8px; line-height: 1.4;">DORA + EU AI Act compliance dashboards · 6 frameworks · 14 mapped controls</li>
+        <li style="font-size: 17px; margin-bottom: 0; line-height: 1.4;">HMAC-SHA256 verdict chain + STIX 2.1 export for SIEM integration</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>D — CAICEP Module</h3>
+      <p class="dim" style="font-size: 18px; margin-bottom: 10px;"><span class="lime">Court-grade audit trail · roadmap</span></p>
+      <ul style="margin-top: 4px;">
+        <li style="font-size: 17px; margin-bottom: 8px; line-height: 1.4;">RFC 3161 TSA timestamps (freetsa.org · 2026-05-19T12:21:50+00:00 live evidence) — tamper-evident, not yet court-admissible</li>
+        <li style="font-size: 17px; margin-bottom: 8px; line-height: 1.4;">Roadmap: eIDAS QTSP partnership Q3 2026 → legally binding qualified timestamps under EU Regulation 910/2014</li>
+        <li style="font-size: 17px; margin-bottom: 0; line-height: 1.4;">DORA Art 9/12/13 aligned ICT audit log · Banca d'Italia / CONSOB / IVASS ready</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span class="left">api.apohara.dev/v1/soar/healthz · github.com/SuarezPM/apohara-consilium</span>
+    <span>03 / 12</span>
+  </div>
+</section>
+
+<!-- =========================================================================
+     SLIDE 4 — APPLICATION OF TECHNOLOGY (judging crit #1)
+     ========================================================================== -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="crumb">04 · Application of Technology</span>
+    <span class="meta">Judging Criterion #1</span>
+  </div>
+  <h1 class="title"><span class="accent">9 frontier vendors</span> · 4-stage SOAR<br>· INV-15 Z3 proof · RFC 3161 timestamps</h1>
+  <div class="cols" style="margin-top: 36px;">
+    <div>
+      <h3>How the models compose</h3>
+      <ul>
+        <li><span class="lime">Gemini 2.5 Pro</span> — writes the review (BYOK or demo key, 5/IP/day).</li>
+        <li><span class="lime">9-vendor adversarial ensemble</span> via OpenRouter + native APIs (Claude Opus 4.7, GPT-5.5, DeepSeek V4 Pro, Kimi K2.6, GLM 5.1, Qwen 3.6 Plus, Nemotron 3 Super 120B, MiniMax M2.7, Mistral Large 2411).</li>
+        <li><span class="lime">HMAC-SHA256 chain + RFC 3161 TSA</span> — every verdict timestamped (freetsa.org · live evidence: 2026-05-19T12:21:50+00:00). Tamper-evident; roadmap to eIDAS QTSP Q3 2026.</li>
+        <li><span class="lime">Verdict combine</span> — DJL ⟂ LLM ensemble in parallel via <code>asyncio.gather</code>, safe-merge <code>BLOCK∨BLOCK / ALLOW∧ALLOW / else REVIEW</code>. Equal veto.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>The infrastructure beneath</h3>
+      <ul>
+        <li><span class="lime">Apohara ContextForge</span> — KV-cache coordination layer for vLLM, hardware-validated on AMD Instinct MI300X (192 GB HBM3, ROCm 7.x). INV-15 Z3 UNSAT 10.08 ms ±0.5.</li>
+        <li><span class="lime">Veea LobsterTrap DPI</span> — pre-LLM regex interception (50% SQLi block, 9.8% FPR measured).</li>
+        <li><span class="lime">Zero-LLM Deterministic Judge Layer</span> — 78 regex rules (8 categories, bilingual EN+ES), <strong>p99 0.114 ms</strong>, TPR/TNR 1.000, prompt-injection-immune by construction.</li>
+        <li><span class="lime">STIX 2.1 export</span> at <code>/v1/soar/incidents/{id}/stix</code> — 7-SDO bundle for SIEM integration. DORA Art 9/12/13 ICT audit log alignment.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span class="left">github.com/SuarezPM/apohara-consilium · github.com/SuarezPM/Apohara_Context_Forge</span>
+    <span>04 / 12</span>
+  </div>
+</section>
+
+<!-- =========================================================================
+     SLIDE 5 — ORIGINALITY (judging crit #4)
+     ========================================================================== -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="crumb">05 · Originality</span>
+    <span class="meta">Judging Criterion #4</span>
+  </div>
+  <h1 class="title">The only OSS combining<br><span class="accent">all four</span> of these.</h1>
+  <div class="cols-3" style="margin-top: 40px;">
+    <div class="box">
+      <h3>① Formal proof</h3>
+      <p class="dim" style="font-size: 18px;">INV-15 (Judge-Critic-Responder gate) encoded as Z3 SMT problem; <span class="lime">UNSAT on negation in 10.08 ms</span>. Complements the empirical 0/1210 sweep from V2.0.1.
+      <br><br>No competitor has a formal safety invariant. Paper v3.0 on Zenodo DOI 10.5281/zenodo.20277875.</p>
+    </div>
+    <div class="box">
+      <h3>② 9-vendor ensemble</h3>
+      <p class="dim" style="font-size: 18px;"><span class="lime">Multi-vendor adversarial diversity</span>: 9 active frontier vendors (Apache-2.0, self-hostable).
+      <br><br>PLAYBOOK SOAR (Gemini-only), Pantheon (Gemini-only), Vela (Gemini-only), Trusyn (Gemini multi-variant) — all single-vendor.
+      <br><br>Threshold ladder auto-scales <code>{high:9, med:6, human_review:3}</code>.</p>
+    </div>
+    <div class="box">
+      <h3>③ Dual-layer veto</h3>
+      <p class="dim" style="font-size: 18px;"><span class="lime">DJL + LLM ensemble run in parallel</span> with equal veto power: <code>BLOCK ∨ BLOCK</code>, <code>ALLOW ∧ ALLOW</code>, else <code>REVIEW</code>.
+      <br><br>PLAYBOOK SOAR uses DJL as primary gate. We give the LLM ensemble paritetic authority — strictly safer.</p>
+    </div>
+  </div>
+  <div class="box" style="margin-top: 40px;">
+    <h3>④ Mythos-Ready architecture (industry-first positional gesture)</h3>
+    <p class="dim" style="font-size: 20px;">A reserved 13th attacker slot for <span class="lime">Claude Mythos</span> — Anthropic's most advanced model — wired through Apohara PROBANT's adversarial ensemble against itself. Currently <span class="amber">INACTIVE</span> until Claude for Open Source / Project Glasswing approval and credential provisioning. Honest boundary text in <code>MYTHOS_READY.md</code>; no access claim.</p>
+  </div>
+  <div class="slide-footer">
+    <span class="left">docs/glasswing/competitive-positioning.md · MYTHOS_READY.md</span>
+    <span>05 / 12</span>
+  </div>
+</section>
+
+<!-- =========================================================================
+     SLIDE 6 — BUSINESS VALUE (judging crit #3)
+     ========================================================================== -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="crumb">06 · Business Value</span>
+    <span class="meta">Judging Criterion #3</span>
+  </div>
+  <h1 class="title">6 frameworks · <span class="accent">14 mapped controls</span><br>EU AI Act · NIST AI RMF · ISO 42001 · SOC 2 · GDPR · NIST 800-53</h1>
+  <div class="cols" style="margin-top: 36px;">
+    <div>
+      <h3>Industry templates</h3>
+      <ul>
+        <li><span class="lime">Finance</span> — DORA Art 9/12/13 · PCI-DSS 4.0 · SOX · EU MiFID II · NIST SP 800-53 · UniCredit / Intesa Sanpaolo G-SIB scope</li>
+        <li><span class="lime">Healthcare</span> — HIPAA Privacy + Security Rules · GDPR Art. 9 · ISO 13485</li>
+        <li><span class="lime">Government</span> — EO 13526 · NIST SP 800-53 · FedRAMP · classified-marking handling</li>
+        <li><span class="lime">Retail</span> — PCI-DSS 3.2/3.4 · cardholder-data storage prohibition</li>
+        <li><span class="lime">Manufacturing</span> — IEC 62443 OT/ICS · NERC CIP for energy-adjacent</li>
+        <li><span class="lime">Energy</span> — NERC CIP-007 · grid-control directive interception</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Compliance frameworks (6 · 14 mapped controls)</h3>
+      <ul>
+        <li><span class="lime">EU AI Act</span> — Art 14 human-oversight. <span class="amber">Fully applicable 2026-08-02</span> (~75 days · €35M / 7% revenue penalty).</li>
+        <li><span class="lime">NIST AI RMF</span> — GOVERN / MAP / MEASURE / MANAGE functions. CSA Agentic Profile extension (March 2026 DRAFT).</li>
+        <li><span class="lime">ISO 42001</span> — AI management system. Audit-trail clause alignment via RFC 3161 + HMAC chain.</li>
+        <li><span class="lime">SOC 2</span> — CC6.1 / CC6.6 / CC7.2 / CC7.3 (logical access + change management + incident response).</li>
+        <li><span class="lime">GDPR</span> — Art 22 automated decision-making · Art 30 records of processing · DPIA alignment.</li>
+        <li><span class="lime">NIST SP 800-53</span> — AC / AU / SI / SC family controls for agentic AI systems.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box" style="margin-top: 20px; padding: 16px 24px;">
+    <h3 style="margin-bottom: 6px;">1-click compliance reporting</h3>
+    <p style="font-size: 17px; margin-bottom: 0; line-height: 1.45;">
+      <code>POST /v1/soar/compliance/generate</code> + Gemini 2.5 Pro → Markdown executive narrative per incident + selected frameworks. Deterministic control mapping underneath; LLM narrative on top. Graceful key-missing fallback. Output is auditor-ready.
+    </p>
+  </div>
+  <div class="slide-footer">
+    <span class="left">api.apohara.dev/v1/soar/compliance/frameworks</span>
+    <span>06 / 12</span>
+  </div>
+</section>
+
+<!-- =========================================================================
+     SLIDE 7 — MEASUREMENTS
+     ========================================================================== -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="crumb">07 · Measured, not Marketed</span>
+    <span class="meta">Every number traces to a committed log file</span>
+  </div>
+  <h1 class="title">Honesty discipline:<br><span class="accent">every digit cites a log.</span></h1>
+  <div class="stat-row" style="margin-top: 36px;">
+    <div class="stat">
+      <div class="label">DJL p99 latency</div>
+      <div class="num small">0.114 ms</div>
+      <div class="sub">76 regex rules · 1000 iterations · 124-prompt corpus. Bench: <code>logs/djl_latency.json</code>. <span class="lime">44× under 5 ms budget</span>.</div>
+    </div>
+    <div class="stat">
+      <div class="label">JBB Behaviors block</div>
+      <div class="num small">93.75%</div>
+      <div class="sub">75 / 80 NeurIPS 2024 holdout · Wilson 95% CI [86.2%, 97.3%]. Day-5 10-frontier baseline log committed.</div>
+    </div>
+    <div class="stat">
+      <div class="label">SOAR p99 lifecycle</div>
+      <div class="num small">10.6 ms</div>
+      <div class="sub">DETECT→JUDGE→ENFORCE→FORENSICS · 1000 iter. <code>logs/lifecycle_latency.json</code>. <span class="lime">19× under 200 ms</span>.</div>
+    </div>
+    <div class="stat">
+      <div class="label">Tests passing</div>
+      <div class="num small">603 / 0</div>
+      <div class="sub">Full aegis fusion-sprint regression in 33.61 s · 1 skip pre-existing · brand + honesty CI gates exit 0.</div>
+    </div>
+  </div>
+  <div class="cols" style="margin-top: 28px; gap: 40px;">
+    <div class="box" style="padding: 20px 24px;">
+      <h3 style="margin-bottom: 8px;">The honesty contract — committed CI gates</h3>
+      <ul class="check" style="margin-top: 6px;">
+        <li style="font-size: 17px; margin-bottom: 8px; line-height: 1.4;"><code>check_honesty_fusion.sh</code> — 4 rules: Mythos boundary · first-impl backing · test-count consistency · no "v2".</li>
+        <li style="font-size: 17px; margin-bottom: 8px; line-height: 1.4;"><code>check_brand_fusion.sh</code> — bans the 10-hex PLAYBOOK SOAR teal palette.</li>
+        <li style="font-size: 17px; margin-bottom: 8px; line-height: 1.4;"><code>check_submission_lengths.sh</code> — char-gate (4 submission variants &lt; 2000 chars long-desc).</li>
+        <li style="font-size: 17px; margin-bottom: 0; line-height: 1.4;"><code>scripts/check_honesty.sh</code> — bans hardcoded latency / VRAM fabrication.</li>
+      </ul>
+    </div>
+    <div class="box" style="padding: 20px 24px;">
+      <h3 style="margin-bottom: 8px;">What we are NOT</h3>
+      <ul class="x" style="margin-top: 6px;">
+        <li style="font-size: 17px; margin-bottom: 8px; line-height: 1.4;">Not a generic LLM judge — IBM Granite Guardian 4 beats us on prompt-only classification (98.75% vs 93.75%, same JBB holdout). <span class="amber">We measured it, we did not hide it.</span></li>
+        <li style="font-size: 17px; margin-bottom: 8px; line-height: 1.4;">Not a content classifier — DJL is OWASP LLM 2026 + structured policy; we added a HARM category to cover the gap.</li>
+        <li style="font-size: 17px; margin-bottom: 0; line-height: 1.4;">Not Mythos-active — explicit boundary text in <code>MYTHOS_READY.md</code>: "Apohara has NOT been granted Mythos access."</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span class="left">AUDIT.md §12 · CHANGELOG.md · logs at github.com/SuarezPM/apohara-aegis/tree/main/logs</span>
+    <span>07 / 12</span>
+  </div>
+</section>
+
+<!-- =========================================================================
+     SLIDE 8 — ARCHITECTURE
+     ========================================================================== -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="crumb">08 · Architecture</span>
+    <span class="meta">Data-flow · 14 attackers · INV-15 · HMAC chain</span>
+  </div>
+  <h1 class="title">Five layers of defense.<br><span class="accent">Two layers of veto.</span></h1>
+  <pre class="arch-diagram" style="margin-top: 24px;">
+                <span class="b">Hero / SDK / curl</span>  (browser · LangChain · CrewAI)
+                              │  POST prompt
+                              ▼
+    ┌────────────────────────────────────────────────────────────────────┐
+    │  <span class="b">① LobsterTrap DPI</span>       Veea regex interception · pre-LLM     │
+    │  50% SQLi block · 9.8% FPR · <span class="y">~12 ms</span>                            │
+    └────────────────────────────────────────────────────────────────────┘
+                              ▼
+    ┌────────────────────────────────────────────────────────────────────┐
+    │  <span class="b">② Zero-LLM DJL</span>          76 regex rules · 8 categories         │
+    │  TPR / TNR 1.000 · Wilson [0.9962, 1.0000] · <span class="y">p99 0.114 ms</span>          │
+    └────────────────────────────────────────────────────────────────────┘
+                              ▼
+    ┌────────────────────────────────────────────────────────────────────┐
+    │  <span class="b">③ 4-stage SOAR pipeline</span>     DETECT → JUDGE → ENFORCE → FORENSICS │
+    │                                                                    │
+    │  ┌── asyncio.gather (parallel, equal veto) ─────────────────────┐  │
+    │  │   ④a DJL deterministic           ④b LLM ensemble (Gemini)   │  │
+    │  └──────────────────────────┬────────────────────────────────────┘  │
+    │                             ▼                                       │
+    │  verdict_combine:  <span class="b">BLOCK ∨ BLOCK</span> · <span class="b">ALLOW ∧ ALLOW</span> · else <span class="r">REVIEW</span>      │
+    │  <span class="y">p99 lifecycle 10.6 ms</span> · 19× under 200 ms target                  │
+    └────────────────────────────────────────────────────────────────────┘
+                              ▼
+    ┌────────────────────────────────────────────────────────────────────┐
+    │  <span class="b">⑤ Apohara ContextForge</span>   INV-15 KV-cache isolation             │
+    │  Z3 SMT formal proof · UNSAT in 10.08 ms · empirical 0 / 1210       │
+    │  14 attackers, each in its own isolated KV-cache                    │
+    └────────────────────────────────────────────────────────────────────┘
+                              ▼
+    ┌────────────────────────────────────────────────────────────────────┐
+    │  <span class="b">⑥ HMAC-SHA256 verdict chain</span>  verify_chain() audit             │
+    │  <span class="y">STIX 2.1 export</span> at /v1/soar/incidents/{id}/stix                  │
+    └────────────────────────────────────────────────────────────────────┘
+  </pre>
+  <div class="slide-footer">
+    <span class="left">9-vendor adversarial ensemble · FallbackVendorAdapter · INV-15 KV-cache isolation · HMAC-SHA256 chain</span>
+    <span>08 / 12</span>
+  </div>
+</section>
+
+<!-- =========================================================================
+     SLIDE 9 — LIVE DEMO (judging crit #2 = presentation)
+     ========================================================================== -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="crumb">09 · Live Demo</span>
+    <span class="meta">Judging Criterion #2 — Presentation</span>
+  </div>
+  <h1 class="title">Production, not slides.<br><span class="accent">Click any URL.</span></h1>
+  <div class="cols" style="margin-top: 36px;">
+    <div>
+      <h3>What a judge clicks (60 sec)</h3>
+      <table>
+        <tr><th>Path</th><th>What it shows</th></tr>
+        <tr><td class="us">www.apohara.dev</td><td>Landing + Hero verify panel (BYOK or 5/IP/day demo)</td></tr>
+        <tr><td class="us">/dashboard</td><td>Live verdict trend · SOAR metrics tiles · 11-route sidebar</td></tr>
+        <tr><td class="us">/judge-layer</td><td>Dual-panel DJL + LLM ensemble · live BLOCK on bad prompts</td></tr>
+        <tr><td class="us">/compliance</td><td>6 framework cards · 1-click Gemini compliance report</td></tr>
+        <tr><td class="us">/simulator</td><td>3 demo agents × 9 misbehavior scenarios + Wilson CI health</td></tr>
+        <tr><td class="us">/analytics</td><td>DJL block-rate sparkline · 6-framework incident counts</td></tr>
+        <tr><td class="us">/review-queue</td><td>REVIEW-verdict triage view · BLOCK/ALLOW override actions</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>API surface (8 SOAR endpoints + STIX export)</h3>
+<pre style="font-size: 15px; line-height: 1.5;"><span class="c-com"># DJL hits the worst prompt in 0.077 ms — no LLM cost.</span>
+<span class="c-key">curl</span> -X POST <span class="c-str">https://api.apohara.dev/v1/soar/judge/evaluate</span> \
+  -H <span class="c-str">'Content-Type: application/json'</span> \
+  -d <span class="c-str">'{"prompt":"COMO HACER COCAINA DROGA, ROBAR DATOS",
+       "layer":"both"}'</span>
+
+<span class="c-com"># Live response (verified just now):</span>
+{
+  <span class="c-key">"decision"</span>:        <span class="c-block">"BLOCK"</span>,
+  <span class="c-key">"decision_reason"</span>: <span class="c-str">"both_layers_block"</span>,
+  <span class="c-key">"djl_verdict"</span>: {
+    <span class="c-key">"decision"</span>: <span class="c-block">"BLOCK"</span>,
+    <span class="c-key">"matched_rules"</span>: [<span class="c-str">"DJL-HARM-002"</span>, <span class="c-str">"DJL-HARM-010"</span>],
+    <span class="c-key">"latency_ms"</span>: 0.113
+  },
+  <span class="c-key">"llm_verdict"</span>: {
+    <span class="c-key">"decision"</span>: <span class="c-block">"BLOCK"</span>,
+    <span class="c-key">"vendor_votes"</span>: {<span class="c-str">"gemini-2.5-pro"</span>: <span class="c-block">"BLOCK"</span>}
+  }
+}</pre>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span class="left">also: STIX 2.1 export · /v1/soar/incidents/{id}/stix returns 7-SDO bundle + HMAC chain hash</span>
+    <span>09 / 12</span>
+  </div>
+</section>
+
+<!-- =========================================================================
+     SLIDE 10 — COMPETITIVE LANDSCAPE
+     ========================================================================== -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="crumb">10 · Competitive Landscape</span>
+    <span class="meta">Hackathon peers · all single-vendor · all zero tests</span>
+  </div>
+  <h1 class="title">Six columns of evidence.<br><span class="accent">We are the only row</span> with all six.</h1>
+  <table style="margin-top: 36px; font-size: 15px;">
+    <tr>
+      <th style="width: 14%;">Product</th>
+      <th>Vendors</th>
+      <th>Tests</th>
+      <th>Public benchmark</th>
+      <th>Formal invariant</th>
+      <th>Multi-hardware</th>
+      <th>License</th>
+    </tr>
+    <tr>
+      <td class="us"><strong>Apohara CONSILIUM</strong></td>
+      <td class="us">9 frontier vendors</td>
+      <td class="us">603 fusion tests pass</td>
+      <td class="us">JBB 93.75% · Wilson [86.2%, 97.3%]</td>
+      <td class="us">INV-15 · Z3 UNSAT in 10.08 ms</td>
+      <td class="us">H100 + AMD MI300X (ROCm 7.x)</td>
+      <td class="us">Apache-2.0</td>
+    </tr>
+    <tr>
+      <td>PLAYBOOK SOAR</td>
+      <td class="x">1 (Gemini 2.5 Flash)</td>
+      <td class="x">0 (empty <code>tests/</code> dir)</td>
+      <td class="x">Unbacked "first NIST" claim</td>
+      <td class="x">None declared</td>
+      <td class="x">Single Render free-tier CPU</td>
+      <td class="x">MIT (no LICENSE file)</td>
+    </tr>
+    <tr>
+      <td>Pantheon</td>
+      <td class="x">1 (Gemini 2.5 Flash)</td>
+      <td class="x">0</td>
+      <td class="x">None published</td>
+      <td class="x">None</td>
+      <td class="x">Render CPU</td>
+      <td class="x">README MIT, repo Unknown</td>
+    </tr>
+    <tr>
+      <td>Vela</td>
+      <td class="x">1 (Gemini 2.5 Flash)</td>
+      <td class="x">0</td>
+      <td class="x">None published</td>
+      <td class="x">None</td>
+      <td class="x">Single Vultr droplet</td>
+      <td class="x">No LICENSE file</td>
+    </tr>
+    <tr>
+      <td>Trusyn</td>
+      <td class="x">1 (Gemini family, multi-variant single-vendor)</td>
+      <td class="x">0 visible</td>
+      <td class="x">v0.1.0 prototype, none</td>
+      <td class="x">None</td>
+      <td class="x">Single Vercel deploy</td>
+      <td class="x">Apache-2.0 (scaffold only)</td>
+    </tr>
+    <tr>
+      <td>IBM Granite Guardian 4</td>
+      <td class="x">1 (single-vendor classifier)</td>
+      <td class="x">Internal red-team only</td>
+      <td>98.75% on same JBB n=80 (we measured)</td>
+      <td class="x">None</td>
+      <td>watsonx (IBM-hosted)</td>
+      <td>Apache-2.0 (Lite plan free)</td>
+    </tr>
+    <tr>
+      <td>Tracient AI</td>
+      <td class="x">1 (single-vendor SDK)</td>
+      <td class="x">0 public</td>
+      <td class="x">None published</td>
+      <td class="x">None</td>
+      <td class="x">Cloud-hosted only</td>
+      <td class="x">Proprietary</td>
+    </tr>
+  </table>
+  <p class="dim" style="margin-top: 16px; font-size: 17px;">
+    Granite-4 beats us on <strong>prompt-only safety classification</strong>. Tracient AI offers a DORA + EU AI Act SDK but single-vendor, no formal proof, proprietary. Neither simulates 9 different attacker
+    perspectives, has INV-15 memory isolation, or is Apache-2.0 OSS. <span class="lime">The matrix is "who covers all six columns simultaneously"</span> — not "who scores highest on one row".
+  </p>
+  <div class="slide-footer">
+    <span class="left">Granite log: github.com/SuarezPM/apohara-aegis/blob/main/logs/granite4_jbb_n80_20260516T164541Z.json</span>
+    <span>10 / 12</span>
+  </div>
+</section>
+
+<!-- =========================================================================
+     SLIDE 11 — ROADMAP
+     ========================================================================== -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="crumb">11 · Roadmap</span>
+    <span class="meta">vendor independence · eIDAS partnership · design partners</span>
+  </div>
+  <h1 class="title"><span class="accent">Roadmap</span>:<br>vendor independence + eIDAS partnership + design partners</h1>
+  <div class="cols-3" style="margin-top: 36px; flex: 1;">
+    <div class="box">
+      <h3>30 days — LiteLLM migration</h3>
+      <p class="dim" style="font-size: 18px; margin-bottom: 12px;"><span class="lime">Vendor independence · Apache-2.0</span></p>
+      <p style="font-size: 17px; line-height: 1.5; margin-bottom: 12px;">
+        Migrate live traffic OpenRouter → <strong>LiteLLM</strong> (Apache-2.0, 8ms P95 at 1k RPS).
+        Parallel deploy already live on Vultr droplet (port 4000 internal).
+      </p>
+      <p class="dim" style="font-size: 15px; line-height: 1.4;">
+        Evidence: <code>docs/infra/litellm-parallel-deployment.md</code><br>
+        No single-vendor lock-in. Self-hostable on any Vultr droplet.
+      </p>
+    </div>
+    <div class="box">
+      <h3>90 days — eIDAS QTSP partnership</h3>
+      <p class="dim" style="font-size: 18px; margin-bottom: 12px;"><span class="lime">Court-admissible timestamps · EU Reg 910/2014</span></p>
+      <p style="font-size: 17px; line-height: 1.5; margin-bottom: 12px;">
+        Sign <strong>eIDAS QTSP partnership</strong> (Actalis Italia primary candidate) →
+        RFC 3161 timestamps upgraded to legally binding <em>qualified</em> timestamps
+        under EU Regulation 910/2014.
+      </p>
+      <p class="dim" style="font-size: 15px; line-height: 1.4;">
+        Current state: tamper-evident (freetsa.org RFC 3161 · live).<br>
+        Post-partnership: court-admissible Q3 2026.
+      </p>
+    </div>
+    <div class="box">
+      <h3>180 days — Italian design partners</h3>
+      <p class="dim" style="font-size: 18px; margin-bottom: 12px;"><span class="lime">DORA + EU AI Act pilot · G-SIB scope</span></p>
+      <p style="font-size: 17px; line-height: 1.5; margin-bottom: 12px;">
+        Design partner conversations with <strong>UniCredit / Intesa Sanpaolo / BPER</strong>
+        for CONSILIUM piloting on regulated AI agent workflows.
+      </p>
+      <p class="dim" style="font-size: 15px; line-height: 1.4;">
+        Alignment: DORA Art 9/12/13 ICT risk + EU AI Act Art 14 human oversight.<br>
+        Banca d'Italia / CONSOB / IVASS / ACN regulatory readiness.
+      </p>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span class="left">contact: dimensionequix@gmail.com · github.com/SuarezPM/apohara-consilium</span>
+    <span>11 / 12</span>
+  </div>
+</section>
+
+<!-- =========================================================================
+     SLIDE 12 — CTA
+     ========================================================================== -->
+<section class="slide cta">
+  <h1>Try it. Read it.<br>Break it.</h1>
+  <p class="lead">No marketing. Just measurements.<br><span style="font-size: 24px; color: var(--lime);">Ask: Vultr track ($11K) · Google Gemini track · Collaborative Systems track</span></p>
+  <div class="links">
+    <div class="link-box">
+      <div class="l-lab">LIVE DEMO</div>
+      <div class="l-url">https://www.apohara.dev</div>
+    </div>
+    <div class="link-box">
+      <div class="l-lab">LIVE API</div>
+      <div class="l-url">https://api.apohara.dev/v1/soar/healthz</div>
+    </div>
+    <div class="link-box">
+      <div class="l-lab">PAPER + Z3 PROOF (Zenodo v3)</div>
+      <div class="l-url">https://doi.org/10.5281/zenodo.20277875</div>
+    </div>
+    <div class="link-box">
+      <div class="l-lab">SOURCE (Apache-2.0)</div>
+      <div class="l-url">https://github.com/SuarezPM/apohara-consilium</div>
+    </div>
+    <div class="link-box">
+      <div class="l-lab">VULTR DROPLET (live)</div>
+      <div class="l-url">149.28.56.91 · LiteLLM port 4000 · API port 8000</div>
+    </div>
+    <div class="link-box">
+      <div class="l-lab">CONTACT</div>
+      <div class="l-url">dimensionequix@gmail.com · github.com/SuarezPM</div>
+    </div>
+  </div>
+  <p class="dim" style="margin-top: 36px; font-size: 17px;">
+    Pablo M. Suarez · UNT Argentina · dimensionequix@gmail.com<br>
+    Milan AI Week 2026 · Vultr track · DOI 10.5281/zenodo.20277875<br>
+    Derived from apohara-probant under Apache-2.0
+  </p>
+</section>
+
+</body>
+</html>
