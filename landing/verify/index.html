@@ -210,6 +210,13 @@ footer a { color: var(--lime); text-decoration: none; }
 <script>
 function $(id) { return document.getElementById(id); }
 
+// API_BASE detects the host: when served from apohara.dev/consilium/* the API
+// proxy lives at apohara.dev/consilium/api/* (double-rewrite in apohara project's
+// vercel.json). When served from apohara-consilium.vercel.app/* directly, the
+// API proxy is at /api/*. Without this detection, fetch('/api/...') resolves
+// against apohara.dev/api/ which doesn't exist (PROBANT SPA returns 405).
+const API_BASE = window.location.pathname.startsWith('/consilium') ? '/consilium/api' : '/api';
+
 // ===== Section A: Live evaluate =====
 async function callEvaluate() {
   const prompt = $('prompt-input').value.trim();
@@ -219,7 +226,7 @@ async function callEvaluate() {
   $('submit-btn').disabled = true;
 
   try {
-    const resp = await fetch('/api/v1/soar/judge/evaluate', {
+    const resp = await fetch(API_BASE + '/v1/soar/judge/evaluate', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt: prompt })
     });
@@ -256,7 +263,7 @@ async function verifyTsa(signedHash, context) {
   $('status-b').innerHTML = '<span class="spinner"></span>Calling /v1/verdicts/' + signedHash.slice(0, 8) + '.../verify-timestamp...';
 
   try {
-    const resp = await fetch('/api/v1/verdicts/' + signedHash + '/verify-timestamp');
+    const resp = await fetch(API_BASE + '/v1/verdicts/' + signedHash + '/verify-timestamp');
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const data = await resp.json();
     $('status-b').textContent = '✓ verify-timestamp response from api.apohara.dev';
