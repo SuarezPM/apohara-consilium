@@ -19,6 +19,11 @@
   <strong>🇮🇹 Milan AI Week 2026 · Vultr track · DORA Art. 9/12/13 + EU AI Act Art. 14 Aug-2026 ready</strong>
 </p>
 
+<p align="center">
+  <strong>▸ Live landing: <a href="https://apohara-consilium.vercel.app">apohara-consilium.vercel.app</a></strong> (apohara.io DNS propagating)<br>
+  <strong>▸ Live API: <a href="https://api.apohara.dev/v1/soar/healthz">api.apohara.dev</a></strong> · RFC 3161 TSA endpoint <a href="https://api.apohara.dev/v1/verdicts">/v1/verdicts/{hash}/verify-timestamp</a>
+</p>
+
 ---
 
 ## What is CONSILIUM?
