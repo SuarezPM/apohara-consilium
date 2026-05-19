@@ -297,7 +297,11 @@ export function Dashboard() {
                 {entries.map((e) => (
                   <tr key={e.signed_hash} className="border-b border-border/40 hover:bg-card/60">
                     <td className="p-2 text-muted-foreground">
-                      {new Date(e.ts * 1000).toISOString().slice(11, 19)}
+                      {(() => {
+                        const ts = typeof e.ts === "number" && isFinite(e.ts) ? e.ts * 1000 : NaN;
+                        const d = new Date(ts);
+                        return isNaN(d.getTime()) ? "—" : d.toISOString().slice(11, 19);
+                      })()}
                     </td>
                     <td
                       className={`p-2 font-semibold ${
