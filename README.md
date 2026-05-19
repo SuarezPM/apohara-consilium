@@ -20,8 +20,8 @@
 </p>
 
 <p align="center">
-  <strong>▸ Live landing: <a href="https://apohara-consilium.vercel.app">apohara-consilium.vercel.app</a></strong> (apohara.io DNS propagating)<br>
-  <strong>▸ Live API: <a href="https://api.apohara.dev/v1/soar/healthz">api.apohara.dev</a></strong> · RFC 3161 TSA endpoint <a href="https://api.apohara.dev/v1/verdicts">/v1/verdicts/{hash}/verify-timestamp</a>
+  <strong>▸ LIVE DEMO — TODO EN UNO:</strong> <a href="https://www.apohara.dev/consilium"><code>www.apohara.dev/consilium</code></a> · <a href="https://www.apohara.dev/consilium/verify"><code>/verify</code></a> (interactive) · <a href="https://www.apohara.dev/consilium/compliance"><code>/compliance</code></a> · <a href="https://www.apohara.dev/consilium/about"><code>/about</code></a><br>
+  <strong>▸ Live API:</strong> <a href="https://api.apohara.dev/v1/soar/healthz"><code>api.apohara.dev</code></a> · RFC 3161 TSA endpoint <a href="https://api.apohara.dev/v1/verdicts"><code>/v1/verdicts/{hash}/verify-timestamp</code></a>
 </p>
 
 ---

@@ -9,7 +9,12 @@
 
 ## URLs
 
-- **Live demo / landing**: https://apohara-consilium.vercel.app (production-ready Vercel deploy; **apohara.io** custom domain attached, awaiting DNS A-record propagation at Porkbun)
+- **LIVE DEMO (TODO EN UNO)**: **https://www.apohara.dev/consilium** — unified Apohara experience (PROBANT + CONSILIUM coexist under one brand surface). Routes:
+  - `/consilium` — hero + 3-tier A+B+D + Italian regulatory hook
+  - `/consilium/verify` — **interactive: paste any prompt → DJL + Gemini verdict; click any of 3 demo verdicts → live verify RFC 3161 TSA timestamp against freetsa.org**
+  - `/consilium/compliance` — 6 frameworks dashboard (EU AI Act, NIST AI RMF, ISO 42001, SOC 2, GDPR, NIST 800-53)
+  - `/consilium/about` — jury verification manual with OpenSSL independent-verify flow
+- **Alternative demo URL**: https://apohara-consilium.vercel.app (same content, separate canonical) — also at https://apohara.io (DNS propagating)
 - **GitHub repo**: https://github.com/SuarezPM/apohara-consilium
 - **Live API backend**: https://api.apohara.dev/v1/soar/healthz (shared backend with apohara-probant; CONSILIUM-specific RFC 3161 TSA endpoint at `/v1/verdicts/{hash}/verify-timestamp`)
 - **Paper / DOI**: https://doi.org/10.5281/zenodo.20277875 (v3, May 2026, Z3 SMT formal proof, 12 references)
