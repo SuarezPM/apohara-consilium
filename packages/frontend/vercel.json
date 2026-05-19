@@ -41,6 +41,13 @@
       ]
     }
   ],
+  "redirects": [
+    { "source": "/verify", "destination": "/consilium/verify", "permanent": false },
+    { "source": "/compliance", "destination": "/consilium/compliance", "permanent": false },
+    { "source": "/about", "destination": "/consilium/about", "permanent": false },
+    { "source": "/jury-guide", "destination": "/consilium/about", "permanent": false },
+    { "source": "/try-live", "destination": "/consilium/verify", "permanent": false }
+  ],
   "rewrites": [
     {
       "source": "/consilium",
