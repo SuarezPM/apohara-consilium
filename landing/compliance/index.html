@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compliance Dashboard — Apohara CONSILIUM</title>
+<meta name="description" content="6 compliance frameworks mapped to CONSILIUM controls: EU AI Act, NIST AI RMF, ISO 42001, SOC 2, GDPR, NIST 800-53.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --lime: #25B13F;
+  --dark: #2A2D3A;
+  --bone: #EDEFF0;
+  --ink:  #0E1010;
+  --red:  #B8262A;
+}
+html, body { background: var(--ink); color: var(--bone); font-family: "JetBrains Mono", monospace; line-height: 1.55; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 24px 60px; }
+
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--ink); border-bottom: 2px solid var(--lime);
+  padding: 12px 24px; display: flex; gap: 24px; align-items: center; flex-wrap: wrap;
+}
+nav a { color: var(--bone); text-decoration: none; font-size: 11px; opacity: 0.8; }
+nav a:hover { color: var(--lime); opacity: 1; }
+nav a.active { color: var(--lime); font-weight: 700; }
+nav .brand { font-family: "Press Start 2P", monospace; font-size: 11px; color: var(--lime); margin-right: auto; }
+
+header { padding: 50px 0 30px; border-bottom: 2px solid var(--dark); margin-bottom: 40px; }
+h1 { font-family: "Press Start 2P", monospace; font-size: 20px; line-height: 1.5; margin-bottom: 14px; }
+h1 .accent { color: var(--lime); }
+.tagline { font-size: 13px; color: var(--bone); opacity: 0.8; }
+
+h2 { font-family: "Press Start 2P", monospace; font-size: 13px; color: var(--lime); margin: 36px 0 18px; }
+
+/* STATUS BAR */
+.status-row {
+  display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 32px;
+  background: var(--dark); padding: 20px 24px;
+  border-left: 4px solid var(--lime);
+}
+.stat { text-align: center; }
+.stat .num { font-family: "Press Start 2P", monospace; font-size: 22px; color: var(--lime); }
+.stat .lbl { font-size: 10px; opacity: 0.6; margin-top: 6px; }
+
+/* FRAMEWORK GRID */
+.fw-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 36px;
+}
+.fw-card {
+  background: var(--dark); padding: 24px;
+  border-top: 4px solid var(--lime);
+  display: flex; flex-direction: column; gap: 12px;
+}
+.fw-card .fw-icon { font-size: 28px; }
+.fw-card .fw-name {
+  font-family: "Press Start 2P", monospace; font-size: 10px; color: var(--lime);
+}
+.fw-card .fw-count {
+  font-size: 13px; font-weight: 700; color: var(--bone);
+}
+.fw-card .fw-controls { font-size: 11px; line-height: 1.8; opacity: 0.75; }
+.fw-card .fw-timestamp { font-size: 10px; opacity: 0.45; margin-top: auto; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.07); }
+.badge {
+  display: inline-block; background: rgba(37,177,63,0.15);
+  color: var(--lime); border: 1px solid var(--lime);
+  padding: 2px 8px; font-size: 10px; margin: 2px 2px 2px 0;
+}
+
+/* EVIDENCE PANEL */
+.evidence {
+  background: var(--dark); padding: 26px; margin-bottom: 24px;
+  border-left: 4px solid var(--lime);
+}
+.evidence p { font-size: 12px; margin-bottom: 10px; }
+.evidence code {
+  display: block; background: var(--ink); padding: 12px 16px;
+  font-size: 11px; color: var(--lime); white-space: pre-wrap; word-break: break-all;
+}
+
+footer {
+  margin-top: 60px; padding-top: 24px;
+  border-top: 2px solid var(--dark);
+  font-size: 11px; opacity: 0.7; line-height: 1.8;
+}
+footer a { color: var(--lime); text-decoration: none; }
+
+@media (max-width: 768px) {
+  h1 { font-size: 15px; }
+  .fw-grid { grid-template-columns: 1fr; }
+  .status-row { gap: 16px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">CONSILIUM</span>
+  <a href="/">← Hero</a>
+  <a href="/verify">Try Live</a>
+  <a href="/compliance" class="active">Compliance</a>
+  <a href="/about">Jury Guide</a>
+  <a href="https://github.com/SuarezPM/apohara-consilium" target="_blank">GitHub ↗</a>
+</nav>
+
+<div class="container">
+
+<header>
+  <h1><span class="accent">Compliance</span> Dashboard</h1>
+  <p class="tagline">6 regulatory frameworks · 14 controls mapped · CONSILIUM verdict chain as machine-readable evidence</p>
+</header>
+
+<div class="status-row">
+  <div class="stat"><div class="num">6</div><div class="lbl">Frameworks</div></div>
+  <div class="stat"><div class="num">14</div><div class="lbl">Controls mapped</div></div>
+  <div class="stat"><div class="num">100%</div><div class="lbl">RFC 3161 timestamped</div></div>
+  <div class="stat"><div class="num">UNSAT</div><div class="lbl">INV-15 Z3 proof</div></div>
+</div>
+
+<h2>Framework Coverage</h2>
+<div class="fw-grid">
+
+  <div class="fw-card">
+    <div class="fw-icon">🇪🇺</div>
+    <div class="fw-name">EU AI Act</div>
+    <div class="fw-count">5 controls mapped</div>
+    <div class="fw-controls">
+      <span class="badge">Art 9</span><span class="badge">Art 10</span>
+      <span class="badge">Art 11</span><span class="badge">Art 13</span>
+      <span class="badge">Art 14</span><br>
+      Risk management system (Art 9) · Data governance (Art 10) ·
+      Technical documentation (Art 11) · Transparency (Art 13) ·
+      Human oversight (Art 14 — enforced 2026-08-02)
+    </div>
+    <div class="fw-timestamp">Last verdict: 2026-05-19T12:21:50+00:00 · freetsa.org</div>
+  </div>
+
+  <div class="fw-card">
+    <div class="fw-icon">🏛️</div>
+    <div class="fw-name">NIST AI RMF</div>
+    <div class="fw-count">4 controls mapped</div>
+    <div class="fw-controls">
+      <span class="badge">MAP</span><span class="badge">MEASURE</span>
+      <span class="badge">MANAGE</span><span class="badge">GOVERN</span><br>
+      MAP: threat taxonomy per verdict ·
+      MEASURE: 9-vendor confidence scores ·
+      MANAGE: ALLOW/REVIEW/BLOCK enforcement ·
+      GOVERN: audit chain + STIX 2.1 export
+    </div>
+    <div class="fw-timestamp">Last verdict: 2026-05-19T12:21:50+00:00 · freetsa.org</div>
+  </div>
+
+  <div class="fw-card">
+    <div class="fw-icon">🔒</div>
+    <div class="fw-name">ISO 42001</div>
+    <div class="fw-count">2 controls mapped</div>
+    <div class="fw-controls">
+      <span class="badge">Clause 6</span><span class="badge">Clause 8</span><br>
+      Clause 6: AI risk treatment planning (INV-15 formal proof) ·
+      Clause 8: Operational AI governance (4-stage SOAR pipeline)
+    </div>
+    <div class="fw-timestamp">Last verdict: 2026-05-19T12:21:50+00:00 · freetsa.org</div>
+  </div>
+
+  <div class="fw-card">
+    <div class="fw-icon">✅</div>
+    <div class="fw-name">SOC 2</div>
+    <div class="fw-count">1 control mapped</div>
+    <div class="fw-controls">
+      <span class="badge">CC7</span><br>
+      CC7 (System Operations): real-time anomaly detection via
+      9-vendor adversarial ensemble · HMAC-SHA256 verdict chain
+      provides tamper-evident audit trail
+    </div>
+    <div class="fw-timestamp">Last verdict: 2026-05-19T12:21:50+00:00 · freetsa.org</div>
+  </div>
+
+  <div class="fw-card">
+    <div class="fw-icon">🛡️</div>
+    <div class="fw-name">GDPR</div>
+    <div class="fw-count">1 control mapped</div>
+    <div class="fw-controls">
+      <span class="badge">Art 22</span><br>
+      Art 22: Automated individual decision-making —
+      CONSILIUM provides human-in-the-loop REVIEW verdicts
+      with explainable per-vendor reasoning for GDPR-covered
+      automated decisions
+    </div>
+    <div class="fw-timestamp">Last verdict: 2026-05-19T12:21:50+00:00 · freetsa.org</div>
+  </div>
+
+  <div class="fw-card">
+    <div class="fw-icon">📋</div>
+    <div class="fw-name">NIST 800-53</div>
+    <div class="fw-count">1 control mapped</div>
+    <div class="fw-controls">
+      <span class="badge">AU-4</span><br>
+      AU-4 (Audit Log Storage Capacity): RFC 3161 TSA-timestamped
+      verdict chain stored as tamper-evident JSONL · 1312-byte
+      TimeStampToken per verdict · Freetsa.org + DigiCert fallback
+    </div>
+    <div class="fw-timestamp">Last verdict: 2026-05-19T12:21:50+00:00 · freetsa.org</div>
+  </div>
+
+</div>
+
+<h2>Live Verification</h2>
+<div class="evidence">
+  <p><strong>Any verdict is independently verifiable via RFC 3161 TSA:</strong></p>
+  <code>curl https://api.apohara.dev/v1/verdicts/{signed_hash}/verify-timestamp
+# → {"valid": true, "authority": "freetsa.org",
+#    "timestamp": "2026-05-19T12:21:50+00:00"}</code>
+
+  <p style="margin-top:16px;"><strong>INV-15 formal safety invariant (Z3 SMT, UNSAT = safe):</strong></p>
+  <code>python -m pytest tests/test_verdict_vault.py -v
+# → 16 passed — tamper-detection on verdict chain verified</code>
+
+  <p style="margin-top:16px;"><strong>STIX 2.1 export for SIEM ingestion:</strong></p>
+  <code>curl -X POST https://api.apohara.dev/v1/soar/judge/evaluate \
+  -H 'Content-Type: application/json' \
+  -d '{"prompt": "test prompt", "export_format": "stix21"}'</code>
+</div>
+
+<footer>
+  <strong>Apohara CONSILIUM</strong> — Apache-2.0 —
+  <a href="https://github.com/SuarezPM/apohara-consilium">GitHub</a> ·
+  <a href="https://doi.org/10.5281/zenodo.20277875">Paper (Zenodo v3)</a> ·
+  <a href="/verify">Try Live Demo</a> ·
+  <a href="mailto:dimensionequix@gmail.com">dimensionequix@gmail.com</a>
+</footer>
+
+</div>
+</body>
+</html>

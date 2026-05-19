@@ -18,7 +18,16 @@
   --red:  #B8262A;
 }
 html, body { background: var(--ink); color: var(--bone); font-family: "JetBrains Mono", monospace; line-height: 1.55; }
-.container { max-width: 1100px; margin: 0 auto; padding: 60px 24px; }
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--ink); border-bottom: 2px solid var(--lime);
+  padding: 12px 24px; display: flex; gap: 24px; align-items: center; flex-wrap: wrap;
+}
+nav a { color: var(--bone); text-decoration: none; font-size: 11px; opacity: 0.8; }
+nav a:hover { color: var(--lime); opacity: 1; }
+nav a.active { color: var(--lime); font-weight: 700; }
+nav .nav-brand { font-family: "Press Start 2P", monospace; font-size: 11px; color: var(--lime); margin-right: auto; }
+.container { max-width: 1100px; margin: 0 auto; padding: 40px 24px 60px; }
 header { border-bottom: 2px solid var(--lime); padding-bottom: 30px; margin-bottom: 50px; }
 .brand { font-family: "Press Start 2P", monospace; font-size: 14px; letter-spacing: 2px; color: var(--lime); }
 h1 { font-family: "Press Start 2P", monospace; font-size: 32px; line-height: 1.4; margin: 30px 0 20px; }
@@ -103,6 +112,16 @@ footer a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
+
+<nav>
+  <span class="nav-brand">CONSILIUM</span>
+  <a href="/" class="active">← Hero</a>
+  <a href="/verify">Try Live</a>
+  <a href="/compliance">Compliance</a>
+  <a href="/about">Jury Guide</a>
+  <a href="https://github.com/SuarezPM/apohara-consilium" target="_blank">GitHub ↗</a>
+</nav>
+
 <div class="container">
 
 <header>
