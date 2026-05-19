@@ -8,13 +8,16 @@ set -u
 EXIT=0
 REPO_ROOT="${1:-/home/linconx/Documentos/apohara-consilium}"
 
-# CONSILIUM-active paths (where new content lives):
+# CONSILIUM-active paths (where USER-FACING claims live).
+# NOTE: docs/adr/ is META-documentation (explains decisions including which
+# inflated claims were removed) and is therefore OUT of banned-string scope.
+# ADRs may quote the banned strings verbatim when documenting their removal.
 ACTIVE_PATHS=(
   "$REPO_ROOT/README.md"
   "$REPO_ROOT/docs/submissions/pitch-deck-milan"
   "$REPO_ROOT/docs/submissions/milan-2026"
-  "$REPO_ROOT/docs/adr"
   "$REPO_ROOT/docs/infra"
+  "$REPO_ROOT/landing"
   "$REPO_ROOT/scripts/check_honesty_consilium.sh"
 )
 
