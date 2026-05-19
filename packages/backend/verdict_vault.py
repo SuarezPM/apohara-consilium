@@ -130,7 +130,7 @@ class VerdictVault:
             from rfc3161_client import TimestampRequestBuilder, decode_timestamp_response  # noqa: PLC0415
 
             builder = TimestampRequestBuilder()
-            request = builder.data(message_bytes).cert_request(True).build()
+            request = builder.data(message_bytes).cert_request().build()
             request_der = request.as_bytes()
 
             req = urllib.request.Request(
