@@ -35,7 +35,7 @@
 
 <!-- Row 4 — events -->
 <p align="center">
-  <strong>🦞 TechEx 2026 · Track 1 · Veea-sponsored</strong> · <strong>🤖 Milan AI Week 2026 · Agent Bench</strong>
+  <strong>🦞 TechEx 2026 · Track 1 · Veea-sponsored · Agent Security &amp; AI Governance</strong>
 </p>
 
 <!-- Hero stat strip — the four headline numbers, video-ready -->
@@ -105,20 +105,6 @@ Either path runs the same pipeline: 12-vendor adversarial attackers (Claude Opus
 Frontend: `https://www.apohara.dev` (Vercel) → API: `https://api.apohara.dev` (Vultr droplet, Caddy auto-TLS via Let's Encrypt). Experimental Next.js SSR variant: [`https://apohara-nextjs.vercel.app`](https://apohara-nextjs.vercel.app).
 
 Backend health probe: `curl -sf https://api.apohara.dev/health`.
-
----
-
-## Milan AI Week — multi-agent inference angle
-
-The same stack also answers the **AI Agent Olympics** theme (Milan AI
-Week 2026, prize $28K+, deadline 2026-05-20): ContextForge is the
-multi-agent KV-cache registry foundation that lets 5+ agents share a
-RAG prefix without leaking KV state between writer and critic. The
-Milan benchmark (`logs/milan_5agent_benchmark_1778943206.json` in the
-[sister repo](https://github.com/SuarezPM/Apohara_Context_Forge))
-reports **76% HBM saved per the closed-form model (CPU-mock fallback,
-H100 deferred)** — full honesty disclosure in the JSON `honesty_note`.
-Paper v3.0 at [`paper/inv15_paper.pdf`](https://github.com/SuarezPM/Apohara_Context_Forge/blob/main/paper/inv15_paper.pdf) (adds Z3 SMT formal proof, UNSAT in 10.08 ms).
 
 ---
 
