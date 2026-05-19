@@ -46,6 +46,13 @@
   <strong>⚡ Powered by <a href="https://www.vultr.com/">Vultr</a> (cloud) &amp; <a href="https://ai.google.dev/gemini-api">Gemini 3.1 PRO</a> (LLM judge layer)</strong>
 </p>
 
+<p align="center">
+  <strong>🧬 Sibling repos in the Apohara open-source ecosystem (all Apache-2.0):</strong><br>
+  <a href="https://github.com/SuarezPM/apohara-probant"><code>apohara-probant</code></a> (cross-AI code verifier · apohara.dev/) ·
+  <a href="https://github.com/SuarezPM/apohara-aegis"><code>apohara-aegis</code></a> (security library: 78-rule DJL · 9-vendor ensemble · STIX 2.1 · 6 frameworks · 603+ tests) ·
+  <a href="https://github.com/SuarezPM/Apohara_Context_Forge"><code>Apohara_Context_Forge</code></a> (shared-context compiler · INV-15 Z3 SMT proof · Zenodo paper)
+</p>
+
 <!-- Hero stat strip — 4 headline numbers, video-ready -->
 <table align="center" width="100%">
   <tr>
